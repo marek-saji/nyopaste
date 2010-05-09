@@ -1,0 +1,3 @@
+[submodule "hg"]
+	path = hg
+	url = ssh://git@git.holonglobe.com:65022/hologram.git
