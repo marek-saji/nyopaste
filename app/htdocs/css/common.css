@@ -1,0 +1,10 @@
+#foot .powered a.hg
+{
+    background: transparent url(../gfx/logo_hg_small.jpg) scroll center left no-repeat;
+    padding: 5px 0 5px 32px; /* background is 30x10px */
+}
+
+#foot .powered::after
+{
+    content: ',';
+}

@@ -36,9 +36,12 @@ $form = g('Forms', array('login', $this));
                 </li>
                 -->
         </fieldset>
-        <?= $this->l2c($t->trans('Don\'t you have an account? Register yourself'), 'User', 'add'); ?>
+        <?= $this->l2c($t->trans('Don\'t you have an account? Create it now'), 'User', 'add'); ?>
         <?php
-        $this->inc('Forms/buttons', array('submit' => 'log in', 'cancel' => false));
+        $this->inc('Forms/buttons', array(
+            'form' => & $form,
+            'submit' => 'Sign In',
+        ));
         $form->end();
     }
     else

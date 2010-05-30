@@ -1,23 +1,13 @@
 <?php
-
 g()->load('Pages', 'controller');
 
 /**
- * @author m.jutkiewicz
+ * @author m.augustynowicz
  * A class used for standard user's actions like login, register, etc.
  *
  */
 class UserController extends PagesController implements IUserController
 {
-    public $comment_component;
-    public $trip_component;
-    private $_acceptedPhotoMIMETypes = array(
-        'image/jpeg',
-        'image/pjpeg',
-        'image/gif',
-        'image/png',
-        'image/x-png',
-    );
 
     public $forms = array(
         'login' => array(
@@ -126,121 +116,94 @@ class UserController extends PagesController implements IUserController
                 'id' => array(
                     '_tpl' => 'Forms/hidden',
                 ),
-                'with_objects' => array(
-                    '_tpl' => 'Forms/FBool',
-                    'fields' => null,
-                ),
-                'with_comments' => array(
-                    '_tpl' => 'Forms/FBool',
-                    'fields' => null,
-                ),
-            ),
-        ),
-        'changetype' => array(
-            'ajax' => true,
-            'model' => 'User',
-            'inputs' => array(
-                'type' => array(
-                    '_tpl' => 'Forms/FSelect',
-                ),
             ),
         ),
     );
 
+
+    /**
+     * Display user's profile
+     *
+     * @param array URL params
+     *        [0] user's login, required
+     */
     public function defaultAction(array $params)
     {
-        if($login = @$params[0])
+        $login = @$params[0];
+        
+        if (!$login)
         {
-            $links = array(
-                'edit' => false,
-                'delete' => false,
-                'recover' => false,
-                'changeType' => false,
-            );
-            $filter = array('login' => $login, 'status' => STATUS_ACTIVE);
-            $groups = g()->auth->getUserGroups();
-
-            if(!empty($groups[USER_TYPE_MOD]))
-                unset($filter['status']);
-
-            $model = g('User', 'model');
-            $model->filter($filter);
-            $model->setMargins(1);
-            $data = $model->exec();
-
-            $images_model = g('ImagesUpload', 'model');
-            if(!empty($data['photo_hash']))
-            {
-                $images_model->filter(array('id' => $data['photo_hash']));
-                $images_model->setMargins(1);
-                $images_data = $images_model->exec();
-            	$this->assign('image_data', $images_data);
-            }
-
-            $this->assign('avatar', !empty($data['photo_hash']) ? '/upload/User/' . $data['photo_hash'] . '/' . '48x48.' . $images_data['extension'] : '/gfx/avatar.png');
-
-            if(!empty($data))
-            {
-                $par = array(
-                    'what' => 'user',
-                    'id' => $data['id'],
-                    'limit' => 5,
-                    'status' => STATUS_ACTIVE,
-                );
-                $this->comment_component->launchDefaultAction($par);
-
-                $par = array(
-                    $data['id'],
-                );
-                $this->trip_component->launchAction('UserTrips', $par);
-            }
-
-            /**
-             * @todo add the newest trips of an user
-             */
-
-            if($this->hasAccess('edit', $params))
-                $links['edit'] = true;
-
-            if($this->hasAccess('delete', $params) && $data['status'] == STATUS_ACTIVE && $data['id'] > 0)
-                $links['delete'] = true;
-
-            if($this->hasAccess('delete', $params) && $data['status'] < 0)
-                $links['recover'] = true;
-
-            if($this->hasAccess('changeType', $params) && $data['id'] > 0)
-                $links['changeType'] = true;
-
-            $this->assign('data', $data);
-            $this->assign('links', $links);
+            $this->redirect(array('HttpError','error404'));
         }
-        else
-            $this->redirect();
+
+        $filters = array('login' => $login);
+        if (!g()->auth->isUserInGroup(USER_TYPE_ADMIN))
+            $filters['status'] = STATUS_ACTIVE;
+
+        $model = g('User','model');
+        $model->setMargins(1)->filter($filters);
+        $db_data = $model->exec();
+
+        if (!$db_data)
+        {
+            // we could be more specific here
+            $this->redirect(array('HttpError','error404'));
+        }
+
+
+        // determine which action links we should display
+
+        $db_data['Actions'] = array(
+            'edit' => false,
+            'remove' => false,
+            'recover' => false,
+        );
+        foreach ($db_data['Actions'] as $action => & $permitted)
+        {
+            $permitted = $this->hasAccess($action, $params);
+        }
+
+
+        $this->assignByRef('data', $db_data);
     }
 
+    /**
+     * Login
+     *
+     * @params array URL params
+     *         [0] user's login, optional
+     */
     public function actionLogin(array $params)
     {
-        $logged_in = g()->auth->loggedIn();
-
-        if($logged_in)
-            $this->redirect();
-
-        if(!@$this->data['login'])
+        $post_data = & $this->data['login'];
+        if (!$post_data)
         {
             $this->data['login']['login'] = @$params[0];
         }
         else
         {
-            $logged_in = g()->auth->login($this->data['login']);
-            if(!$logged_in)
-                g()->addInfo(NULL, 'error', $this->trans('Wrong email or password or account is not activated') . (g()->debug->on() ? ': ' . g('Auth')->getLastError() : ''));
+            $auth_data = array(
+                'login'  => $post_data['login'],
+                'passwd' => $post_data['passwd'],
+            );
+            var_dump($auth_data);
+            if (g()->auth->login($auth_data))
+            {
+                $this->redirect($post_data['_backlink']);
+            }
             else
             {
-                $this->redirect($this->data['login']['_backlink']);
+                $err_name = g()->auth->getLastError();
+                if ('not_active' == $err_name)
+                    $err_msg = 'This account has not been activated yet';
+                else
+                    $err_msg = 'Wrong e-mail or password';
+                if (g()->debug->on())
+                    $err_msg .= ' ' . $err_name;
+                g()->addInfo('signing in', 'error', $this->trans($err_msg));
             }
         }
-        //will not be used
-        $this->assign(compact('logged_in'));
+
     }
 
     public function actionLogout(array $params)

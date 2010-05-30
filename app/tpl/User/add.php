@@ -62,5 +62,8 @@ if(!$admin)
 else
 	$button_text = 'add user';
 
-$this->inc('Forms/buttons', array('submit' => $this->trans($button_text)));
+$this->inc('Forms/buttons', array(
+    'form' => & $form,
+    'submit' => $this->trans($button_text),
+));
 $form->end();
