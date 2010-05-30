@@ -2,8 +2,6 @@
 /**
  * Polish translations
  *
- * @author everyone, run git-blame(1) for details
- *
  * BASICS (by example)
  *
  * conf[translations][_global] contains global translations
@@ -36,7 +34,7 @@ $conf['translations']['_global'] = array(
     // links in global navigation, account area
     'Sign In' => 'Zaloguj się',
     'Sign Out' => 'Wyloguj się',
-    'Create an account' => 'Załóż konto',
+    'Create an Account' => 'Załóż konto',
 
     // form input error messages
     'Field required' => 'Pole wymagane',
@@ -51,9 +49,28 @@ $conf['translations']['_global'] = array(
     // text in the footer
     'powered by %s' => 'powered by %s',
     'application version' => 'wersja aplikacji',
+
+    // generic error message (usually after something in DB went wrong)
+    // "%s" should also be translated
+    '((error:%s))' => '%s. Spróbuj jeszcze raz za kilka minut, a jeśli błąd będzie nadal występował, skontaktuj się z administratorem strony',
 );
 
 $conf['translations']['User'] = array(
+    '((mail-subject:after registration))' => 'Thank you for creating account in %$2s.', // mail subject, $1=login, $2=site name
+    '((mail:after registration))' => 'Thank you for creating account in %$2s.', // mail content, $1=login, $2=site name
+
+    'Error while adding user' => 'Błąd podczad dodawania użytkownika', // generic error
+
+    'Add user' => 'Dodaj użytkownika', // button text
+    'Accept terms of use and create account' => 'Zaakceptuj regulamin i utwórz konto', // button text
+    'Don\'t forget to read <a href="%s">terms of use</a>.' => 'Nie zapomnij zapoznać się z <a href="%s">regulaminem</a>.', // paragraph in sign-up form
+    'New user account has been created' => 'Nowe konto zostało utworzone', // site info
+    'Your account has been created. You may sign in now' => 'Twoje konto zostało utworzone. Możesz się teraz zalogować.', // site info
+    'Welcome, %s' => 'Witaj, %s', // site info after signing in (%s = display name)
+
+
+    // verify these:
+
     'You have to log in for getting access.' => 'You have to log in for getting access.',
     'Please sign in' => 'Please sign in',
     'Remember me on this computer' => 'Remember me on this computer',
@@ -69,11 +86,6 @@ $conf['translations']['User'] = array(
     'I\'m representing company' => 'I\'m representing company',
     'Given e-mail address is already taken' => 'Given e-mail address is already taken',
     'Given passwords are different' => 'Given passwords are different',
-    'Registration confirmation on %s' => 'Registration confirmation on %s',    //registration e-mail subject
-    '((company registration e-mail text))' => '<a href="%s">%s</a>',
-    '((student registration e-mail text))' => '<a href="%s">%s</a>',
-    '((text after registration - student))' => '((text after registration - student))',
-    '((text after registration - company))' => '((text after registration - company))',
     '((info after activation - student))' => '((info after activation - student))',
     '((info after activation - company))' => '((info after activation - company))',
 

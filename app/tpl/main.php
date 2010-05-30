@@ -42,7 +42,7 @@ $t->inc('infos');
                     <?= $t->l2c($t->trans('Sign In'), 'User', 'login', array(), array('class' => 'btn modal', 'anchor' => 'login')); ?>
                 </li>
                 <li class="create_account">
-                    <?= $this->l2c($t->trans('Create An Account'), 'User', 'add'); ?>
+                    <?= $this->l2c($t->trans('Create an Account'), 'User', 'add'); ?>
                 </li>
             <?php
             endif;
