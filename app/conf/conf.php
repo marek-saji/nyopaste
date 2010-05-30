@@ -40,12 +40,11 @@ $conf['classes_override'] = array(
 
 // enumerations used in datasets
 
+// status.
+// can be bitmasked, if nessesary
 define('STATUS_ACTIVE', 1);
-define('STATUS_NOT_ACTIVATED', 2);
+define('STATUS_WAITING_FOR_ACTIVATION', 2);
 define('STATUS_DELETED', 4);
 define('STATUS_DELETED_BY_OWNER', 12);
-define('STATUS_BLOCKED', 20);
-
-define('USER_TUPE_MOD', 9);
-define('USER_TYPE_ADMIN', 25);
+define('STATUS_BLOCKED', 32);
 

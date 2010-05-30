@@ -2,9 +2,10 @@
 g()->load('Pages', 'controller');
 
 /**
+ * Handling users
+ * 
+ * displaying, listing, signing ip/up/out/left/right/etc
  * @author m.augustynowicz
- * A class used for standard user's actions like login, register, etc.
- *
  */
 class UserController extends PagesController implements IUserController
 {
@@ -168,7 +169,7 @@ class UserController extends PagesController implements IUserController
     }
 
     /**
-     * Login
+     * Log in
      *
      * @params array URL params
      *         [0] user's login, optional
@@ -186,9 +187,11 @@ class UserController extends PagesController implements IUserController
                 'login'  => $post_data['login'],
                 'passwd' => $post_data['passwd'],
             );
-            var_dump($auth_data);
             if (g()->auth->login($auth_data))
             {
+                g()->addInfo('signed in', 'info',
+                        $this->trans('Welcome, <em>%s</em>',
+                        g()->auth->displayName() ));
                 $this->redirect($post_data['_backlink']);
             }
             else
@@ -206,18 +209,31 @@ class UserController extends PagesController implements IUserController
 
     }
 
+
+    /**
+     * Log out
+     *
+     * @param array URL params, none used
+     */
     public function actionLogout(array $params)
     {
         g()->auth->logout();
         $this->redirect((string)g()->req->getReferer());
     }
 
+
+    /**
+     * Create new user
+     *
+     * @param array URL params, none used
+     */
     public function actionAdd(array $params)
     {
-        /*if(g()->auth->loggedIn())
-            $this->redirect();*/
+        $viewer_is_admin = g()->auth->isUserInGroup(USER_TYPE_ADMIN);
+        $use_captcha = !g()->debug->on('disable','captcha') && !$viewer_is_admin;
 
-    	if(!empty($params) && @$params['admin'] == '1')
+
+    	if (!empty($params) && @$params['admin'] == '1')
     	{
     		$admin = true;
 	        $types = array(
@@ -233,60 +249,73 @@ class UserController extends PagesController implements IUserController
    			unset($this->forms['add']['inputs']['type']);
    		}
 
-        $use_captcha = !g()->debug->on() && !$admin;
-
-        if($use_captcha)
+        if ($use_captcha)
         {
-            g()->load('recaptcha/recaptchalib', null);
-            $this->assign('publickey', RECAPTCHA_PUBLIC_KEY);
+            g()->load('recaptcha-php-1.10/recaptchalib', null);
+            $this->assign('recaptcha_publickey',
+                          g()->conf['keys']['recaptcha']['public']);
         }
 
         $this->assign('use_captcha', $use_captcha);
-        $this->assign('admin', $admin);
-        $data = &$this->data['add'];
+        $this->assign('viewer_is_admin', $viewer_is_admin);
+        $post_data = & $this->data['add'];
+        $user_data = $post_data;
 
-        if(!($data && $this->__validated['add']))
+        if (!@$this->_validated['add'])
             return; // nothing to do.
 
-        if($use_captcha)
+        if ($use_captcha)
         {
-            $resp = recaptcha_check_answer(RECAPTCHA_PRIVATE_KEY, $_SERVER["REMOTE_ADDR"], $_POST["recaptcha_challenge_field"], $_POST["recaptcha_response_field"]);
-            if(!$resp->is_valid)
+            $recaptcha_response = recaptcha_check_answer(
+                    g()->conf['keys']['recaptcha']['private'],
+                    $_SERVER['REMOTE_ADDR'],
+                    $_POST['recaptcha_challenge_field'],
+                    $_POST['recaptcha_response_field']
+                );
+            if (!$recaptcha_response->is_valid)
             {
                 g()->addInfo(null, 'error', $this->trans('The code wasn\'t entered correctly.'));
                 return false;
             }
         }
 
-        $data['creation_date'] = date('Y-m-d H:i:s');
-        $data['status'] = STATUS_ACTIVE;
+        $user_data['creation_date'] = time();
+        $user_data['status'] = STATUS_ACTIVE;
 
-        if(!$admin)
-        	$data['type'] = USER_TYPE_REGISTERED;
+        if (!$viewer_is_admin)
+        	$user_data['type'] = USER_TYPE_AUTHORIZED;
 
         $model = g('User', 'model');
 
-        if($model->sync($data, true) !== true)
+        if (true !== $model->sync($user_data, true, 'insert'))
         {
-            g()->addInfo(null, 'error', $this->trans('Error while adding user. Please try again later and if error still occurs -- contact this site\'s administrator.'));
+            g()->addInfo('adding user', 'error', $this->trans('((error:%s))',
+                    $this->trans('Error while adding user')));
             return;
         }
         else
         {
-            if(!empty($data['email']))
+            if (!$viewer_is_admin && !empty($data['email']))
             {
-		        $mail_content = $this->trans('Welcome, %s!<br/><br/>Thank you for registration on our website.<br/><br/>Regards,<br/>%s team', $data['login'], g()->conf['site_name']);
-		        $subject = $this->trans('Registration on %s website', g()->conf['site_name']);
+                $main_content = $this->trans('((mail:after registration))',
+                        $user_data['login'], g()->conf['site_name'] );
+		        $subject = $this->trans('((mail-subject:after registration))', g()->conf['site_name']);
                 $mail = g('Mails', 'class');
-                //$mail->setPort(587); - unnecessary, Mails class reads it in constructor from configuration
                 $mail->send('', $mail_content, '', $subject, '', $data['email']);
             }
 
-            if(!$admin)
-            	g('Auth')->login(array('login' => $data['login'], 'passwd' => $data['passwd']));
-
-        	g()->addInfo(null, 'info', $this->trans('User has been added.'));
-           	$this->redirect($this->url2a('edit', array($data['login'])));
+            if ($viewer_is_admin)
+            {
+                g()->addInfo('user created', 'info',
+                        $this->trans('New user account has been created') );
+                $this->redirect($post_data['_backlink']);
+            }
+            else
+            {
+                g()->addInfo('user created', 'info',
+                        $this->trans('Your account has been created. You may sign in now') );
+                $this->redirect(array($this->url(), 'login'));
+            }
         }
     }
 
@@ -672,50 +701,6 @@ class UserController extends PagesController implements IUserController
         }
     }
     
-    public function actionPresentTrip(array $params)
-    {
-        $this->_trips($params,'Show');
-    }
-    
-    public function actionEditTrip(array $params)
-    {
-        $this->_trips($params,'Edit');
-    }
-    
-    public function actionReviewTrip(array $params)
-    {
-        $this->_trips($params,'Review');
-    }
-    
-    public function actionTripPhotos(array $params)
-    {
-        $this->_trips($params,'Photos');
-    }
-
-    private function _trips(array $params, $action)
-    {
-        if(!$trip_id = @$params[0])
-            $this->redirect();
-
-        $this->trip_component->launchAction($action, $params);
-        $this->_setTemplate('presenttrip');
-    }
-
-    public function actionAdminister(array $params)
-    {
-        $model = g('User', 'model');
-        $model->filter(array(
-            array('id', '>', '0'),
-            array('type', '<', '0'),
-        ));
-        $model->order('status', 'DESC');
-        $model->order('type', 'DESC');
-        $model->order('login', 'ASC');
-        $data = $model->exec();
-
-        $this->assign('list', $data);
-    }
-
     public function actionChangeType(array $params)
     {
         if(!$login = @$params[0])
@@ -839,45 +824,6 @@ class UserController extends PagesController implements IUserController
         return $errors;
     }
 
-    public function validateEditPhoto(&$value)
-    {
-        $errors = array();
-        $mime = 0; // = don't check
-        $i_model = g('ImagesUpload', 'model');
-
-        if(is_array($value) && @$value['tmp_name'])
-        {
-            // false == given path is not relative to UPLOAD_DIR
-            if(!g()->conf['get_mime_type_by_suffix'])
-                $mime = $i_model->getMIMETypeByFile($value['tmp_name'], false);
-            else
-            {
-                $ext = explode('.', $value['name']);
-                $ext = $ext[count($ext) - 1];
-                $mime = $i_model->getMIMETypeBySuffix($ext);
-            } 
-        }
-        elseif((!is_array($value)) && $value)
-        {
-            $value = trim($value);
-            $value = str_replace('\\\\', '/', $value);
-            $value = explode('/', $value);
-            $value = $value[count($value) - 1];
-
-            if(strlen($value) > 0)
-            {
-                $ext = explode('.', $value);
-                $ext = $ext[count($ext) - 1];
-                $mime = $i_model->getMIMETypeBySuffix($ext);
-            }
-        }
-
-        if(0 !== $mime && !in_array($mime, $this->_acceptedPhotoMIMETypes))
-            $errors['wrong_type'] = $this->trans('Photo must be a JPEG, GIF or PNG file.');
-
-        return $errors;
-    }
-
     public function validateEditPasswd(&$value)
     {
         return $this->validateAddPasswd($value);
@@ -928,3 +874,4 @@ class UserController extends PagesController implements IUserController
         return $this->hasAccessToEdit($params);
     }
 }
+
