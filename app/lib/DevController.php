@@ -60,26 +60,4 @@ class DevController extends DeveloperController
         $this->_devActionEnd($params, __FUNCTION__);
     }
 
-    /**
-     * Insert some infopages
-     *
-     * No data validation, yay~
-     * @author m.augustynowicz
-     */
-    protected function _insertSomething($model_name, array $data)
-    {
-        $model = g($model_name, 'model');
-        foreach($data as &$row)
-        {
-            $model->filter($row);
-            if(!$model->getCount())
-            {
-                if(true !== $model->sync($row, true, 'insert'))
-                {
-                    g()->addInfo(null, 'error', $this->trans('Error while adding ' . $model_name));
-                    return;
-                }
-            }
-        }
-    }
 }
