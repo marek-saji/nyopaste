@@ -9,9 +9,15 @@ g()->load('Developer', 'controller');
 class DevController extends DeveloperController
 {
     /**
-     * Used by parent
+     * Register this file's path to list it's methods.
+     * @author m.augustynowicz
      */
-    protected $_file = __FILE__;
+    public function __construct($params)
+    {
+        $this->_files[] = __FILE__;
+
+        parent::__construct($params);
+    }
 
     /**
      * Template action.
