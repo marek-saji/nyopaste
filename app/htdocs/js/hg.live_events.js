@@ -412,7 +412,7 @@ $(function(){
                 me.height(0);
                 me.height(me[0].scrollHeight + padding*2);
             }, 200));
-        }).keydown().css('overflow-y', 'hidden');
+        }).keydown();
     }
     catch(e)
     {
