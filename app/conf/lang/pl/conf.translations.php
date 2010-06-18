@@ -31,10 +31,14 @@ $conf['translations']['_global'] = array(
 
     '((default site name format))' => '%s - %s', // default page title format: "page title - site name"
 
+    'skip to content' => 'przejdź do treści',
+
     // links in global navigation, account area
-    'Sign In' => 'Zaloguj się',
-    'Sign Out' => 'Wyloguj się',
-    'Create an Account' => 'Załóż konto',
+    'sign in' => 'zaloguj się',
+    'sign out' => 'wyloguj się',
+    'create an account' => 'załóż konto',
+
+    'cancel' => 'anuluj', // close modal XOR go back
 
     // form input error messages
     'Field required' => 'Pole wymagane',
@@ -43,53 +47,29 @@ $conf['translations']['_global'] = array(
     'Value too long' => 'Wartość zbyt długa',
     'Invalid e-mail address' => 'Nieprawidłowy adres e-mail',
     'Invalid floating point value' => 'Niepoprawna liczba zmiennoprzecinkowa',
+    'Incorrect URL' => 'Niepoprawny adres strony WWW',
+    'Unsupported protocol' => 'Niepoprawny protokuł. Podaj adres zaczynający się od <code>http://</code>, bądź <code>https://</code>',
     'Number is to small' => 'Liczba zbyt mała',
     'Number is to big' => 'Liczba zbyt duża',
+    'Passwords do not match' => 'Powtórzone hasło jest inne',
+
+    'Entered CAPTCHA code is incorrect, try again' => 'Wpisany kod CAPTCHA jest nie poprawny, spróbuj ponownie',
 
     // text in the footer
-    'powered by %s' => 'powered by %s',
+    'powered by %s' => 'napędzane przez %s',
     'application version' => 'wersja aplikacji',
 
-    // generic error message (usually after something in DB went wrong)
-    // "%s" should also be translated
-    '((error:%s))' => '%s. Spróbuj jeszcze raz za kilka minut, a jeśli błąd będzie nadal występował, skontaktuj się z administratorem strony',
-);
 
-$conf['translations']['User'] = array(
-    '((mail-subject:after registration))' => 'Thank you for creating account in %$2s.', // mail subject, $1=login, $2=site name
-    '((mail:after registration))' => 'Thank you for creating account in %$2s.', // mail content, $1=login, $2=site name
+    // generic error messages
 
-    'Error while adding user' => 'Błąd podczad dodawania użytkownika', // generic error
+    // after something with DS went wrong
+    // remember that "%s" should also be translated (if not FALSE)
+    '((error:DS:%s))' => array(
+        false => 'Wystąpił błąd. Spróbuj jeszcze raz za kilka minut, a jeśli błąd będzie nadal występował, skontaktuj się z administratorem strony',
+        '' => '%s. Spróbuj jeszcze raz za kilka minut, a jeśli błąd będzie nadal występował, skontaktuj się z administratorem strony',
+    ),
 
-    'Add user' => 'Dodaj użytkownika', // button text
-    'Accept terms of use and create account' => 'Zaakceptuj regulamin i utwórz konto', // button text
-    'Don\'t forget to read <a href="%s">terms of use</a>.' => 'Nie zapomnij zapoznać się z <a href="%s">regulaminem</a>.', // paragraph in sign-up form
-    'New user account has been created' => 'Nowe konto zostało utworzone', // site info
-    'Your account has been created. You may sign in now' => 'Twoje konto zostało utworzone. Możesz się teraz zalogować.', // site info
-    'Welcome, %s' => 'Witaj, %s', // site info after signing in (%s = display name)
-
-
-    // verify these:
-
-    'You have to log in for getting access.' => 'You have to log in for getting access.',
-    'Please sign in' => 'Please sign in',
-    'Remember me on this computer' => 'Remember me on this computer',
-    'I forgot my password' => 'I forgot my password',
-    'Don\'t have account yet?' => 'Don\'t have account yet?',
-    'Create account now' => 'Create account now',
-    'Given code is incorrect.' => 'Given code is incorrect.',
-    'I accept, create my account' => 'I accept, create my account',
-    'Already have an account? Please sign in.' => 'Already have an account? Please sign in.',
-    'Repeat password' => 'Repeat password',
-    'Activation link is incorrect.' => 'Activation link is incorrect.',
-    'I\'m student' => 'I\'m student',
-    'I\'m representing company' => 'I\'m representing company',
-    'Given e-mail address is already taken' => 'Given e-mail address is already taken',
-    'Given passwords are different' => 'Given passwords are different',
-    '((info after activation - student))' => '((info after activation - student))',
-    '((info after activation - company))' => '((info after activation - company))',
-
-    'Error while adding user.' => 'Error while adding user.',
-    'Error while account activating.' => 'Error while account activating.',
+    // when form submission conflict has been detected
+    '((error:POST conflict))' => 'Ktoś wysłał ten formularz, podczas kiedy go edytowałeś. Twoje dane <strong>nie</strong> zostały teraz zapisane. Jeśli chcesz nadpisać, wyślij ponownie formularz',
 );
 

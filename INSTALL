@@ -2,8 +2,8 @@
  # checkout app:
    git clone git://github.com/marek-saji/nyopaste.git src/
 
- # edit src/app/htdocs/index.php
-   # update local, dev and test IPs/hostnames
+ # update local, dev and test IPs/hostnames
+   edit src/app/htdocs/index.php
 
  # checkout hologram:
    git clone git://git.holonglobe.com/hologram.git src/hg/
@@ -14,8 +14,11 @@
 
  # local configuration
    # database credentials
-   cp src/app/conf/conf.db.php conf/
-   edit conf/conf.db.php
+     cp src/app/conf/conf.db.php conf/
+     edit conf/conf.db.php
+   # API keys
+     cp src/app/conf/conf.keys.php conf/
+     edit conf/conf.keys.php
 
  # configure apache
    # create vhost pointing to $PWD/src/app/htdocs/

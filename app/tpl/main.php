@@ -20,6 +20,9 @@ $t->inc('infos');
 ?>
 
 <header id="head">
+    <nav class="skip-to-content">
+        <a href="#content"><?=$t->trans('skip to content')?></a>
+    </nav>
     <h1>
         <?= $t->l2c(g()->conf['site_name'], ''); ?>
     </h1>
@@ -27,22 +30,21 @@ $t->inc('infos');
         <ul>
             <?php
             if (g()->auth->loggedIn()) :
-                $username = g()->auth->get('login');
             ?>
                 <li class="welcome">
-                    <?= $t->l2c($username, 'User', '', array($username)) ?>
+                    <?=$this->inc('user_link')?>
                 </li>
                 <li class="signout">
-                    <?= $t->l2c($t->trans('Sign Out'), 'User', 'logout'); ?>
+                    <?= $t->l2c($t->trans('sign out'), 'User', 'logout'); ?>
                 </li>
             <?php
             else :
             ?>
                 <li class="signin">
-                    <?= $t->l2c($t->trans('Sign In'), 'User', 'login', array(), array('class' => 'btn modal', 'anchor' => 'login')); ?>
+                    <?= $t->l2c($t->trans('sign in'), 'User', 'login', array(), array('class' => 'btn modal', 'anchor' => 'login')); ?>
                 </li>
                 <li class="create_account">
-                    <?= $this->l2c($t->trans('Create an Account'), 'User', 'add'); ?>
+                    <?= $this->l2c($t->trans('create an account'), 'User', 'new'); ?>
                 </li>
             <?php
             endif;
