@@ -3,6 +3,11 @@ g()->load('Pages', 'controller');
 
 /**
  * Handling users
+ *
+ * @todo implement changing e-mail
+ * @todo implement list of users
+ * @todo handle sensitive data (e-mail etc) when removing account
+ * @todo allow modyfying account type
  * 
  * displaying, listing, signing ip/up/out/left/right/etc
  * @author m.augustynowicz
@@ -22,7 +27,7 @@ class UserController extends PagesController implements IUserController
                 ),
             ),
         ),
-        'add' => array(
+        'new' => array(
             'ajax' => true,
             'model' => 'User',
             'inputs' => array(
@@ -39,15 +44,9 @@ class UserController extends PagesController implements IUserController
             'upload' => true,
             'model' => 'User',
             'inputs' => array(
-                'old_passwd' => array(
-                    '_tpl' => 'Forms/FPassword_single',
-                    'fields' => null,
-                ),
-                'passwd' => array(
-                    '_tpl' => 'Forms/FPassword',
-                    'fields' => null,
-                ),
                 'email',
+                'website',
+                'about_me',
                 'del_photo' => array(
                     '_tpl' => 'Forms/FBool',
                     'fields' => null,
@@ -56,44 +55,6 @@ class UserController extends PagesController implements IUserController
                     '_tpl' => 'Forms/FImageFile',
                     'fields' => null,
                 ),
-                'location_coords',
-                'country' => array(
-                    '_tpl' => 'Forms/FSelect',
-                ),
-                'birth_date',
-                'description' => array(
-                    '_tpl' => 'Forms/FString_area',
-                ),
-                'notices',
-            ),
-        ),
-        'edit_admin' => array(
-            'ajax' => true,
-            'upload' => true,
-            'model' => 'User',
-            'inputs' => array(
-                'passwd' => array(
-                    '_tpl' => 'Forms/FPassword',
-                    'fields' => null,
-                ),
-                'email',
-                'del_photo' => array(
-                    '_tpl' => 'Forms/FBool',
-                    'fields' => null,
-                ),
-                'photo' => array(
-                    '_tpl' => 'Forms/FImageFile',
-                    'fields' => null,
-                ),
-                'location_coords',
-                'country' => array(
-                    '_tpl' => 'Forms/FSelect',
-                ),
-                'birth_date',
-                'description' => array(
-                    '_tpl' => 'Forms/FString_area',
-                ),
-                'notices',
             ),
         ),
         'lostpasswd' => array(
@@ -109,6 +70,11 @@ class UserController extends PagesController implements IUserController
             'inputs' => array(
                 'passwd',
             ),
+        ),
+        'confirm' => array(
+            'ajax' => false,
+            'model' => false,
+            'inputs' => array(),
         ),
         'delete' => array(
             'ajax' => false,
@@ -130,42 +96,37 @@ class UserController extends PagesController implements IUserController
      */
     public function defaultAction(array $params)
     {
-        $login = @$params[0];
+        $conf = & g()->conf['users'];
+        $id = @$params[0];
         
-        if (!$login)
+        if (!$id)
         {
-            $this->redirect(array('HttpError','error404'));
+            $this->redirect(array('HttpErrors', '', array(404)));
         }
 
-        $filters = array('login' => $login);
-        if (!g()->auth->isUserInGroup(USER_TYPE_ADMIN))
-            $filters['status'] = STATUS_ACTIVE;
 
-        $model = g('User','model');
-        $model->setMargins(1)->filter($filters);
-        $db_data = $model->exec();
-
-        if (!$db_data)
-        {
-            // we could be more specific here
-            $this->redirect(array('HttpError','error404'));
-        }
+        // fetch user data
+        $this->_getOne($id, $db_data);
 
 
         // determine which action links we should display
 
         $db_data['Actions'] = array(
-            'edit' => false,
-            'remove' => false,
-            'recover' => false,
+            'edit' => true,
+            'remove'  => !($db_data['status'] & STATUS_DELETED)
+                         && $db_data['id'] > 0,
+            'restore' =>   $db_data['status'] & STATUS_DELETED
         );
         foreach ($db_data['Actions'] as $action => & $permitted)
         {
+            if (!$permitted)
+                continue;
             $permitted = $this->hasAccess($action, $params);
         }
+        unset($permitted);
 
 
-        $this->assignByRef('data', $db_data);
+        $this->assignByRef('row', $db_data);
     }
 
     /**
@@ -200,10 +161,11 @@ class UserController extends PagesController implements IUserController
                 if ('not_active' == $err_name)
                     $err_msg = 'This account has not been activated yet';
                 else
-                    $err_msg = 'Wrong e-mail or password';
+                    $err_msg = 'Wrong login or password';
+                $err_ident = 'siging in';
                 if (g()->debug->on())
-                    $err_msg .= ' ' . $err_name;
-                g()->addInfo('signing in', 'error', $this->trans($err_msg));
+                    $err_ident .= ' ' . $err_name;
+                g()->addInfo($err_ident, 'error', $this->trans($err_msg));
             }
         }
 
@@ -225,44 +187,52 @@ class UserController extends PagesController implements IUserController
     /**
      * Create new user
      *
-     * @param array URL params, none used
+     * We are assuming, that if we are logged-in, we can
+     * add any user with group id <= ours
+     *
+     * @param array $param URL params, none used
      */
-    public function actionAdd(array $params)
+    public function actionNew(array $params)
     {
-        $viewer_is_admin = g()->auth->isUserInGroup(USER_TYPE_ADMIN);
-        $use_captcha = !g()->debug->on('disable','captcha') && !$viewer_is_admin;
+        $f = g('Functions');
+        $form_id = 'new';
+        $inputs = & $this->forms[$form_id]['inputs'];
+        $post_data = & $this->data[$form_id];
 
-
-    	if (!empty($params) && @$params['admin'] == '1')
+    	if (g()->auth->loggedIn())
     	{
-    		$admin = true;
 	        $types = array(
 	            USER_TYPE_ADMIN => $this->trans('administrator'),
 	            USER_TYPE_MOD => $this->trans('moderator'),
-	            USER_TYPE_REGISTERED => $this->trans('registered user'),
+	            USER_TYPE_AUTHORIZED => $this->trans('regular user'),
 	        );
-	        $this->assign('values', $types);
+            // don't allow me to create users with higher GIDs, than my own
+            $my_gid = g()->auth->get('type');
+            foreach ($types as $gid => & $tmp)
+            {
+                if ($gid > $my_gid)
+                {
+                    unset($types[$gid]);
+                }
+            }
+            unset($tmp);
+	        $this->assignByRef('user_types_values', $types);
     	}
-   		else
-   		{
-   			$admin = false;
-   			unset($this->forms['add']['inputs']['type']);
-   		}
 
+
+        $use_captcha = !g()->auth->loggedIn() && !g()->debug->on('disable', 'captcha');
         if ($use_captcha)
         {
             g()->load('recaptcha-php-1.10/recaptchalib', null);
             $this->assign('recaptcha_publickey',
                           g()->conf['keys']['recaptcha']['public']);
         }
-
         $this->assign('use_captcha', $use_captcha);
-        $this->assign('viewer_is_admin', $viewer_is_admin);
-        $post_data = & $this->data['add'];
-        $user_data = $post_data;
+
 
         if (!@$this->_validated['add'])
             return; // nothing to do.
+
 
         if ($use_captcha)
         {
@@ -274,604 +244,492 @@ class UserController extends PagesController implements IUserController
                 );
             if (!$recaptcha_response->is_valid)
             {
-                g()->addInfo(null, 'error', $this->trans('The code wasn\'t entered correctly.'));
+                g()->addInfo('wrong captcha, user adding', 'error',
+                        $this->trans('Entered CAPTCHA code is incorrect, try again') );
                 return false;
             }
         }
 
-        $user_data['creation_date'] = time();
-        $user_data['status'] = STATUS_ACTIVE;
 
-        if (!$viewer_is_admin)
-        	$user_data['type'] = USER_TYPE_AUTHORIZED;
+        $post_data['creation_date'] = time();
+        $post_data['last_edit'] = $post_data['_timestamp'];
+        $post_data['status'] = STATUS_ACTIVE;
 
-        $model = g('User', 'model');
+        if (!g()->auth->loggedIn())
+        	$post_data['type'] = USER_TYPE_AUTHORIZED;
 
-        if (true !== $model->sync($user_data, true, 'insert'))
+        $user = g('User', 'model');
+        if (true !== $err = $user->sync($post_data, true, 'insert'))
         {
-            g()->addInfo('adding user', 'error', $this->trans('((error:%s))',
-                    $this->trans('Error while adding user')));
+            g()->addInfo('ds fail, adding user'.$id, 'error',
+                $this->trans('((error:DS:%s))', false) );
+            g()->debug->dump($err);
             return;
         }
         else
         {
-            if (!$viewer_is_admin && !empty($data['email']))
-            {
-                $main_content = $this->trans('((mail:after registration))',
-                        $user_data['login'], g()->conf['site_name'] );
-		        $subject = $this->trans('((mail-subject:after registration))', g()->conf['site_name']);
-                $mail = g('Mails', 'class');
-                $mail->send('', $mail_content, '', $subject, '', $data['email']);
-            }
+            /** @todo send an e-mail */
 
-            if ($viewer_is_admin)
+            if (g()->auth->loggedIn())
             {
                 g()->addInfo('user created', 'info',
                         $this->trans('New user account has been created') );
-                $this->redirect($post_data['_backlink']);
+                if (empty($post_data['_backlink']))
+                {
+                    $id = $user->getData($conf['ident_field']);
+                    $this->redirect($this->url2a('', array($id)));
+                }
+                else
+                {
+                    $this->redirect($post_data['_backlink']);
+                }
             }
             else
             {
                 g()->addInfo('user created', 'info',
                         $this->trans('Your account has been created. You may sign in now') );
-                $this->redirect(array($this->url(), 'login'));
+                $this->redirect($this->url2a('login'));
             }
         }
     }
 
+
+    /**
+     * Editing profile information
+     * @author m.augustynowicz
+     *
+     * @param array URL params
+     *        [0] user's login, required
+     */
     public function actionEdit(array $params)
     {
-        if(!$login = @$params[0])
-            $this->redirect();
+        $f = g('Functions');
+        $form_id = 'edit';
+        //$inputs = & $this->forms[$form_id]['inputs'];
+        $post_data = & $this->data[$form_id];
 
-        $admin = false;
+        $conf = & g()->conf['users'];
+        $id = @$params[0];
 
-        if($this->hasAccess('edit', $params) === 1)
+        if (!$id)
         {
-        	if($login != g()->auth->get('login'))
-        	{
-	        	$admin = true;
-	        	$this->data['edit'] = @$this->data['edit_admin'];
-	        	$this->__validated['edit'] = @$this->__validated['edit_admin'];
-        	}
+            $this->redirect(array('HttpErrors', '', array(404)));
         }
 
-        $this->assign('admin', $admin);
-        $this->assign('login', $login);
-        $this->assign('values', g()->conf['countries']);
+        // fetch user data
+        $this->_getOne($id, $db_data);
 
-        $model = g('User', 'model');
-        $model->filter(array('login' => $login));
-        $model->setMargins(1);
-        $data = $model->exec();
 
-        $upload_dir = APP_DIR . 'htdocs/upload/';
-        $images_model = g('ImagesUpload', 'model');
-        $images_model->setUploadDir($upload_dir);
+        // determine which action links we should display
 
-        if(!empty($data['photo_hash']))
+        $db_data['Actions'] = array(
+            'default' => false,
+            'remove'  => !($db_data['status'] & STATUS_DELETED)
+                         && $db_data['id'] > 0,
+            'restore' =>   $db_data['status'] & STATUS_DELETED
+        );
+        foreach ($db_data['Actions'] as $action => & $permitted)
         {
-            $images_model->filter(array('id' => $data['photo_hash']));
-            $images_model->setMargins(1);
-            $images_data = $images_model->exec();
+            if ($permitted)
+                continue;
+            $permitted = $this->hasAccess($action, $params);
         }
+        unset($permitted);
 
-        if(empty($data['country']))
-        	$data['country'] = 'PL';
 
-        $this->assign('avatar', !empty($data['photo_hash']) ? '/upload/User/' . $data['photo_hash'] . '/' . @$model->image_files['sizes'][0] . '.' . $images_data['extension'] : '/gfx/avatar.png');
-
-        if(!empty($this->data['edit']) && $this->__validated['edit'])
+        if (empty($post_data))
         {
-            if(!$this->data['edit']['passwd'])
-                unset($this->data['edit']['passwd']);
-        
-            if(!empty($this->data['edit']['passwd']) && !$admin)
-            {
-                $model = g('User', 'model');
-                $model->whiteList(array(
-                    'id',
-                ));
-                $model->filter(array(
-                	'login' => $login,
-                	'passwd' => $this->data['edit']['old_passwd'],
-                ));
-                $exists = $model->getCount();
-
-                if(!$exists)
-                {
-                    g()->addInfo(null, 'error', $this->trans('Given password is incorrect. Your password won\'t be changed.'));
-                	unset($this->data['edit']['passwd']);
-                }
-            }
-
-            if(!empty($this->data['edit']['email']))
-            {
-                $model = g('User', 'model');
-                $model->whiteList(array(
-                    'id',
-                ));
-                $model->filter(array(
-                	'email' => $this->data['edit']['email'],
-                    array('login', '!=', $login),
-                ));
-                $exists = $model->getCount();
-
-                if($exists)
-                {
-                    g()->addInfo(null, 'error', $this->trans('User with this e-mail already exists. Use "forgotten password" feature to retrieve your password if you don\'t remember it.'));
-                    return;
-                }
-            }
-
-            $this->data['edit']['login'] = $login;
-            $this->data['edit']['password_reset_link'] = '';
-            $this->data['edit']['id'] = $data['id'];
-
-            if(!empty($this->data['edit']['del_photo']))
-            {
-                if(!empty($data['photo_hash']))
-                {
-                    $d = array(
-                        'id' => $images_data['id'],
-                        'model' => $model->getName(),
-                    );
-
-                    if($images_model->sync($d, true, 'delete') === true)
-                        $this->data['edit']['photo_hash'] = '';
-                }
-            }
-            elseif(@$this->data['edit']['photo']['tmp_name'])
-            {
-                $d = array(
-                    'id' => $data['photo_hash'],
-                    'id_in_model' => $data['id'],
-                    'model' => $model->getName(),
-                    'file' => $this->data['edit']['photo'],
-                    'title' => $login,
-                );
-
-                if(!empty($data['photo_hash']))
-                    $action = 'update';
-                else
-                    $action = 'insert';
-
-                if($images_model->sync($d, true, $action) === true)
-                    $this->data['edit']['photo_hash'] = $images_model->getData('id');
-            }
-            else
-                unset($this->data['edit']['photo']);
-
-            if($model->sync($this->data['edit'], true, 'update') === true)
-            {
-                g()->addInfo('user edited ' . $data['id'], 'info', $this->trans('Changes has been saved.'));
-                $this->redirect($this->url2a('', array($login)));
-            }
-            else
-            {
-                g()->addInfo(null, 'error', $this->trans('Error while editing user. Please try again later and if error still occurs -- contact this site\'s administrator.'));
-                return;
-            }
+            // fill up form data
+            $post_data = $db_data;
         }
         else
         {
-            if(!empty($data))
+            if ($this->_validated[$form_id])
             {
-            	if($admin)
-                	$this->data['edit_admin'] = $data;
-               	else
-                	$this->data['edit'] = $data;
-            }
-            else
-            {
-                g()->addInfo(null, 'error', $this->trans('There is no user with this ID.'));
-                return;
-            }
-        }
-    }
-
-    public function actionDelete(array $params)
-    {
-        if(!$login = @$params[0])
-            $this->redirect();
-
-        $this->assign('login', $login);
-
-        if($this->hasAccess('delete', $params) === 1)
-            $status = STATUS_DELETED_BY_MOD;
-        else// if($this->hasAccess('delete', $params) === true)
-            $status = STATUS_DELETED_BY_OWNER;
-
-        if(!empty($params[1]) && $params[1] === 'recover')
-        {
-            unset($this->forms['delete']['inputs']['with_objects']);
-            unset($this->forms['delete']['inputs']['with_comments']);
-            $status = STATUS_ACTIVE;
-            $this->_setTemplate('recover');
-        }
-
-        $user = g('User', 'model');
-        $user->filter(array('login' => $login));
-        $user->setMargins(1);
-        $user = $user->exec();
-
-        if(empty($user) || $user['status'] == $status)
-        {
-            $msg = empty($user) ? 'There is no such user.' : 'User already deleted.';
-            g()->addInfo(null, 'error', $this->trans($msg));
-            $this->redirect($this->url2a('default'));
-        }
-
-        //these users cannot be deleted
-        if($user['id'] < 0)
-        {
-            g()->addInfo(null, 'error', $this->trans('This user cannot be deleted.'));
-            $this->redirect();
-        }
-
-        if(!empty($this->data['delete']))
-        {
-            g()->db->startTrans();
-
-            do
-            {
-                $this->data['delete']['id'] = $user['id'];
-                $this->data['delete']['status'] = $status;
-                $model = g('User', 'model');
-
-                if($model->sync($this->data['delete'], true, 'update') === true)
+                //g()->db->startTrans();
+                do // just so we can break on errors
                 {
-                    //recovering objects and comments deleted with user
-                    if($status == STATUS_ACTIVE)
+                    $db_data['last_edit'] = strtotime($db_data['last_edit']);
+                    if ($post_data['_timestamp'] > $db_data['last_edit'])
                     {
-                        $rel = $model->rel('Objects');
-                        $rel->alias('o');
-                        $rel->filter(array('owner' => $user['id'], '"o1"."status"' => STATUS_DELETED_WITH_USER));
-                        $rel->whiteList(array('"o1"."id"', '"o1"."status"'));
-                        $object_data = $rel->exec();
-
-                        foreach($object_data as &$obj)
-                            $obj['status'] = STATUS_ACTIVE;
-
-                        if(!empty($object_data))
-                            if(g('Object', 'model')->sync($object_data, true, 'update') !== true)
-                            {
-                                g()->db->failTrans();
-                                g()->addInfo(null, 'error', $this->trans('Error while deleting user. Please try again later and if error still occurs -- contact this site\'s administrator.'));
-                                break;
-                            }
-
-                        $rel = $model->rel('Comments');
-                        $rel->alias('c');
-                        $rel->filter(array('users_id' => $user['id'], '"c1"."status"' => STATUS_DELETED_WITH_USER));
-                        $rel->whiteList(array('"c1"."id"', '"c1"."status"'));
-                        $comment_data = $rel->exec();
-
-                        foreach($comment_data as &$obj)
-                            $obj['status'] = STATUS_ACTIVE;
-
-                        if(!empty($comment_data))
-                            if(g('Comment', 'model')->sync($comment_data, true, 'update') !== true)
-                            {
-                                g()->db->failTrans();
-                                g()->addInfo(null, 'error', $this->trans('Error while deleting user. Please try again later and if error still occurs -- contact this site\'s administrator.'));
-                                break;
-                            }
-                    }
-
-                    //deleting objects with user
-                    if(!empty($this->data['delete']['with_objects']))
-        			{
-                        $rel = $model->rel('Objects');
-                        $rel->alias('o');
-                        $rel->filter(array('owner' => $user['id']));
-                        $rel->whiteList(array('"o1"."id"', '"o1"."status"'));
-                        $object_data = $rel->exec();
-
-                        foreach($object_data as &$obj)
-                            $obj['status'] = STATUS_DELETED_WITH_USER;
-
-                        if(!empty($object_data))
-                            if(g('Object', 'model')->sync($object_data, true, 'update') !== true)
-                            {
-                                g()->db->failTrans();
-                                g()->addInfo(null, 'error', $this->trans('Error while deleting user. Please try again later and if error still occurs -- contact this site\'s administrator.'));
-                                break;
-                            }
-        			}
-
-                    if(!empty($this->data['delete']['with_comments']))
-        			{
-                        $rel = $model->rel('Comments');
-                        $rel->alias('c');
-                        $rel->filter(array('users_id' => $user['id']));
-                        $rel->whiteList(array('"c1"."id"', '"c1"."status"'));
-                        $comment_data = $rel->exec();
-
-                        foreach($comment_data as &$obj)
-                            $obj['status'] = STATUS_DELETED_WITH_USER;
-
-                        if(!empty($comment_data))
-                            if(g('Comment', 'model')->sync($comment_data, true, 'update') !== true)
-                            {
-                                g()->db->failTrans();
-                                g()->addInfo(null, 'error', $this->trans('Error while deleting user. Please try again later and if error still occurs -- contact this site\'s administrator.'));
-                                break;
-                            }
-        			}
-
-                    g()->db->completeTrans();
-
-                    if($status == STATUS_DELETED_BY_OWNER)
-                    {
-                        g()->auth->logout();
-                        $this->redirect();
-                    }
-
-                    $this->redirect($this->url2a('', array($login)));
-                    break;
-                }
-                else
-                {
-                    g()->db->failTrans();
-                    g()->addInfo(null, 'error', $this->trans('Error while deleting user. Please try again later and if error still occurs -- contact this site\'s administrator.'));
-                    break;
-                }
-            }
-            while(false);
-
-            g()->db->completeTrans();
-        }
-    }
-
-    public function actionLostPasswd(array $params)
-    {
-        $model = g('User', 'model');
-
-        if((!$login = @$params[0]) || (!$hash = @$params[1]))
-        {
-            if(!empty($this->data['lostpasswd']) && $this->__validated['lostpasswd'])
-            {
-                $model->filter(array('email' => $this->data['lostpasswd']['email']));
-                $model->setMargins(0, 1);
-                $model->whiteList(array('id', 'login', 'email', 'password_reset_link'));
-                $data = $model->exec();
-
-                if(!empty($data))
-                {
-                    set_time_limit(360);
-                    $model->filter(array('id' => $data['id']));
-                    $hash = empty($data['password_reset_link']) ? g('Functions')->generateSimpleKey(40) : $data['password_reset_link'];
-                    $data['password_reset_link'] = $hash;
-
-                    if($model->sync($data, true) === true)
-                    {
-                        $link = g()->req->getBaseUri(true) . $this->url2a('lostPasswd', array($data['login'], $hash));
-                        $mail_content = $this->trans('Welcome, %s!<br/><br/>Someone (probably you) gave your e-mail address for reseting your password on our website.<br/>Here is a link to password changing:<br/>%s<br/><br/>Regards,<br/>%s team', $data['login'], '<a href="' . $link . '">' . $link . '</a>', g()->conf['site_name']);
-                        $subject = $this->trans('Password reminder on %s website', g()->conf['site_name']);
-                        $mail = g('Mails', 'class');
-
-                        if($mail->send('', $mail_content, '', $subject, '', $data['email']))
-                            $this->_setTemplate('lostpasswd_sent');
-                        else
-                        {
-                            g()->addInfo(null, 'error', $this->trans('Error while sending an e-mail. Please try again later and if error still occurs -- contact this site\'s administrator.'));
-                            return;
-                        }
+                        $post_data['last_edit'] = & $post_data['_timestamp'];
                     }
                     else
                     {
-                        g()->addInfo(null, 'error', $this->trans('Error while reseting password. Please try again later and if error still occurs -- contact this site\'s administrator.'));
-                        return;
+                        g()->addInfo('post confict, updating user'.$id, 'error',
+                            $this->trans('((error:POST conflict))') );
+                        break;
                     }
+
+
+                    $post_data['id'] = & $db_data['id'];
+                    $user = g('User', 'model');
+                    if (true !== $err = $user->sync($post_data, true, 'update'))
+                    {
+                        g()->addInfo('ds fail, updating user'.$id, 'error',
+                            $this->trans('((error:DS:%s))', false) );
+                        g()->debug->dump($err);
+                        break;
+                    }
+
+                    // if we got here, everything's must have gone fine
+                    g()->addInfo('updating user'.$id, 'info',
+                                 $this->trans('Profile has been updated') );
+                    //g()->db->completeTrans();
+                    if (empty($post_data['_backlink']))
+                        $this->redirect($this->url2a('', $this->_params));
+                    else
+                        $this->redirect($post_data['_backlink']);
                 }
-                else
-                {
-                    g()->addInfo(null, 'error', $this->trans('E-mail address does not exist in database!'));
-                    return;
-                }
+                // just so we can break on errors
+                while ('what you see' == 'what you get');
+                // if we are here, we have failed
+                //g()->db->failTrans();
+                //g()->db->completeTrans();
             }
         }
-        else
-        {
-            $model->filter(array('login' => $login, 'password_reset_link' => $hash));
-            $model->setMargins(0, 1);
-            $model->whiteList(array('id', 'login', 'email', 'password_reset_link'));
-            $data = $model->exec();
 
-            if(empty($data))
-                $this->redirect($this->url2a('lostPasswd'));
-
-            $this->_setTemplate('lostpasswd_reset');
-            
-            if(!empty($this->data['lostpasswd_reset']) && $this->__validated['lostpasswd_reset'])
-            {
-                $data['passwd'] = $this->data['lostpasswd_reset']['passwd'];
-                $data['password_reset_link'] = '';
-
-                if($model->sync($data, true) !== true)
-                {
-                    g()->addInfo(null, 'error', $this->trans('Error while reseting password. Please try again later and if error still occurs -- contact this site\'s administrator.'));
-                    return;
-                }
-
-                g()->addInfo(null, 'info', $this->trans('You can log in with your new password.'));
-                $this->redirect($this->url2a('login', array($data['login'])));
-            }
-        }
+        $this->assignByRef('row', $db_data);
     }
-    
-    public function actionChangeType(array $params)
+
+    /**
+     * Removing user
+     * @author m.augustynowicz
+     *
+     * @param array $params URL params
+     *        [0] $id user's login
+     */
+    public function actionRemove(array $params)
     {
-        if(!$login = @$params[0])
-            $this->redirect();
+        $f = g('Functions');
+        $form_id = 'confirm';
+        //$inputs = & $this->forms[$form_id]['inputs'];
+        $post_data = & $this->data[$form_id];
 
-        $model = g('User', 'model');
-        $model->filter(array('login' => $login));
-        $model->setMargins(1);
-        $data = $model->exec();
+        $conf = & g()->conf['users'];
+        $id = @$params[0];
 
-        if($data['id'] < 0)
+        if (!$id)
         {
-            g()->addInfo(null, 'error', $this->trans('This user cannot be edited.'));
-            return;
+            $this->redirect(array('HttpErrors', '', array(404)));
         }
 
-        $types = array(
-            USER_TYPE_ADMIN => $this->trans('administrator'),
-            USER_TYPE_MOD => $this->trans('moderator'),
-            USER_TYPE_REGISTERED => $this->trans('registered user'),
-        );
+        // fetch user data
+        $this->_getOne($id, $db_data);
 
-        $this->assign('login', $login);
-        $this->assign('values', $types);
-
-        if(!empty($this->data['changetype']) && $this->__validated['changetype'])
+        if (@$this->_validated[$form_id])
         {
-            if(array_key_exists($this->data['changetype']['type'], $types))
+            // these users cannot be removed
+            if ($db_data['id'] < 0)
             {
-                $this->data['changetype']['id'] = $data['id'];
-
-                if($model->sync($this->data['changetype'], true, 'update') === true)
-                {
-                    g()->addInfo('account type changed ' . $data['id'], 'info', $this->trans('Changes has been saved.'));
-                    $this->redirect($this->url2a('administer'));
-                }
-                else
-                {
-                    g()->addInfo(null, 'error', $this->trans('Error while editing user. Please try again later and if error still occurs -- contact this site\'s administrator.'));
-                    return;
-                }
+                g()->addInfo('will not rm sys user, deleting user'.$id, 'error',
+                        $this->trans('Can\'t remove system user <em>%s</em>', $db_data['DisplayName']) );
+                $this->redirect($post_data['_backlink']);
             }
-        }
-        else
-        {
-            if(!empty($data))
-                $this->data['changetype'] = $data;
+
+            $data_update = array('id' => $db_data['id']);
+            if (g()->auth->isUserInGroup(USER_TYPE_MOD))
+                $data_update['status'] = STATUS_DELETED;
+            else
+                $data_update['status'] = STATUS_DELETED_BY_OWNER;
+            /** @todo remove sensitive data, release the login and e-mail */
+            $user = g('User', 'model');
+            if (true !== $err = $user->sync($data_update, true, 'update'))
+            {
+                g()->addInfo('ds fail, deleting user'.$id, 'error',
+                    $this->trans('((error:DS:%s))', false) );
+                g()->debug->dump($err);
+            }
             else
             {
-                $this->assign('values', null);
-                g()->addInfo(null, 'error', $this->trans('There is no user with this ID.'));
-                return;
+                if (g()->auth->id() == $db_data['id'])
+                {
+                    g()->addInfo('removed user'.$id, 'info',
+                            $this->trans('You have removed your account. Good bye.') );
+                    g()->auth->logout();
+                }
+                else
+                {
+                    g()->addInfo('removed user'.$id, 'info',
+                        $this->trans('You have removed <em>%s\'s</em> account.', $db_data['DisplayName']) );
+                }
+                $this->redirect($post_data['_backlink']);
             }
         }
+
+        if (g()->auth->id() == $db_data['id'])
+        {
+            $this->assign('question',
+                'Are you sure you want to remove your account?' );
+        }
+        else
+        {
+            $this->assign('question', $this->trans(
+                'Are you sure you want to remove <em>%s</em>\'s account?',
+                $db_data['DisplayName'] ));
+        }
+        $this->assign(array(
+            'yes' => 'remove',
+            'no'  => 'don\'t'
+        ));
+        $this->_setTemplate('confirm');
     }
 
+
+    /**
+     * Restoring user
+     * @author m.augustynowicz
+     *
+     * @param array $params URL params
+     *        [0] $id user's login
+     */
+    public function actionRestore(array $params)
+    {
+        $f = g('Functions');
+        $form_id = 'confirm';
+        //$inputs = & $this->forms[$form_id]['inputs'];
+        $post_data = & $this->data[$form_id];
+
+        $conf = & g()->conf['users'];
+        $id = @$params[0];
+
+        if (!$id)
+        {
+            $this->redirect(array('HttpErrors', '', array(404)));
+        }
+
+        // fetch user data
+        $this->_getOne($id, $db_data);
+
+        if (@$this->_validated[$form_id])
+        {
+            $data_update = array('id' => $db_data['id']);
+            $data_update['status'] = STATUS_ACTIVE;
+            /** @todo handle removed sensitive data, release the login and e-mail */
+            $user = g('User', 'model');
+            if (true !== $err = $user->sync($data_update, true, 'update'))
+            {
+                g()->addInfo('ds fail, restoring user'.$id, 'error',
+                    $this->trans('((error:DS:%s))', false) );
+                g()->debug->dump($err);
+            }
+            else
+            {
+                g()->addInfo('removed user'.$id, 'info',
+                    $this->trans('You have restored <em>%s\'s</em> account.', $db_data['DisplayName']) );
+                $this->redirect($post_data['_backlink']);
+            }
+        }
+
+        $this->assign(array(
+            'question' => $this->trans('Are you sure you want to restore <em>%s</em>\'s account?',
+                                $db_data['DisplayName'] ),
+            'yes' => 'restore',
+            'no'  => 'don\'t'
+        ));
+        $this->_setTemplate('confirm');
+    }
+
+
+    /**
+     * @todo re-implement User::actionLostPasswd()
+     */
+    public function actionLostPasswd(array $params)
+    {
+    }
+
+
+    /**
+     * Validate repeated password in [add] form
+     * @author m.augustynowicz
+     *
+     * @param array|string $value it double-valued array, when came from POST
+     *        and flat string, when from AJAX
+     * @return array errors
+     */
     public function validateAddPasswd(&$value)
     {
         $errors = array();
-        if(is_array($value))
+        if (is_array($value))
         {
             $value0 = @array_shift($value);
             $value1 = @array_shift($value);
-            if(null !== $value1) // two values given
+            if (null !== $value1) // two values given
             {
-                if(!$ret = ($value0 == $value1))
+                if (!$ret = ($value0 == $value1))
                 {
                     $errors['mismatch'] = $this->trans('Passwords do not match');
                     $errors['stop_validation'] = true;
                 }
             }
-            $value = (string)$value0;
+            $value = (string) $value0;
         }
         return $errors;
     }
 
+
+    /**
+     * Validate user's login in [add] form
+     *
+     * Make sure it's well formatted and unique
+     * @author m.augustynowicz
+     *
+     * @param string $value
+     * @return array errors
+     */
     public function validateAddLogin(&$value)
     {
         $errors = array();
         $matches = array();
 
-        if(preg_match_all('/[^a-zA-Z0-9-]/', $value, $matches))
-            $errors['forbidden_signs'] = $this->trans('Only letters, digits and "-" are allowed.');
-
-        $model = g('User', 'model');
-        $model->whiteList(array(
-            'id',
-        ));
-        $model->filter(array(
-            'login' => $value,
-        ));
-        $exists = $model->getCount();
-
-        if($exists)
-            $errors['not_unique'] = $this->trans('Login taken');
-
-        return $errors;
-    }
-
-    public function validateAddEmail(&$value)
-    {
-        $errors = array();
-
-        if($value != NULL)
+        if (preg_match_all('/[^a-zA-Z0-9-]/', $value, $matches))
         {
-            $model = g('User', 'model');
-            $model->whiteList(array(
-                'id',
-            ));
-            $model->filter(array(
-                'email' => $value,
-            ));
-            $model->setMargins(0, 1);
-            $exists = $model->exec();
-            $exists = !empty($exists);
+            $errors['forbidden_signs'] = $this->trans('Only letters, digits and dash (<q>-</q>) are allowed.');
+        }
+        else
+        {
+            $this->_getOne($value, $db_data);
 
-            if($exists)
-                $errors['not_unique'] = $this->trans('User with this e-mail already exists. Use "forgotten password" feature to retrieve your password if you don\'t remember it.');
+            if (!empty($db_data))
+            {
+                $errors['not_unique'] = $this->trans('This login is already taken. If the account belongs to you, you can use <a href="%s">retrieve your password</a>.',
+                        $this->url2a('lostPasswd') );
+            }
         }
 
         return $errors;
     }
 
+
+    /**
+     * Validate user's e-mail in [add] form
+     *
+     * Make sure it's unique
+     * @author m.augustynowicz
+     *
+     * @param string $value
+     * @return array errors
+     */
+    public function validateAddEmail(&$value)
+    {
+        $errors = array();
+
+        if ($value != NULL)
+        {
+            $this->_getOne($value, $db_data);
+
+            if (!empty($db_data))
+                $errors['not_unique'] = $this->trans('Account with this e-mail address already exists. If the account belongs to you, you can use <a href="%s">retrieve your password</a>.',
+                        $this->url2a('lostPasswd') );
+        }
+
+        return $errors;
+    }
+
+    /**
+     * Validate repeated password in [add] form
+     */
     public function validateEditPasswd(&$value)
     {
         return $this->validateAddPasswd($value);
     }
     
-    public function validateEditAdminPhoto(&$value)
-    {
-    	return $this->validateEditPhoto($value);
-    }
-
-    public function validateEditAdminPasswd(&$value)
-    {
-        return $this->validateEditPasswd($value);
-    }
-
     public function validateLostPasswdResetPasswd(&$value)
     {
         return $this->validateAddPasswd($value);
     }
 
-    public function hasAccessToEdit(array $params = array())
+
+    /**
+     * Check access to edit action
+     * @author m.augustynowicz
+     *
+     * @param array $params same that will be passed to action
+     */
+    public function hasAccessToEdit(array &$params)
     {
-        if(!$login = @$params[0])
-            return false;
+        if (!$id = @$params[0])
+            $this->redirect(array('HttpErrors', '', array(404)));
 
-        $groups = g()->auth->getUserGroups();
+        $this->_getOne($id, $db_data);
 
-        if(!empty($groups[USER_TYPE_MOD]))
-            return true;
-
-        $id = g()->auth->id();
-
-        if($id === false)
-            return false;
-
-        $model = g('User', 'model');
-        $model->filter(array('id' => $id, 'login' => $login));
-        $ok = $model->getCount();
-
-        if($ok)
-            return true;
-
-        return false;
+        return g()->auth->id() == $db_data['id'];
     }
 
-    public function hasAccessToDelete(array $params = array())
+
+    /**
+     * Check access to remove action
+     * @author m.augustynowicz
+     *
+     * @param array $params same that will be passed to action
+     */
+    public function hasAccessToRemove(array &$params)
     {
-        return $this->hasAccessToEdit($params);
+        $can_edit = $this->hasAccess('edit', $params);
+
+        if (!$can_edit)
+        {
+            return false;
+        }
+        else
+        {
+            $this->_getOne(@$params[0], $db_data);
+
+            if (empty($db_data))
+                return false;
+
+            if ($db_data['id'] < 0)
+                return false;
+            
+            return !($db_data['status'] & STATUS_DELETED);
+        }
+    }
+
+
+    /**
+     * Common code for fetching one user
+     * @author m.augustynowicz
+     *
+     * @param mixed $id value of field defined in conf[users][ident_field]
+     * @param array $result rerence result will be stored to
+     * @param bool $redirect if set to true, will redirect to error page,
+     *        when no user fetched
+     * @return bool success on fetching data
+     */
+    protected function _getOne($id, & $result, $redirect=true)
+    {
+        static $can_restore = null;
+        if (null === $can_restore)
+        {
+            $dummy = array();
+            $can_restore = $this->hasAccess('restore', $dummy);
+        }
+
+        $conf = & g()->conf['users'];
+
+        $filters = array($conf['ident_field'] => $id);
+        if (!$can_restore)
+            $filters['status'] = STATUS_ACTIVE;
+
+        $user = g('User','model');
+        $user->setMargins(1)->filter($filters);
+        $result = $user->exec();
+
+        if (!$result)
+        {
+            if ($redirect)
+            {
+                $this->redirect(array('HttpErrors', '', array(404)));
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        $result['DisplayName'] = $result[$conf['display_name_field']];
+
+        return true;
     }
 }
 

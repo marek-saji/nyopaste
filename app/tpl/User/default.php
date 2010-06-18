@@ -1,37 +1,46 @@
 <?php
-$v->addCss($t->file('style','css'));
+/**
+ * User's profile
+ * @author m.augustynowicz
+ *
+ * @param array $row one row data
+ */
 
-if(!empty($data['login']))
-{
-    $v->setTitle($t->trans('%s\'s profile', $data['login']));
+$title = $row['DisplayName'];
+$v->setTitle($title);
+
 ?>
-        <ul class="user_properties">
-            <li>
-                <span><!--<?= $this->trans('login'); ?>--></span>
-                <h2><?= $data['login']; ?></h2>
-            </li>
 
-            <li>
-            	<img src="<?= $avatar; ?>" alt="<?= $data['login']; ?>" id="<?= $data['login']; ?>" />
-                <span><!--<?= $this->trans('description'); ?>--></span>
-                <p><?= $data['description']; ?></p>
-            </li>
-        </ul>
-<?php
+<section>
+    <header>
+        <h2><?=$title?></h2>
+        <?php
+        $t->inc('row_actions', array(
+            'actions' => & $row['Actions']
+        ));
+        ?>
+    </header>
 
-    $this->comment_component->render();
-    
-    $this->trip_component->contents();
+    <dl>
+        <?php if ($row['website']) : ?>
+            <!-- website -->
+            <dt class="website text url">
+                <?=$t->trans('website')?>
+            </dt>
+            <dd class="website text url">
+                <a href="<?=$row['website']?>"
+                   target="_blank"><?=$row['website']?></a>
+            </dd>
+        <?php endif; ?>
+        <?php if ($row['about_me']) : ?>
+            <!-- about me -->
+            <dt class="about_me text big">
+                <?=$t->trans('something about you')?>
+            </dt>
+            <dd class="about_me text big">
+                <?=$row['about_me']?>
+            </dd>
+        <?php endif; ?>
+    </dl>
+</section>
 
-    if($links['edit'])
-        echo $t->l2a($t->trans('edit account'), 'edit', array($data['login']), array('class' => 'edit_acount'));
-
-    if($links['delete'])
-        echo $t->l2a($t->trans('delete account'), 'delete', array($data['login']), array('class' => 'modal edit_acount'));
-
-    if($links['recover'])
-        echo $t->l2a($t->trans('recover account'), 'delete', array($data['login'], 'recover'), array('class' => 'modal edit_acount'));
-
-    if($links['changeType'])
-        echo $t->l2a($t->trans('change account type'), 'changeType', array($data['login']), array('class' => 'modal edit_acount'));
-}

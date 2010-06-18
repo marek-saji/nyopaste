@@ -1,55 +1,63 @@
 <?php
-$v->setTitle($this->trans('Login'));
+/**
+ * Siging in
+ * @author m.augustynowicz
+ */
+
+$title = $this->trans('sign in');
+$v->setTitle($title);
+
 $form = g('Forms', array('login', $this));
 ?>
 
-<div id="login">
-    <?
-    if(!@$logged_in)
-    {
+<section id="login">
+    <?php
+    $form->create($t->url2c($this->url(), $this->getLaunchedAction()));
     ?>
-    <?php $form->create($t->url2c('User', 'login')); ?>
         <fieldset>
-            <ul class="fields">
-                <li>
-                    <label class="text">
-                        <span class="field_label"><?= $t->trans('login or e-mail'); ?></span>
-                        <?php $form->input('login'); ?>
+            <dl>
+                <!-- login -->
+                <dt class="text">
+                    <label for="<?=$f->nextUniqueId()?>">
+                        <?= $t->trans('login or e-mail'); ?>
                     </label>
-                </li>
-                <li>
-                    <label class="text password">
-                        <span class="field_label"><?= $t->trans('password'); ?></span>
-                        <?php $form->input('passwd'); ?>
+                </dt>
+                <dd class="text">
+                    <?php
+                    $form->input('login');
+                    ?>
+                </dd>
+                <!-- password -->
+                <dt class="text password">
+                    <label for="<?=$f->nextUniqueId()?>">
+                        <?= $t->trans('password'); ?>
                     </label>
-                </li>
-                <li>
-                	<label><small><?= $this->l2c($t->trans('I forgot my password'), 'User', 'lostPasswd'); ?></small></label>
-                </li>
-                <!--
-                <li>
-                    <label class="checkbox">
-                        <input name="long_session"
-                               type="checkbox" />
-                        remember me
-                    </label>
-                </li>
-                -->
+                </dt>
+                <dd class="text password">
+                    <?php
+                    $form->input('passwd');
+                    ?>
+                    <p class="help">
+                        <small><?= $this->l2c($t->trans('I forgot my password'), 'User', 'lostPasswd'); ?></small>
+                    </p>
+                </dd>
+                <!-- options -->
+                <dd class="checkbox">
+                    <?php
+                    /*
+                    $form->input('remember_me');
+                    */
+                    ?>
+                </dd>
+            </dl>
         </fieldset>
-        <?= $this->l2c($t->trans('Don\'t you have an account? Create it now'), 'User', 'add'); ?>
         <?php
         $this->inc('Forms/buttons', array(
             'form' => & $form,
-            'submit' => 'Sign In',
+            'submit' => 'sign in',
+            'cancel' => 'cancel',
         ));
-        $form->end();
-    }
-    else
-    {
-    ?>
-        <p><?= $t->trans($t->trans('Thank you for logging in')); ?>.</p>
-		<p>Go to <?= $this->l2c('main page', ''); ?>.</a></p>
-    <?
-    }
-    ?>
-</div>
+    $form->end();
+?>
+</section><!-- #login -->
+

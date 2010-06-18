@@ -2,8 +2,7 @@
 g()->load('DataSets', null);
 
 /**
- * @author m.augustynowicz
- *
+ * User
  */
 class UserModel extends Model
 {
@@ -11,16 +10,26 @@ class UserModel extends Model
     {
         parent::__construct();
 
-        $this->__addField(new FId('id'));
-        $this->__addField(new FString('login', true, null, 4, 32)); // UNIQUE
-        $this->__addField(new FEmail('email', false)); // UNIQUE
-        $this->__addField(new FPassword('passwd', 3, 128));
+        $this->_addField(new FId('id'));
+        $this->_addField(new FString('login', true, null, 4, 32)); // UNIQUE
+        $this->_addField(new FEmail('email', false)); // UNIQUE
+        $this->_addField(new FPassword('passwd', 3, 128));
 
-        //user's statuses configuration can be found in conf.php
-        $this->__addField(new FInt('status', 2, true, '0'));    //1 - activated, -1 - deleted by user, -2 - deleted by someone else
-        $this->__addField(new FInt('type', 4, true, '1'));    //0 - guest, 1 - registered, -2 - mod, -1 - admin
+        // for user's statuses (STATUS_*) see main conf
+        $this->_addField(new FInt('status', 2, true,
+                                  (string) STATUS_ACTIVE));
+        // for user's types (USER_TYPE_*) see conf.users
+        $this->_addField(new FInt('type', 4, true,
+                                  (string) USER_TYPE_AUTHORIZED));
 
-        $this->__pk('id');
+        $this->_addField(new FTimestamp('last_edit'));
+
+        // metadata
+        $this->_addField(new FHTTP('website', false, null, null, 1024));
+        $this->_addField(new FMultilineString('about_me', false, null, 0, 1048576));
+
+        $this->_pk('id');
         $this->whiteListAll();
     }
 }
+
