@@ -12,5 +12,10 @@ class MainController extends PagesController
     public function defaultAction(array $params)
     {
     }
+
+    public function hasAccessToDefault(array & $params)
+    {
+        return true;
+    }
 }
 
