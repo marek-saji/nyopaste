@@ -69,9 +69,9 @@ if (!defined('HG_DIR'))
 
 // directories outside repository. they might have been set in local init.php
 if (!defined('UPLOAD_DIR'))
-    define('UPLOAD_DIR', realpath(APP_DIR.'htdocs/upload').'/');
+    define('UPLOAD_DIR', realpath(LOCAL_DIR.'upload').'/');
 if (!defined('TEMP_DIR'))
-    define('TEMP_DIR', realpath(LOCAL_DIR.'TEMP').'/');
+    define('TEMP_DIR', realpath(LOCAL_DIR.'tmp').'/');
 
 
 // FINALLY!
