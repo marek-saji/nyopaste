@@ -2,41 +2,58 @@
 /**
  * Renders link to user's profile.
  * @author m.augustynowicz
- * @author m.jutkiewicz
- *
- * @todo MAKE IT WORK (copied 1:1 from bdb)
  * 
- * @param string $text text to display, default: user's login
- * @param array $user user's information; default value: array with logged-in user's login and e-mail
- * @param string $return if true html code gets returned instead of printed.
+ * @param string $text text to display, default: user's display name
+ * @param array $user
+ *        1. none: authorized user's data used
+ *        2. array:
+ *           [login] (or whatever is set in conf[users][ident_field])
+ *                   created to build URL
+ *           [DisplayName] link label
+ *           [email] used to generate grawatar
+ *        3. string: used as [login] and [DisplayName]
+ * @param integer|boolean $avatar size of awatar or false to hide
  *
- * @return string html code if $return was true
+ * @return string html code
  */
-extract(array_merge(array(
-	'text' => '',
-    'user' => array(
-        'id' => g()->auth->id(),
-        'login' => g()->auth->get('login'),
-        'email' => g()->auth->get('email'),
-    ),
-    'return' => false,
-), (array)$____local_variables), EXTR_PREFIX_INVALID, // and numeric
-'param');
 
-if(!is_array($user))
-    $user = array('id' => $user);
+$login_field = g()->conf['users']['ident_field'];
+
+extract(
+array_merge(
+    array(
+        'user' => array(
+            $login_field => g()->auth->get($login_field),
+            'DisplayName' => g()->auth->displayName(),
+            'email' => g()->auth->get('email'),
+        ),
+        'text' => '',
+        'avatar' => 22,
+    ), (array)$____local_variables
+), EXTR_REFS|EXTR_PREFIX_INVALID, 'param');
+
+
+if (!is_array($user))
+{
+    $user[$login_field] = $user['DisplayName'] = $user;
+}
+
+$login = & $user[$login_field];
+
+$label = empty($text) ? $user['DisplayName'] : $text;
+
 
 ob_start();
+?>
+<span class="vcard name">
+    <?php if ($avatar) : ?>
+        <img class="photo"
+             src="http://gravatar.com/avatar/<?=md5(@$user['email'])?>
+                  ?s=<?=$avatar?>&amp;d=identicon"
+        />
+    <?php endif; ?>
+    <?=$t->l2c($label, 'User', '', array($login), array('class'=>'fn n url'))?>
+</span>
+<?php
+return ob_get_clean();
 
-echo '<div class="vcard name">';
-echo $this->l2c(!empty($text) ? $text : $user['login'], 'User', '', array(
-    $user['id']
-), array(
-    'class' => 'fn n url'
-));
-echo "</div>";
-
-if($return)
-    return ob_get_clean();
-else
-    ob_end_flush();
