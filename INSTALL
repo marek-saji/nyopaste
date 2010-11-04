@@ -6,7 +6,8 @@
    edit src/app/htdocs/index.php
 
  # checkout hologram:
-   git clone git://git.holonglobe.com/hologram.git src/hg/
+   git submodule init
+   git submodule update
 
  # prepare upload directory:
    mkdir -m 0700 upload/
@@ -33,5 +34,5 @@
    # User
 
  # head to /Dev and launch these actions:
-   # addDefaults, updated 2010-05-29
+   # addDefaults, updated 2010-06-17
 
