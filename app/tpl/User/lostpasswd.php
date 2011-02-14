@@ -1,18 +1,52 @@
 <?php
-
-$v->setTitle($t->trans('Lost password'));
-$form = g('Forms', array('lostpasswd', $this));
-$form->create();
+$title = $t->trans('Lost password');
+$v->setTitle($title);
 ?>
-<fieldset>
-<ul class="fields">
-	<li>
-		<label class="text">
-			<span class="field_label"><?=$this->trans('e-mail')?></span>
-            <?php $form->input('email'); ?>
-        </label>
-    </li>
-</fieldset>
-<?php
-$this->inc('Forms/buttons', array('submit' => $this->trans('send')));
-$form->end();
+
+<section>
+
+    <header>
+        <h2><?=$title?></h2>
+    </header>
+
+    <?php
+    $form = g('Forms', array('lostpasswd', $this));
+    ?>
+    <div class="holoform">
+
+        <?php
+        $form->create();
+        ?>
+
+        <fieldset>
+            <ul>
+                <li class="field">
+                    <?php
+                    $form->label('email', 'e-mail');
+                    ?>
+                    <?php
+                    $form->input('email');
+                    ?>
+                </li>
+            </ul>
+        </fieldset>
+
+        <?php
+        $this->inc(
+            'Forms/buttons',
+            array(
+                'form' => $form,
+                'submit' => 'send',
+                'cancel' => 'cancel'
+            )
+        );
+        ?>
+
+        <?php
+        $form->end();
+        ?>
+
+    </div>
+
+</section>
+

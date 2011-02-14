@@ -9,7 +9,7 @@ $conf['site_name'] = 'n<em>y</em>opaste';
 if(defined('ENVIRONMENT'))
 {
     if(defined('LOCAL_ENV') && ENVIRONMENT == LOCAL_ENV)
-        $conf['site_name'] .= ' (local)';
+        $conf['site_name'] .= '<small>@'.gethostname().'</small>';
     else if(defined('DEV_ENV') && ENVIRONMENT == DEV_ENV)
         $conf['site_name'] .= ' (dev)';
 }

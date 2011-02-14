@@ -10,7 +10,7 @@
  *           [login] (or whatever is set in conf[users][ident_field])
  *                   created to build URL
  *           [DisplayName] link label
- *           [email] used to generate grawatar
+ *           [email] used to generate gravatar
  *        3. string: used as [login] and [DisplayName]
  * @param integer|boolean $avatar size of awatar or false to hide
  *
@@ -20,17 +20,20 @@
 $login_field = g()->conf['users']['ident_field'];
 
 extract(
-array_merge(
-    array(
-        'user' => array(
-            $login_field => g()->auth->get($login_field),
-            'DisplayName' => g()->auth->displayName(),
-            'email' => g()->auth->get('email'),
+    array_merge(
+        array(
+            'user' => array(
+                $login_field => g()->auth->get($login_field),
+                'DisplayName' => g()->auth->displayName(),
+                'email' => g()->auth->get('email'),
+            ),
+            'text' => '',
+            'avatar' => 22,
         ),
-        'text' => '',
-        'avatar' => 22,
-    ), (array)$____local_variables
-), EXTR_REFS|EXTR_PREFIX_INVALID, 'param');
+        (array) $____local_variables
+    ),
+    EXTR_REFS|EXTR_PREFIX_INVALID, 'param'
+);
 
 
 if (!is_array($user))
@@ -48,8 +51,11 @@ ob_start();
 <span class="vcard name">
     <?php if ($avatar) : ?>
         <img class="photo"
-             src="http://gravatar.com/avatar/<?=md5(@$user['email'])?>
-                  ?s=<?=$avatar?>&amp;d=identicon"
+             src="http://gravatar.com/avatar/<?php
+                    echo md5(@$user['email']);
+                ?>?s=<?php 
+                    echo $avatar;
+                ?>&amp;d=identicon"
         />
     <?php endif; ?>
     <?=$t->l2c($label, 'User', '', array($login), array('class'=>'fn n url'))?>

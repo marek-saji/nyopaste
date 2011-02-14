@@ -6,7 +6,7 @@
 // even consider the idea of debug mode being enabled
 $conf['allow_debug'] = true;
 
-$conf['controllers']['lib']['default'] = 'Main';
+$conf['controllers']['lib']['default'] = 'Paste';
 $conf['controllers']['debug']['sub'] = array (
     'name'=>'lib',
     'type'=>'Library',
@@ -30,6 +30,8 @@ else
 
 // controllers loaded on every request
 $conf['permanent_controllers'] = array(
+    'usernav' => 'UserNav',
+    'menu' => 'Menu',
 );
 
 // override hg classes with app implementations

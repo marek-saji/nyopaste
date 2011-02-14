@@ -27,12 +27,6 @@ $v->setTitle($title);
 if (g()->req->isAjax())
     return;
 
-/**
- * Dear webdev,
- * can we move this to Hologram?
- */
-$v->addHeader('X-UA-Compatible', 'IE=8');
-
 
 //$v->addKeyword('');
 //$v->setDescription('');
@@ -45,6 +39,15 @@ $v->addHeader('X-UA-Compatible', 'IE=8');
 $v->addProfile('http://purl.org/uF/2008/03/');
 
 $v->addCss($this->file('common','css'));
+
+
+// stylesheet for jquery-uniform
+// without this forms will not be usable!
+if (!g()->debug->on('disable', 'uniform'))
+{
+    $uniform_version = 1.5;
+    $v->addCss($this->file("jquery.uniform-{$uniform_version}.default",'css'));
+}
 
 
 ##

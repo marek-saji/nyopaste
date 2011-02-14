@@ -9,5 +9,9 @@ $conf['keys'] = array(
         'private' => null,
     ),
 
+    // Google Analytics (domain-specific)
+    // http://google.com/analytics/
+    'google analytics' => null,
+
 );
 

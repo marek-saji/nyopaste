@@ -9,7 +9,7 @@ g()->load('Pages', 'controller');
 
 class MainController extends PagesController
 {
-    public function defaultAction(array $params)
+    public function actionDefault(array $params)
     {
     }
 

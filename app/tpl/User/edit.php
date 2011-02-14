@@ -31,8 +31,19 @@ $form = g('Forms', array('edit', $this));
         <fieldset>
             <dl>
                 <!-- website -->
+                <dt class="email text url">
+                    <label for="<?=$f->uniqueId(false)?>">
+                        <?= $t->trans('email'); ?>
+                    </label>
+                </dt>
+                <dd class="email text url">
+                    <?php
+                    $form->input('email');
+                    ?>
+                </dd>
+                <!-- website -->
                 <dt class="website text url">
-                    <label for="<?=$f->nextUniqueId()?>">
+                    <label for="<?=$f->uniqueId(false)?>">
                         <?= $t->trans('website'); ?>
                     </label>
                 </dt>
@@ -43,7 +54,7 @@ $form = g('Forms', array('edit', $this));
                 </dd>
                 <!-- about me -->
                 <dt class="about_me text big">
-                    <label for="<?=$f->nextUniqueId()?>">
+                    <label for="<?=$f->uniqueId(false)?>">
                         <?= $t->trans('something about you'); ?>
                     </label>
                 </dt>
@@ -53,6 +64,14 @@ $form = g('Forms', array('edit', $this));
                         'class' => 'autoexpandable'
                     ));
                     ?>
+                    <p class="help">
+                        <small>
+                            You can use
+                            <a href="http://daringfireball.net/projects/markdown/syntax">Markdown</a>
+                            here. With some
+                            <a href="http://michelf.com/projects/php-markdown/extra/">extra syntax</a>.
+                        </small>
+                    </p>
                 </dd>
             </dl>
         </fieldset>

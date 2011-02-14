@@ -30,6 +30,7 @@
 $conf['translations']['_global'] = array(
 
     '((default site name format))' => '%s - %s', // default page title format: "page title - site name"
+    'a little more social pastebin' => 'nieco bardziej społecznościowy pastebin', // site motto
 
     'skip to content' => 'przejdź do treści',
 
@@ -39,6 +40,9 @@ $conf['translations']['_global'] = array(
     'create an account' => 'załóż konto',
 
     'cancel' => 'anuluj', // close modal XOR go back
+    'field required' => 'pole wymagane',
+    'Only fields marked with asterisk (<strong class="required">*</strong>) are required.' =>
+        'Tylko pola oznaczone gwiazdką (<strong class="required">*</strong>) są wymagane.',
 
     // form input error messages
     'Field required' => 'Pole wymagane',

@@ -94,7 +94,7 @@ class UserController extends PagesController implements IUserController
      * @param array URL params
      *        [0] user's login, required
      */
-    public function defaultAction(array $params)
+    public function actionDefault(array $params)
     {
         $conf = & g()->conf['users'];
         $id = @$params[0];
@@ -112,16 +112,16 @@ class UserController extends PagesController implements IUserController
         // determine which action links we should display
 
         $db_data['Actions'] = array(
-            'edit' => true,
+            'edit'    => true,
             'remove'  => !($db_data['status'] & STATUS_DELETED)
                          && $db_data['id'] > 0,
-            'restore' =>   $db_data['status'] & STATUS_DELETED
+            'restore' => (bool) ($db_data['status'] & STATUS_DELETED)
         );
         foreach ($db_data['Actions'] as $action => & $permitted)
         {
             if (!$permitted)
                 continue;
-            $permitted = $this->hasAccess($action, $params);
+            $permitted = (bool) $this->hasAccess($action, $params);
         }
         unset($permitted);
 
@@ -179,7 +179,17 @@ class UserController extends PagesController implements IUserController
      */
     public function actionLogout(array $params)
     {
+        $who = g()->auth->displayName();
+
         g()->auth->logout();
+
+        g()->addInfo(
+            'signing out',
+            'info',
+            'Good bye, %s',
+            $who
+        );
+
         $this->redirect((string)g()->req->getReferer());
     }
 
@@ -230,7 +240,7 @@ class UserController extends PagesController implements IUserController
         $this->assign('use_captcha', $use_captcha);
 
 
-        if (!@$this->_validated['add'])
+        if (!@$this->_validated[$form_id])
             return; // nothing to do.
 
 
@@ -326,13 +336,13 @@ class UserController extends PagesController implements IUserController
             'default' => false,
             'remove'  => !($db_data['status'] & STATUS_DELETED)
                          && $db_data['id'] > 0,
-            'restore' =>   $db_data['status'] & STATUS_DELETED
+            'restore' => (bool) ($db_data['status'] & STATUS_DELETED)
         );
         foreach ($db_data['Actions'] as $action => & $permitted)
         {
-            if ($permitted)
+            if (!$permitted)
                 continue;
-            $permitted = $this->hasAccess($action, $params);
+            $permitted = (bool) $this->hasAccess($action, $params);
         }
         unset($permitted);
 
@@ -540,6 +550,38 @@ class UserController extends PagesController implements IUserController
 
 
     /**
+     * Validate user's login in [new] form
+     *
+     * Make sure it's well formatted and unique
+     * @author m.augustynowicz
+     *
+     * @param string $value
+     *
+     * @return array errors
+     */
+    public function validateNewLogin(&$value)
+    {
+        $errors = array();
+        $matches = array();
+
+        if (preg_match('/[^a-zA-Z0-9-]/', $value, $matches))
+        {
+            $errors['forbidden_signs'] = $this->trans('Only letters, digits and dashes (<q>-</q>) are allowed');
+        }
+        else
+        {
+            if ($this->_getOne($value, $db_data, false))
+            {
+                $errors['not_unique'] = $this->trans('This login is already taken. If the account belongs to you, you can <a href="%s">retrieve your password</a>',
+                        $this->url2a('lostPasswd') );
+            }
+        }
+
+        return $errors;
+    }
+
+
+    /**
      * Validate repeated password in [add] form
      * @author m.augustynowicz
      *
@@ -547,7 +589,7 @@ class UserController extends PagesController implements IUserController
      *        and flat string, when from AJAX
      * @return array errors
      */
-    public function validateAddPasswd(&$value)
+    public function validateNewPasswd(&$value)
     {
         $errors = array();
         if (is_array($value))
@@ -568,37 +610,6 @@ class UserController extends PagesController implements IUserController
     }
 
 
-    /**
-     * Validate user's login in [add] form
-     *
-     * Make sure it's well formatted and unique
-     * @author m.augustynowicz
-     *
-     * @param string $value
-     * @return array errors
-     */
-    public function validateAddLogin(&$value)
-    {
-        $errors = array();
-        $matches = array();
-
-        if (preg_match_all('/[^a-zA-Z0-9-]/', $value, $matches))
-        {
-            $errors['forbidden_signs'] = $this->trans('Only letters, digits and dash (<q>-</q>) are allowed.');
-        }
-        else
-        {
-            $this->_getOne($value, $db_data);
-
-            if (!empty($db_data))
-            {
-                $errors['not_unique'] = $this->trans('This login is already taken. If the account belongs to you, you can use <a href="%s">retrieve your password</a>.',
-                        $this->url2a('lostPasswd') );
-            }
-        }
-
-        return $errors;
-    }
 
 
     /**
@@ -610,13 +621,13 @@ class UserController extends PagesController implements IUserController
      * @param string $value
      * @return array errors
      */
-    public function validateAddEmail(&$value)
+    public function validateNewEmail(&$value)
     {
         $errors = array();
 
         if ($value != NULL)
         {
-            $this->_getOne($value, $db_data);
+            $this->_getOne($value, $db_data, false);
 
             if (!empty($db_data))
                 $errors['not_unique'] = $this->trans('Account with this e-mail address already exists. If the account belongs to you, you can use <a href="%s">retrieve your password</a>.',
@@ -631,12 +642,12 @@ class UserController extends PagesController implements IUserController
      */
     public function validateEditPasswd(&$value)
     {
-        return $this->validateAddPasswd($value);
+        return $this->validateNewPasswd($value);
     }
     
     public function validateLostPasswdResetPasswd(&$value)
     {
-        return $this->validateAddPasswd($value);
+        return $this->validateNewPasswd($value);
     }
 
 
@@ -711,9 +722,7 @@ class UserController extends PagesController implements IUserController
         if (!$can_restore)
             $filters['status'] = STATUS_ACTIVE;
 
-        $user = g('User','model');
-        $user->setMargins(1)->filter($filters);
-        $result = $user->exec();
+        $result = g('User','model')->getRow($filters);
 
         if (!$result)
         {
@@ -729,7 +738,24 @@ class UserController extends PagesController implements IUserController
 
         $result['DisplayName'] = $result[$conf['display_name_field']];
 
+        $result['AboutMe'] = g('TextParser')->parse('markdown', $result['about_me']);
+
         return true;
+    }
+
+
+
+    protected function _prepareActionDefault(array &$params)
+    {
+        $this->addChild('Foo');
+    }
+
+    protected function _onRoutingToFoo($in_request)
+    {
+        echo 'JEST';
+        if ($in_request)
+            $this->_passRenderingTo('foo');
+        return $in_request;
     }
 }
 

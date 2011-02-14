@@ -9,35 +9,40 @@
  */
 
 // defining the environment (where are we?)
-define('LOCAL_ENV', 0);
-define('DEV_ENV',   1);
-define('TEST_ENV',  2);
-define('PROD_ENV',  3);
-switch (true)
+defined('LOCAL_ENV') or define('LOCAL_ENV', 0);
+defined('DEV_ENV')   or define('DEV_ENV',   1);
+defined('TEST_ENV')  or define('TEST_ENV',  2);
+defined('PROD_ENV')  or define('PROD_ENV',  3);
+
+if (!defined('ENVIRONMENT'))
 {
-    # out beloved dev machines
-    case '83.30.159.39' == $_SERVER['REMOTE_ADDR'] :
-    case preg_match('/^192\.168\./', $_SERVER['REMOTE_ADDR']) :
-        define('ENVIRONMENT', DEV_ENV);
-        error_reporting(E_ALL|E_STRICT); // to prevent white-screen-of-death situations.
-        break;
-    # "there's no place like 127.0.0.1"
-    case '127.0.0.1' == $_SERVER['REMOTE_ADDR'] :
-    # local network
-    case preg_match('/^192\.168\.0\./', $_SERVER['REMOTE_ADDR']) :
-        define('ENVIRONMENT', LOCAL_ENV);
-        error_reporting(E_ALL|E_STRICT); // to prevent white-screen-of-death situations.
-        break;
-    # test.* hostnames
-    case preg_match('/^test\.|test\.1cm\.pl$/', $_SERVER['HTTP_HOST']) :
-        define('ENVIRONMENT', TEST_ENV);
-        error_reporting(0);
-        break;
-    # production environment
-    default :
-        define('ENVIRONMENT', PROD_ENV);
-        error_reporting(0);
+    switch (true)
+    {
+        # out beloved dev machines
+        case '83.30.159.39' == $_SERVER['REMOTE_ADDR'] :
+        case preg_match('/^192\.168\.0\.252/', $_SERVER['REMOTE_ADDR']) :
+            define('ENVIRONMENT', DEV_ENV);
+            break;
+        # "there's no place like 127.0.0.1"
+        case '127.0.0.1' == $_SERVER['REMOTE_ADDR'] :
+        # local network
+        case preg_match('/^192\.168\.0\./', $_SERVER['REMOTE_ADDR']) :
+            define('ENVIRONMENT', LOCAL_ENV);
+            break;
+        # test.* hostnames
+        case preg_match('/^test\.|test\.1cm\.pl$/', $_SERVER['HTTP_HOST']) :
+            define('ENVIRONMENT', TEST_ENV);
+            break;
+        # production environment
+        default :
+            define('ENVIRONMENT', PROD_ENV);
+    }
 }
+
+if (ENVIRONMENT >= TEST_ENV)
+    error_reporting(0);
+else
+    error_reporting(E_ALL|E_STRICT);
 
 #
 # NOTICE:

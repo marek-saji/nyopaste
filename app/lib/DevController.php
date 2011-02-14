@@ -21,7 +21,7 @@ class DevController extends DeveloperController
 
     /**
      * Template action.
-     * Copy and add the missig asterisk on the top of this comment.
+     *
      * @author someone
      * 
      * @param array $params accepts "die" parameter
@@ -44,6 +44,7 @@ class DevController extends DeveloperController
     {
         $this->_devActionBegin($params, __FUNCTION__);
 
+
         $this->_insertSomething(
             'User',
             array(
@@ -56,6 +57,15 @@ class DevController extends DeveloperController
                 ),
             )
         );
+
+
+        $this->_insertSomething(
+            'PasteType',
+            array(
+                array('name' => 'Plain'),
+            )
+        );
+
 
         $this->_devActionEnd($params, __FUNCTION__);
     }

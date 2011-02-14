@@ -1,3 +1,39 @@
+@import url(forms.css);
+
+html,
+body
+{
+    font-family: sans-serif;
+}
+
+hgroup
+{
+    display: block;
+}
+
+#head hgroup
+{
+    margin: 1em 0;
+}
+
+#head hgroup h1,
+#head hgroup h2
+{
+    margin: 0;
+    padding: 0;
+    line-height: 1em;
+}
+#head hgroup h1
+{
+    font-size: 2em;
+    font-weight: normal;
+}
+#head hgroup h2
+{
+    font-size: .8em;
+    font-weight: bold;
+}
+
 #foot .powered a.hg
 {
     background: transparent url(../gfx/logo_hg_small.jpg) scroll center left no-repeat;
@@ -8,3 +44,21 @@
 {
     content: ',';
 }
+
+/* hide login box, when js enabled. it will be shown by nyroModal */
+body.js #signin
+{
+    display: none;
+}
+
+
+strong.required
+{
+    color: #bb0000;
+}
+
+.sign-in.holoform .required
+{
+    display: none;
+}
+

@@ -32,13 +32,13 @@ $v->setTitle($title);
                    target="_blank"><?=$row['website']?></a>
             </dd>
         <?php endif; ?>
-        <?php if ($row['about_me']) : ?>
+        <?php if ($row['AboutMe']) : ?>
             <!-- about me -->
             <dt class="about_me text big">
                 <?=$t->trans('something about you')?>
             </dt>
             <dd class="about_me text big">
-                <?=$row['about_me']?>
+                <?=$row['AboutMe']?>
             </dd>
         <?php endif; ?>
     </dl>

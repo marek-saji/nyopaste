@@ -1,0 +1,60 @@
+.holoform form fieldset
+{
+    border: none;
+}
+
+.holoform form fieldset.verbose
+{
+    border: black solid thin;
+}
+
+.holoform form fieldset ul,
+.holoform form fieldset ul li.field
+{
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.holoform form fieldset ul li.field label
+{
+    display: block;
+}
+
+.holoform form fieldset ul li.field input,
+.holoform form fieldset ul li.field select,
+.holoform form fieldset ul li.field textarea
+{
+    width: 100%;
+    padding: .25em;
+}
+.holoform form fieldset ul li.field label input,
+.holoform form fieldset ul li.field label select,
+.holoform form fieldset ul li.field label textarea
+{
+    width: auto;
+}
+
+
+.holoform form fieldset ul li.field .invalid
+{
+    border-color: red;
+}
+
+.holoform form fieldset ul li.field .field_error
+{
+    display: block;
+    background-color: #faa;
+    border: #faa solid thin;
+    padding: .25em;
+}
+
+.holoform form fieldset.buttons
+{
+    font-size: 1.2em;
+}
+.holoform form fieldset.buttons input
+{
+    font-size: 1em;
+}
+

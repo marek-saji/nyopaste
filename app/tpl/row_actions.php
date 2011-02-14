@@ -12,40 +12,43 @@
  */
 
 $name = $t->getName();
-$params = $t->_params;
 $actions = (array) $actions;
 ?>
 
-<nav class="actions">
+<nav class="<?=$name?> actions">
     <ul>
-        <?php
-        foreach ($actions as $action => & $value) :
-            if (!$value)
+        <?php foreach ($actions as $action => & $value) : ?>
+            <?php
+            if (false === $value)
                 continue;
-        ?>
+            else if (true === $value)
+            {
+                $params = $this->getParams();
+                $value = array($this, $action, $params);
+            }
+            else
+            ?>
             <li class="<?=$action?> action">
                 <?php
-                $label = $t->trans(sprintf('((%s:action:%s))', $name, $action));
-                $action == $this->_default_action && $action='';
+                $label_f = '((action:%s:%s))';
+                $label = $t->trans($label_f, $action, $name);
+                if (sprintf($label_f, $action, $name) == $label)
+                    $label = $action;
+                $action == $this->_default_action and $action='';
                 switch ($action)
                 {
                     case 'remove' :
                     case 'restore' :
                     case 'login' :
-                        $attrs = array('class'=>'modal');
+                        $value[3] = array('class'=>'modal');
                         break;
                     default :
-                        $attrs = array();
+                        $value[3] = array();
                 }
-                if (is_array($value))
-                    echo $t->l2c($label, $value, array(), $attrs);
-                else
-                    echo $t->l2a($label, $action, $params, $attrs);
+                echo $t->l2c($label, $value);
                 ?>
             </li>
-        <?php
-        endforeach;
-        ?>
+        <?php endforeach; ?>
     </ul>
 </nav>
 

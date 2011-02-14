@@ -29,11 +29,11 @@ $conf['translations']['User'] = array(
 
     'update profile info' => 'uaktualnij profil', // button
     'create an account' => 'załóż konto', // button
-    'accept terms of use and create account' => 'zaakceptuj regulamin i utwórz konto', // button
+    'accept terms of use and create an account' => 'zaakceptuj regulamin i utwórz konto', // button
 
     // form input error messages
-    'Only letters, digits and dash (<q>-</q>) are allowed.' => 'Dozwolone są wyłącznie litery, cyfry oraz myślnik (<q>-</q>).',
-    'This login is already taken. If the account belongs to you, you can use <a href="%s">retrieve your password</a>.' => 'Ten login jest już zajęty. Jeśli konto należy do ciebie, możesz <a href="%s">odzyskać hasło</a>.',
+    'Only letters, digits and dashes (<q>-</q>) are allowed' => 'Dozwolone są wyłącznie litery, cyfry oraz myślniki (<q>-</q>)',
+    'This login is already taken. If the account belongs to you, you can <a href="%s">retrieve your password</a>' => 'Ten login jest już zajęty. Jeśli konto należy do ciebie, możesz <a href="%s">odzyskać hasło</a>.',
     'Account with this e-mail address already exists. If the account belongs to you, you can use <a href="%s">retrieve your password</a>.' => 'Konto z tym adresem e-mail już istnieje. Jeśli należy ono do ciebie, możesz <a href="%s">odzyskać hasło</a>.',
 
     // site infos
@@ -54,10 +54,12 @@ $conf['translations']['User'] = array(
 
 
     // actions that can be performed on user object:
-    '((User:action:default))' => 'pokaż profil',
-    '((User:action:edit))' => 'edytuj',
-    '((User:action:remove))' => 'usuń',
-    '((User:action:restore))' => 'przywróć',
+    '((action:%s:%s))' => array(
+        'default' => 'pokaż profil',
+        'edit' => 'edytuj',
+        'remove' => 'usuń',
+        'restore' => 'przywróć',
+    ),
 
 
     // verify these:

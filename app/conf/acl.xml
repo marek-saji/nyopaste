@@ -8,6 +8,15 @@
       admins
     -->
 
+    <ctrl>
+        <group>*</group>
+    </ctrl>
+
+    <!-- this matches permanent and trunk controllers -->
+    <ctrl url="">
+        <group>*</group>
+    </ctrl>
+
     <ctrl url="Main">
         <group>*</group>
     </ctrl>
@@ -40,6 +49,21 @@
     </ctrl>
 
     <ctrl url="Paste">
+        <action name="default">
+            <group>*</group>
+        </action>
+        <action name="list">
+            <group>*</group>
+        </action>
+        <action name="new">
+            <group>*</group>
+        </action>
+    </ctrl>
+    <ctrl url="Paste/p">
+        <group>*</group>
+    </ctrl>
+
+    <ctrl url="Paste/plain">
         <action name="default">
             <group>*</group>
         </action>

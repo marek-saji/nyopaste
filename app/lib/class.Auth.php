@@ -1,29 +1,6 @@
 <?php
-/**
- * THIS SHOULD BE ONLY TEMPORARY SOLUTION.
- * THINK OF BETTER AUTH IMPLEMENTATION AND PUT IN IN HG REPO
- */
-
 if(!defined('INCORRECT_LOGIN_COUNT'))
     define('INCORRECT_LOGIN_COUNT', NULL);
-
-//user types conf
-if(!defined('USER_TYPE_UNAUTHORIZED'))
-    define('USER_TYPE_UNAUTHORIZED', 0);
-if(!defined('USER_TYPE_AUTHORIZED'))
-    define('USER_TYPE_AUTHORIZED', 1);
-if(!defined('USER_TYPE_STUDENT'))
-    define('USER_TYPE_STUDENT', 2);
-if(!defined('USER_TYPE_COMPANY'))
-    define('USER_TYPE_COMPANY', 3);
-if(!defined('USER_TYPE_MOD_STUDENT'))
-    define('USER_TYPE_MOD_STUDENT', -2);
-if(!defined('USER_TYPE_MOD_COMPANY'))
-    define('USER_TYPE_MOD_COMPANY', -3);
-if(!defined('USER_TYPE_MOD'))
-    define('USER_TYPE_MOD', -1);
-if(!defined('USER_TYPE_ADMIN'))
-    define('USER_TYPE_ADMIN', -100);
 
 //user statuses conf
 if(!defined('USER_STATUS_ACTIVE'))
@@ -36,6 +13,8 @@ if(!defined('USER_STATUS_DELETED_BY_OWNER'))
     define('USER_STATUS_DELETED_BY_OWNER', -2);
 if(!defined('USER_STATUS_DELETED_BY_ADMIN'))
     define('USER_STATUS_DELETED_BY_ADMIN', -3);
+if(!defined('USER_STATUS_NOT_VERIFIED'))
+    define('USER_STATUS_NOT_VERIFIED', -4);
 
 class Auth extends HgBase implements IAuth
 {
@@ -49,43 +28,33 @@ class Auth extends HgBase implements IAuth
     {
         parent::__construct();
         $this->_session = &$_SESSION[g()->conf['SID']]['AUTH'];
+
         if($id = $this->id())
             $this->get($id);
-        $this->_loadACL();
+
+        // fill the cache
         $this->getUserGroups();
 		
-		if(isset($_COOKIE['remember_me']))
-		{
-			if(get_magic_quotes_gpc())
-				$cookie_data = stripslashes($_COOKIE['remember_me']);
-			else
-				$cookie_data = $_COOKIE['remember_me'];
-				
-			$user_cookie_data = json_decode($cookie_data, true);
-
-			$this->login($user_cookie_data);
-		}
+        
+        if(!$this->loggedIn())
+            // FIXME stealing cookies is quite easy!
+    		if(isset($_COOKIE['remember_me'])) 
+    		{
+                $this->login(
+                        json_decode(
+                                stripslashes($_COOKIE['remember_me']),
+                                true
+                             )
+                        );
+    		}
     }
 
-    /*
+    /**
      *  (this method is template safe)
      */
     public function loggedIn()
     {
         return false !== $this->id();
-    }
-
-    /**
-     * Returns loggen-in user's display name
-     *
-     * @return boolean|integer user's display name
-     *          false, when user is not logged-in,
-     */
-    public function displayName()
-    {
-        $display_name_field = g()->conf['users']['display_name_field'];
-        $display_name = @$this->_session['user'][$display_name_field];
-        return $display_name ? $display_name : false;
     }
 
     /**
@@ -97,19 +66,39 @@ class Auth extends HgBase implements IAuth
      */
     public function id()
     {
-        $id = @$this->_session['user']['id'];
-        return $id ? $id : false;
+        return $this->get('id');
     }
 
+    /**
+     * Returns loggen-in user's display name
+     *
+     * @return boolean|integer user's display name,
+     *          false, when user is not logged-in
+     */
+    public function displayName()
+    {
+        return $this->get(g()->conf['users']['display_name_field']);
+    }
+
+
+    /**
+     * Authenticate
+     */
     public function login(array $auth_data)
     {
-        extract($auth_data); // be careful with that!
+        $login = @$auth_data['login'];
+        $pass = isset($auth_data['passwd']) ? $auth_data['passwd']
+              : (isset($auth_data['password']) ? $auth_data['password']
+              : (isset($auth_data['md5_passwd']) ? $auth_data['md5_passwd']
+              : null));;
+        $check_password = @$auth_data['check_password'];
+        $force_data = @$auth_data['force_data'];
+        $as_admin = @$auth_data['as_admin'];
+        $md5_passwd = isset($auth_data['md5_passwd']) ? $auth_data['md5_passwd'] : null;
+
         $this->__user = array();
         $this->__error = '';
         $check_password = isset($force_data) ? (!$force_data) : true;
-
-        if(!isset($pass))
-            $pass = isset($passwd) ? $passwd : (isset($password) ? $password : (isset($md5_passwd) ? $md5_passwd : null));
 
         if(!$pass)
         {
@@ -125,25 +114,34 @@ class Auth extends HgBase implements IAuth
 
         $user_model = g('User', 'model');
 
-        if(isset(g()->conf['login_fields']))
-            $login_fields = g()->conf['login_fields'];
+        if(isset(g()->conf['users']['login_fields']))
+            $login_fields = g()->conf['users']['login_fields'];
         else
+        {
             $login_fields = array(
                 'login',
             );
+        }
 
         if(count($login_fields) <= 1)
+        {
             $user_model->filter(array(
-                $login_fields[0] => $login
+                $login_fields[0] => $login,
+                array('type', '!=', USER_TYPE_UNAUTHORIZED)
             ));
+        }
         else
         {
             $sql_fields = array();
 
             foreach($login_fields as $login_field)
-                $sql_fields[] = "{$login_field} = " . $user_model->getField($login_field)->dbString($login);
+            {
+                $field = $user_model[$login_field];
+                $sql_fields[] = "{$field} = " . $field->dbString($login);
+            }
 
-            $user_model->filter(join(' OR ', $sql_fields))->order('id', 'DESC');
+            $user_model->filter(join(' OR ', $sql_fields))
+                       ->order('id', 'DESC');
         }
 
         $user_model->whiteList(array(
@@ -154,37 +152,39 @@ class Auth extends HgBase implements IAuth
             'incorrect_login_count',
             'status',
         	'type',
+            g()->conf['users']['display_name_field'],
+            'email',
         ));
         $user_model->setMargins(1);
         $user = $user_model->exec();
 
         if(!$user)
         {
-            $this->__error = 'no_such_user';
+            $this->__error = 'bad_user_password';//no_such_user'; // don't let "them" know what do we have in db
             return false;
         }
-
-        if ($user['status'] == STATUS_WAITING_FOR_ACTIVATION)
+        
+        if($user['status'] == USER_STATUS_NOT_ACTIVE)
         {
             $this->__error = 'account_not_activated';
             return false;
         }
-        elseif ($user['status'] == STATUS_BLOCKED)
+        elseif($user['status'] == USER_STATUS_BLOCKED)
         {
             $this->__error = 'account_blocked';
             return false;
         }
-        elseif ($user['status'] & STATUS_DELETED)
+        elseif($user['status'] == USER_STATUS_DELETED_BY_ADMIN || $user['status'] == USER_STATUS_DELETED_BY_OWNER)
         {
             $this->__error = 'account_deleted';
             return false;
         }
 		
-		$passwd_match = isset($md5_passwd) ? $user['passwd'] == $pass : $user['passwd'] == md5($pass);
+		$passwd_match = ($md5_passwd!==null) ? $user['passwd'] == $pass : $user['passwd'] == md5($pass);
 		
         if($check_password && !$passwd_match)
         {
-            $this->__error = 'bad_password';
+            $this->__error = 'bad_user_password';//bad_password'; // don't let "them" know what do we have in db
 
             if(NULL !== INCORRECT_LOGIN_COUNT)
             {
@@ -213,20 +213,30 @@ class Auth extends HgBase implements IAuth
 
         $data = array(
             'id' => $user['id'], // PK
-            'last_correct_login' => 'now',
+            'last_correct_login' => 'NOW()',
             'incorrect_login_count' => 0,
             'activation_hash' => '',
         );
         $user_model->sync($data, true);
+
+        if($this->loggedIn() && $this->isUserInGroup('mod') && !empty($as_admin))
+            $user['as_admin'] = $as_admin;
+
         $this->_session['user'] = $user;
         return true;
     }
 
+    /**
+     */
     public function getLastError()
     {
         return $this->__error;
     }
 
+
+    /**
+     * Deauthenticate
+     */
     public function logout()
     {
         $this->_session['user'] = array();
@@ -237,226 +247,115 @@ class Auth extends HgBase implements IAuth
 		}
     }
 
+
+    /**
+     * Check wheter user has access to some action
+     * 
+     * WARNING: checking only for logged-in user implemented ($user=null)
+     * NOTE: $target ignored
+     * @see $conf[acl]
+     */
     public function hasAccess($ctrl, $action = null, $target = null, $user = null)
     {
-        static $cache = array();
-
+        // find default actions by 'default'
         if('' === $action)
             $action = 'default';
 
-        if($action)
-            $action = ucfirst($action);
+        // lcfirst() for <php-5.3
+        if ($action)
+            $action[0] = strtolower($action[0]);
 
         /** @todo */
         if(null !== $user)
             throw new HgException('Checking access for not logged-in user is not implemented.');
 
-        if(null === $target)
-            $target = array();
-
-        if(empty($ctrl) || (is_array($ctrl) && empty($ctrl['url']) && empty($ctrl['box'])))
+        // detect $ctrl format and obtain url (without action)
+        switch (true)
         {
-            $lib_path = g()->first_controller->displayingCtrl()->getParent()->path();
-            $ctrl = array(
-                'url' => g()->conf['controllers'][$lib_path]['default']
-            );
-        }
-        $this->_loadACL();
-        // get whole box and url paths
-        if(is_object($ctrl))
-        {
-            $keys_sources = array(
-                'box' => false, 
-                'url' => $ctrl->url(),
-            );
-            // get box path only from BoxedControllers
-            if(class_exists('BoxedController', false))
-                if($ctrl instanceof BoxedController)
-                    $keys_sources['box'] = $ctrl->boxPath();
-        }
-        else
-        {
-            $keys_sources = array(
-                'box' => @$ctrl['box'],
-                'url' => @$ctrl['url'],
-            );
-        }
-
-        // ignore empty values
-        if(empty($keys_sources['box']))
-            unset($keys_sources['box']);
-
-        if(empty($keys_sources['url']))
-            unset($keys_sources['url']);
-
-        $cache_key = json_encode($keys_sources) . json_encode($action) . json_encode($target) . json_encode($user);
-        $this_cache = &$cache[$cache_key];
-
-        if(null !== $this_cache)
-            return $this_cache;
-
-        $groups = $this->getUserGroups($user);
-        $groups['*'] = '*'; // dummy group for matching
-
-        if(!in_array('unauthorized', $groups))
-            $groups['authorized'] = 'authorized'; // dummy group for matching
-
-        /*
-        $sys_groups = array_flip(g()->conf['groups']);
-        foreach ($groups as $id => &$group)
-        {
-            if (isset($sys_groups[$id]))
-                $group = $sys_groups[$id];
-        }
-        unset($group);
-         */
-
-        // we want to ultimately check permission to the very root.
-        $keys = array(
-            'url: ' => false
-        );
-        // keys consists of key name (type of
-        // path and the path itself) and
-        // action name to check
-        // build parent paths
-        foreach($keys_sources as $type => $path)
-        {
-            $path_a = explode('/', $path);
-            $last_in_path = end($path_a);
-            do
-            {
-                // actions are checked only for exact matches (ergo false)
-                if ('box' == $type)
-                    $keys["$type: ".end($path_a)] = false;
-                $keys["$type: " . join('/', $path_a)] = false;
-                array_pop($path_a);
-            }
-            while($path_a);
-            // exact match. save action name.
-            if ('box' == $type)
-                $keys["$type: $last_in_path"] = (string)$action;
-            $keys["$type: $path"] = (string)$action;
-        }
-        $keys = array_reverse($keys);
-        /*
-        if (g()->debug->on())
-            var_dump($keys);
-         */
-        // at this point keys contains all pathes that should be checked
-        // first match found will return true
-        // fals is returned if no matches were found
-        $ret = false;
-        foreach($keys as $key => $action) // warning: overriding $action
-        {
-            if ($action)
-                $action = ucfirst($action);
-            if(!isset($this->_acl[$key]))
-                continue;
-            $acl = &$this->_acl[$key];
-            // check permission to whole controller
-            foreach($groups as $group)
-            {
-                if(@$acl['groups'][$group])
+            // Component
+            case is_object($ctrl) :
+                if (!$ctrl instanceof Controller)
                 {
-                    $ret = true;
-                    if (g()->debug->on())
-                        var_dump("Got access at key $key, $group");
-                    break (2);
+                    throw new HgException('Unsupported $ctrl type passed: '.get_class($ctrl));
                 }
-            }
-            // permission to actions
-            if (''===$action)
-                $action = 'Default';
-            if($action && isset($acl['actions']))
+                $url = $ctrl->url();
+                break;
+            // array with [url] (format used in MUS)
+            case is_array($ctrl) :
+                $url = $ctrl['url'];
+                $url = $ctrl['url'];
+                break;
+            // string with url
+            case is_string($ctrl) :
+                $url = $ctrl;
+                break;
+            default :
+                throw new HgException('Unsupported $ctrl type passed: '.gettype($ctrl));
+        }
+        $url = '/' . trim($url, '/');
+        $exploded_url = explode('/', $url);
+        $name = end($exploded_url);
+        $full_url = $url . '/' . $action;
+
+        // we could use isUserInGroup() every time, but this way will be faster
+        $groups = $this->getUserGroups($user);
+
+        // get possible matches from ACL
+        $acl = array_intersect_key(
+                g()->conf['acl'],
+                array(
+                    $name       => true,
+                    $url        => true,
+                    $full_url   => true,
+                    '*'         => true,
+                )
+            );
+
+        foreach ($acl as $key => $node)
+        {
+            if (is_bool($node))
             {
-                if(!isset($acl['actions'][$action]))
-                    continue;
-                $acl_action = & $acl['actions'][$action];
-                // each parameters set
-                foreach($acl_action as $acl_params)
+                // just access or deny (access)
+                return $node;
+            }
+            else if (is_array($node))
+            {
+                // list of groups ('group'=>access)
+                foreach ($node as $group => $acc)
                 {
-                    foreach($groups as $group)
+                    if (array_key_exists($group, $groups))
                     {
-                        if(isset($acl_params['groups'][$group]))
-                            if($this->_matchParams($acl_params['groups'][$group], $target))
-                            {
-                                $ret = true;
-                                if (g()->debug->on())
-                                    var_dump("Got access at $key / $action:".($acl_params)." with group $group");
-                                break (2);
-                            }
+                        return $acc;
                     }
                 }
             }
+            else
+            {
+                throw new HgException('Incorrect ACL definition: '
+                        . 'acl['.$key.']=' . var_export($node,true) );
+            }
         }
-        $this_cache = $ret;
-        return $ret;
+
+        // deny by default
+        return false;
     }
 
+
+    /**
+     * Get value of logged-in user's field
+     * NOTE: only fields whitelisted in login() can be fetched
+     * @author m.augustynowicz
+     */
     public function get($field)
     {
         $value = @$this->_session['user'][$field];
-        return $value ? $value : false;       
+        return $value ? $value : false;
     }
 
-    protected function _loadACL()
-    {
-        if(null !== $this->_acl)
-            return true;
-        $acl = $this->_acl = array();
-        $dir = APP_DIR . 'conf/';
-        $xml = sprintf('%s%s.xml', $dir, 'acl');
-        $xml = file_get_contents($xml);
-        try
-        {
-            $xml = new SimpleXMLElement($xml);
-        }
-        catch(Exception $e)
-        {
-            if(g()->debug->allowed())
-                trigger_error($e->getMessage(), E_USER_WARNING);
-            return;
-        }
-        foreach($xml->ctrl as $ctrl)
-        {
-            $url = (string)$ctrl['url'];
-            $box = (string)$ctrl['box'];
-            if($url)
-                $key = "url: $url";
-            else 
-                if($box)
-                    $key = "box: $box";
-                else
-                    $key = "url: ";
-                //echo '<hr />'; var_dump($url);
-            foreach($ctrl->group as $group)
-                $acl[$key]['groups'][(string)$group] = true;
-                /*
-            foreach ($ctrl->user as $user)
-                $acl[$url]['users'][(string)$user] = true;
-            */
-            foreach($ctrl->action as $action)
-            {
-                $act = ucfirst((string)$action['name']);
-                if(empty($act))
-                    $act = '*';
-                $params = (string)@$action['params'];
-                $params_a = g()->req->decodeParams($params);
-                //var_dump($act, $params);
-                foreach($action->group as $group)
-                    $acl[$key]['actions'][$act][$params]['groups'][(string)$group] = $params_a;
-                /*
-                foreach ($action->user as $user)
-                    $acl[$key]['actions'][$act][$params]['users'][(string)$user] = $params_a;
-                 */
-            }
-        }
-        $this->_acl = $acl;
-    }
 
     /**
      * (this method is template safe only for $user=null)
-     * WARNING: currently works only for logged in user!
+     * @see $conf[enums][user_type] for available user types
      * @param null|boolean|array $user when true passed, will fill the cache
      */
     public function getUserGroups($user = null)
@@ -465,10 +364,10 @@ class Auth extends HgBase implements IAuth
 
         $ret = array();
 
-        if(null === $user)
+        if($user === null || $user === false)
         {
             if(!$this->loggedIn())
-                return array(USER_TYPE_UNAUTHORIZED => 'unauthorized');
+                return array('unauthorized' => 'unauthorized');
             $user_id = $this->id();
         }
         elseif(is_array($user))
@@ -478,6 +377,7 @@ class Auth extends HgBase implements IAuth
             if(!isset($user_data['id']) || !isset($user_data['type']))
                 throw new HgException('Invalid parameter passed: incomplete array');
         }
+
         elseif(g('Functions')->isInt($user))
             $user_id = $user;
         else
@@ -489,10 +389,15 @@ class Auth extends HgBase implements IAuth
         if(!isset($user_data))
         {
             $user_data = g('User', 'model')
-                ->filter(array('id' => $user_id, 'status' => USER_STATUS_ACTIVE))
-                ->whiteList(array('type', 'id'))
-                ->setMargins(1)
-                ->exec();
+                    ->filter(array(
+                        'id' => $user_id,
+                    ))
+                    ->whiteList(array(
+                        'type',
+                        'id',
+                    ))
+                    ->setMargins(1)
+                    ->exec();
         }
 
         if(empty($user_data))
@@ -500,19 +405,10 @@ class Auth extends HgBase implements IAuth
 
         $user_id = &$user_data['id'];
 
-        switch($user_data['type'])
-        {
-            case USER_TYPE_ADMIN:
-                $ret[USER_TYPE_ADMIN] = "admins";
-            case USER_TYPE_MOD_STUDENT:
-                $ret[USER_TYPE_MOD] = "mods";
-            case USER_TYPE_AUTHORIZED:
-                $ret[USER_TYPE_AUTHORIZED] = "authorized";
-                break;
-            default:
-                $ret[USER_TYPE_UNAUTHORIZED] = "unauthorized";
-            break;
-        }
+        $ret = array(
+            'authorized' => 'authorized',
+            $user_data['type'] => $user_data['type']
+        );
 
         $cache[$user_id] = &$ret;
         return $ret;
@@ -523,29 +419,8 @@ class Auth extends HgBase implements IAuth
      */
     public function isUserInGroup($group, $user = null)
     {
-        if(is_int($group))
-            return array_key_exists($group, $this->getUserGroups($user));
-        else
-            return in_array($group, $this->getUserGroups($user));
+        return array_key_exists($group, $this->getUserGroups($user));
     }
 
-    /**
-     */
-    protected function _matchParams(array $acl_params, array $url_params)
-    {
-        foreach($acl_params as $name => $value)
-        {
-            if('' === $value)
-            {
-                if(isset($url_params[$name]))
-                    return false;
-            }
-            else
-            {
-                if(isset($url_params[$name]) && $url_params[$name] != $value)
-                    return false;
-            }
-        }
-        return true;
-    }
 }
+

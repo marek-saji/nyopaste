@@ -1,0 +1,5 @@
+<?php
+/**
+ * Pastes-related configuraion
+ */
+

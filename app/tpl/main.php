@@ -8,66 +8,50 @@
 // render all the components first
 // (they will set page (sub)title etc)
 ob_start();
-$this->contents();
+$this->render();
 $contents = ob_get_clean();
 
-//$v->addCss($this->file('common', 'css'));
 // include JSes, CSS, set page title etc.
 $t->inc('main_common');
-
-// show page infos. will render <aside id="infos" /> at least
-$t->inc('infos');
 ?>
 
 <header id="head">
     <nav class="skip-to-content">
         <a href="#content"><?=$t->trans('skip to content')?></a>
     </nav>
-    <h1>
-        <?= $t->l2c(g()->conf['site_name'], ''); ?>
-    </h1>
-    <nav>
-        <ul>
-            <?php
-            if (g()->auth->loggedIn()) :
-            ?>
-                <li class="welcome">
-                    <?=$this->inc('user_link')?>
-                </li>
-                <li class="signout">
-                    <?= $t->l2c($t->trans('sign out'), 'User', 'logout'); ?>
-                </li>
-            <?php
-            else :
-            ?>
-                <li class="signin">
-                    <?= $t->l2c($t->trans('sign in'), 'User', 'login', array(), array('class' => 'btn modal', 'anchor' => 'login')); ?>
-                </li>
-                <li class="create_account">
-                    <?= $this->l2c($t->trans('create an account'), 'User', 'new'); ?>
-                </li>
-            <?php
-            endif;
-            ?>
-        </ul>
-    </nav>
+    <hgroup>
+        <h1>
+            <?= $t->l2c(g()->conf['site_name'], ''); ?>
+        </h1>
+        <h2><?=$this->trans('a little more social pastebin')?></h2>
+    </hgroup>
 </header> <!-- #head -->
 
 <nav id="menu">
     <?php
-        echo 'menu goes here';
-        // $this->inc('menu');
+    // global navigation (<nav id="menu" />)
+    $this->getPermaCtrl('menu')->render();
     ?>
 </nav> <!-- #menu -->
 
+<?php
+// user navigation (<nav class="usernav" />)
+$this->getPermaCtrl('usernav')->render();
+?>
+
+<?php
+// show page infos. will render <aside id="infos" /> at least
+$t->inc('infos');
+?>
+
 <div id="content">
-        <?= $contents ?>
+    <?= $contents ?>
 </div> <!-- #content -->
 
 <footer id="foot">
     <nav>
         <?php
-            //$this->inc('menu', array('name'=>'footer', 'menu' => g()->conf['menu']['foot']));
+        //$this->inc('menu', array('name'=>'footer', 'menu' => g()->conf['menu']['foot']));
         ?>
     </nav>
     <section class="tech">
@@ -77,23 +61,22 @@ $t->inc('infos');
 </footer> <!-- #foot -->
 
 <?php
-if (PROD_ENV == ENVIRONMENT) :
-    /** @todo fill up UA code and uncomment */
-    /** @todo think of more custom vars, see http://code.google.com/apis/analytics/docs/tracking/gaTrackingCustomVariables.html */
+if (null !== @g()->conf['keys']['google analytics']) :
 ?>
-<!--
 <script type="text/javascript">
 var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
 document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
 </script>
 <script type="text/javascript">
 try {
-var pageTracker = _gat._getTracker("UA-1337666-0");
+var pageTracker = _gat._getTracker("<?=g()->conf['keys']['google analytics']?>");
 pageTracker._trackPageview();
+<?php
+/** @todo think of more custom vars, see http://code.google.com/apis/analytics/docs/tracking/gaTrackingCustomVariables.html */
+?>
 pageTracker._setCustomVar(1, 'authorized', '<?=g()->auth->loggedIn()?'yes':'no'?>', 1);
 } catch(err) {}</script>
--->
 
 <?php
-endif; // prod environment
+endif; // google analytics
 

@@ -1,0 +1,28 @@
+<?php
+g()->load('DataSets', null);
+
+/**
+ * Paste with plain text
+ *
+ * Common attributes for all the types.
+ * @author m.augustynowicz
+ */
+class PasteTypePlainModel extends Model
+{
+    public function __construct()
+    {
+        parent::__construct();
+
+        $this->_addField(new FForeignId('id'));
+        //$this->relate('Paste', 'Paste', '1to1');
+
+        $this->_addField(new FBool('line_numbers', true, true));
+        $this->_addField(new FInt('wrap_at', 2));
+        $this->_addField(new FBool('wrap_words', true, true));
+
+        $this->_pk('id');
+        $this->whiteListAll();
+    }
+
+}
+
