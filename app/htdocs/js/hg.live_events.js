@@ -420,3 +420,16 @@ $(function(){
     }
 });
 
+
+/**
+ * Emulate :focus
+ * @author m.augustynowicz
+ */
+$(':input')
+    .live('focusin focusout', function(e){
+        $(this)
+            .closest('.field')
+                .andSelf()
+                    .toggleClass('focus', 'focusin'==e.type);
+    });
+

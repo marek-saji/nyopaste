@@ -43,7 +43,7 @@ $form = g('Forms', array('login', $this));
                     <?php
                     $form->input('passwd');
                     ?>
-                    <p class="help">
+                    <p class="description">
                         <small><?= $this->l2c($t->trans('I forgot my password'), 'User', 'lostPasswd'); ?></small>
                     </p>
                 </li>

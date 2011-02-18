@@ -1,8 +1,8 @@
-<?php if (g()->debug->allowed()) : ?>
-    @todo
-<?php endif; ?>
 <ul>
+    <?php if (g()->debug->allowed()) : ?>
+        <li>@todo</li>
+    <?php endif; ?>
     <li><?=$this->l2c('nyu paste', 'Paste','new')?></li>
-    <li><?=$this->l2c('list', 'Paste','list')?></li>
+    <li><?=$this->l2c('pastes', 'Paste','list')?></li>
 </ul>
 

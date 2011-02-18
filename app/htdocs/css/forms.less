@@ -1,0 +1,190 @@
+@formwidth: 50em;
+@formwidthpr: 100% * 2/3;
+@formtoasideratio: 1/2;
+
+.border-radius (@radius: .5em)
+{
+    border-radius: @radius;
+    -moz-border-radius: @radius;
+    -webkit-border-radius: @radius;
+}
+
+.aside-field-box()
+{
+    position: static;
+    top: auto;
+    left: auto;
+    margin: .25em 0;
+    padding: .5em 1em;
+    width: auto;
+    max-width: 100%;
+    .border-radius(.5em);
+}
+
+.holoform form
+{
+    width: @formwidth;
+    max-width: @formwidthpr;
+
+    .field_error,
+    .help
+    {
+        /* non-js; js styles at the bottom */
+        .aside-field-box;
+    }
+
+    fieldset fieldset
+    {
+        padding: 0 1em;
+    }
+
+    fieldset
+    {
+        border: none;
+        margin: 0;
+        padding: .5em 1em;
+
+        &.verbose
+        {
+            border: #aaa solid thin;
+            margin: 1em 0;
+        }
+
+        &.hidden
+        {
+            display: none;
+        }
+
+        &.buttons
+        {
+            font-size: 1.2em;
+
+            input
+            {
+                font-size: 1em;
+            }
+        }
+
+        legend
+        {
+            font-size: 1.3em;
+        }
+
+        ul,
+        ul li.field
+        {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        ul li.field
+        {
+            margin: 0 0 1em 0;
+
+            &:last-child
+            {
+                margin-bottom: 0;
+            }
+
+            input,
+            select,
+            textarea
+            {
+                width: 97%;
+                padding: .25em;
+            }
+
+            label
+            {
+                display: block;
+
+                input,
+                select,
+                textarea
+                {
+                    width: auto;
+                }
+            }
+
+            .invalid
+            {
+                border-color: red;
+            }
+
+            .field_error
+            {
+                display: block;
+                background-color: #fbb;
+                z-index: 10;
+            }
+
+            .help
+            {
+                background-color: #bfb;
+                z-index: 20;
+
+                p
+                {
+                    margin: 0;
+                    font-size: .8em;
+                }
+                p + p
+                {
+                    margin-top: .5em;
+                }
+            }
+        } /* ul li.field */
+
+    } /* fieldset */
+
+} /* .holoform form */
+
+body.js .holoform form
+{
+    .field_error,
+    .help
+    {
+        position: absolute;
+        top: 0;
+        left: 100%;
+        margin: 0 0 0 2.5em;
+        padding: 1em;
+        width: @formwidth * @formtoasideratio;
+        max-width: 100% * @formtoasideratio - 5;
+        .border-radius(.5em);
+    }
+
+    fieldset ul li.field
+    {
+        .help { display: none; }
+
+        &.focus
+        {
+            .help        { display: block; }
+            .field_error { display: none; }
+        }
+
+    }
+
+}
+
+@media (max-width: 50em)
+{
+    body.js .holoform form,
+    .holoform form
+    {
+        width: 100%;
+        max-width: 100%;
+
+        .field_error,
+        .help
+        {
+            .aside-field-box;
+        }
+    }
+
+}
+
+/* vim: set ft=css: */
+

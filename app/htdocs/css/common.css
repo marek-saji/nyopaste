@@ -1,64 +1,116 @@
-@import url(forms.css);
-
-html,
-body
-{
-    font-family: sans-serif;
+@import url(Theano-OldStyle-fontkit/stylesheet.css);
+html, body {
+  font-family: sans-serif;
+  margin: 0;
+  padding: 0;
 }
-
-hgroup
-{
-    display: block;
+article,
+aside,
+figure,
+footer,
+header,
+hgroup,
+menu,
+nav,
+section {
+  display: block;
 }
-
-#head hgroup
-{
-    margin: 1em 0;
+#top,
+#infos,
+#whole-content,
+#foot {
+  clear: both;
 }
-
-#head hgroup h1,
-#head hgroup h2
-{
-    margin: 0;
-    padding: 0;
-    line-height: 1em;
+#top, #foot {
+  padding: 0 1em;
 }
-#head hgroup h1
-{
-    font-size: 2em;
-    font-weight: normal;
-}
-#head hgroup h2
-{
-    font-size: .8em;
-    font-weight: bold;
-}
+#top {
+  /* .skip-to-content */
 
-#foot .powered a.hg
-{
-    background: transparent url(../gfx/logo_hg_small.jpg) scroll center left no-repeat;
-    padding: 5px 0 5px 32px; /* background is 30x10px */
+  /* #head */
+
 }
-
-#foot .powered::after
-{
-    content: ',';
+#top * {
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
-
-/* hide login box, when js enabled. it will be shown by nyroModal */
-body.js #signin
-{
-    display: none;
+#top nav li {
+  display: inline;
 }
-
-
-strong.required
-{
-    color: #bb0000;
+#top .skip-to-content {
+  text-align: center;
+  width: 100%;
+  background-color: transparent;
+  font-size: .8em;
 }
-
-.sign-in.holoform .required
-{
-    display: none;
+#top .skip-to-content a {
+  color: white;
 }
-
+#top .skip-to-content a:hover, #top .skip-to-content a:active, #top .skip-to-content a:focus {
+  color: black;
+}
+#top .usernav {
+  float: right;
+}
+#top #menu li a, #top .usernav li a {
+  margin: 0 0 0 .75em;
+}
+#top #head, #top #menu {
+  float: left;
+}
+#top #head a, #top #menu a {
+  text-decoration: none;
+  color: #555;
+}
+#top #head {
+  margin: 0 1em 0 0;
+}
+#top #head hgroup h1, #top #head hgroup h2 {
+  line-height: 1em;
+}
+#top #head hgroup h1 {
+  font-size: 2.5em;
+  font-weight: normal;
+  font-family: TheanoOldStyleRegular, serif;
+}
+#top #head hgroup h1 a {
+  color: #555;
+}
+#top #head hgroup h1 a i {
+  color: #aaa;
+}
+#top #head hgroup h2 {
+  font-size: .7em;
+  font-weight: normal;
+  color: #777;
+}
+#top #menu {
+  font-size: 1.2em;
+  margin-top: .3em;
+  line-height: 1.666em;
+}
+/* #top */
+#infos, #whole-content {
+  margin: 0 1em;
+}
+#foot {
+  margin-top: 2em;
+}
+#foot p {
+  text-align: left;
+  font-size: .7em;
+  padding: 0;
+  margin: .5em 0;
+  color: #666;
+}
+#foot p a {
+  color: #333;
+}
+strong.required {
+  color: #bb0000;
+}
+.sign-in.holoform .required {
+  display: none;
+}
+/* vim: set ft=css: */

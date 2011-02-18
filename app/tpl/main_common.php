@@ -38,7 +38,8 @@ if (g()->req->isAjax())
 // visit this URL for more information
 $v->addProfile('http://purl.org/uF/2008/03/');
 
-$v->addCss($this->file('common','css'));
+$v->addLess($this->file('common','less'));
+$v->addLess($this->file('forms','less'));
 
 
 // stylesheet for jquery-uniform

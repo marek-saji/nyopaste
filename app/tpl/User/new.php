@@ -72,26 +72,25 @@ $v->setTitle($title);
 
                 <?php endif; ?>
 
-                <?php if ($use_captcha) : ?>
-                    <fieldset>
-                        <dl>
-                            <!-- CAPTCHA -->
-                            <dd class="captcha">
-                                <?=recaptcha_get_html($recaptcha_publickey);?>
-                            </dd>
-                        </dl>
-                    </fieldset>
-                <?php endif; ?>
-
-                <?php if (!g()->auth->loggedIn()) : ?>
-                    <p>
-                        <?=$t->trans('Don\'t forget to read <a href="%s" target="_blank" class="ext">terms of use</a>.', $t->url2c('Paste', '', array('TOS'))); ?>
-                    </p>
-                <?php endif; ?>
-
-
             </ul>
         </fieldset>
+
+        <?php if ($use_captcha) : ?>
+            <fieldset>
+                <dl>
+                    <!-- CAPTCHA -->
+                    <dd class="captcha">
+                        <?=recaptcha_get_html($recaptcha_publickey);?>
+                    </dd>
+                </dl>
+            </fieldset>
+        <?php endif; ?>
+
+        <?php if (!g()->auth->loggedIn()) : ?>
+            <p>
+                <?=$t->trans('Don\'t forget to read <a href="%s" target="_blank" class="ext">terms of use</a>.', $t->url2c('Paste', '', array('TOS'))); ?>
+            </p>
+        <?php endif; ?>
 
         <?php
         if (g()->auth->loggedIn())

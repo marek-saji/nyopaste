@@ -14,7 +14,7 @@ class PasteTypeMarkupController extends PasteTypeController
             'model' => 'PasteTypeMarkup',
             'inputs' => array(
                 'parser' => array(
-                    '_tpl' => 'Forms/FSelect'
+                    '_tpl' => 'Forms/FRadio'
                 ),
             ) // forms[paste][inputs]
         ) // forms[paste]

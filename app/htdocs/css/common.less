@@ -1,0 +1,177 @@
+@import url(Theano-OldStyle-fontkit/stylesheet.css);
+
+html,
+body
+{
+    font-family: sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+article, aside, figure, footer, header, hgroup,
+menu, nav, section { display: block; }
+
+#top,
+#infos,
+#whole-content,
+#foot
+{
+    clear: both;
+}
+
+#top,
+#foot
+{
+    padding: 0 1em;
+}
+
+#top
+{
+
+    *
+    {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+
+    nav li
+    {
+        display: inline;
+    }
+
+    .skip-to-content
+    {
+        text-align: center;
+        width: 100%;
+        background-color: transparent;
+        font-size: .8em;
+
+        a
+        {
+            color: white;
+
+            &:hover,
+            &:active,
+            &:focus
+            {
+                color: black;
+            }
+        }
+    } /* .skip-to-content */
+
+    .usernav
+    {
+        float: right;
+    }
+
+    #menu,
+    .usernav
+    {
+        li a
+        {
+            margin: 0 0 0 .75em;
+        }
+    }
+
+    #head,
+    #menu
+    {
+        float: left;
+
+        a
+        {
+            text-decoration: none;
+            color: #555;
+        }
+
+    }
+
+    #head
+    {
+        margin: 0 1em 0 0;
+
+        hgroup
+        {
+            h1,
+            h2
+            {
+                line-height: 1em;
+            }
+
+            h1
+            {
+                font-size: 2.5em;
+                font-weight: normal;
+                font-family: TheanoOldStyleRegular, serif;
+
+                a
+                {
+                    color: #555;
+                    i
+                    {
+                        color: #aaa;
+                    }
+                }
+            }
+
+            h2
+            {
+                font-size: .7em;
+                font-weight: normal;
+                color: #777;
+            }
+        }
+
+    } /* #head */
+
+    #menu
+    {
+        font-size: 1.2em;
+        margin-top: .3em;
+        line-height: 1.666em;
+    }
+
+} /* #top */
+
+#infos,
+#whole-content
+{
+    margin: 0 1em;
+}
+
+
+#foot
+{
+    margin-top: 2em;
+
+    p
+    {
+        text-align: left;
+        font-size: .7em;
+        padding: 0;
+        margin: .5em 0;
+        color: #666;
+
+        a
+        {
+            color: #333;
+        }
+    }
+}
+
+
+
+
+strong.required
+{
+    color: #bb0000;
+}
+
+.sign-in.holoform .required
+{
+    display: none;
+}
+
+/* vim: set ft=css: */
+

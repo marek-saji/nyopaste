@@ -186,6 +186,8 @@ class PasteController extends PagesController
                 $static_fields['paster'] = $post_data['paster']
                         = g()->auth->displayName();
             }
+
+            $this->data[$form_id]['content_type'] = 'content_text';
         }
         else
         {

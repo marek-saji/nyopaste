@@ -8,6 +8,9 @@
 $title = $this->trans('add new paste');
 $v->setTitle($title);
 
+$v->addLess($this->file('new', 'less'));
+$v->addJs($this->file('new', 'js'));
+
 $form = g('Forms', array('paste', $this));
 ?>
 
@@ -29,7 +32,7 @@ $form = g('Forms', array('paste', $this));
             <ul>
 
                 <!-- title -->
-                <li class="field">
+                <li class="title field">
                     <?php
                     $form->label('title', 'title');
                     ?>
@@ -42,7 +45,7 @@ $form = g('Forms', array('paste', $this));
                 </li>
 
                 <!-- paster -->
-                <li class="field">
+                <li class="paster field">
                     <?php if (@$static_fields['paster']) : ?>
                         <strong><?=$static_fields['paster']?></strong>
                     <?php else : ?>
@@ -54,27 +57,29 @@ $form = g('Forms', array('paste', $this));
                         ?>
                     <?php endif; ?>
                     <?php if (!g()->auth->loggedIn()) : ?>
-                        <p class="help">
-                            <small>
+                        <div class="help">
+                            <p>
                                 <?=$t->trans('posting anonymously. you can <a href="%s">sign-in</a> or <a href="%s">create an account</a>.',
                                     $this->url2c('User','login'), $this->url2c('User','new')
                                 )?>
-                            </small>
-                        </p>
+                            </p>
+                        </div>
                     <?php endif; ?>
                 </li>
 
                 <!-- author / source -->
-                <li class="field">
+                <li class="source field">
                     <?php
                     $form->label('source', 'author / source');
                     ?>
                     <?php
                     $form->input('source');
                     ?>
-                    <p class="help">
-                        <small><?=$t->trans('if different than paster. can also be URL to original context.')?></small>
-                    </p>
+                    <div class="help">
+                        <p>
+                            <?=$t->trans('if different than paster. can also be URL to original context.')?>
+                        </p>
+                    </div>
                 </li>
 
             </ul>
@@ -83,10 +88,10 @@ $form = g('Forms', array('paste', $this));
         <fieldset class="verbose">
             <legend><?=$this->trans('the paste')?></legend>
             <!-- content: upload or paste -->
-            <ul>
+            <ul class="radio-optiongroups">
 
                 <?php if (g()->debug->allowed()) : ?>
-                <li class="field">
+                <li class="file content field">
                     <?php
                     $form->input(
                         'content_type',
@@ -101,7 +106,8 @@ $form = g('Forms', array('paste', $this));
                     ?>
                 </li>
                 <?php endif; ?>
-                <li class="field">
+
+                <li class="text content field">
                     <?php
                     $form->input(
                         'content_type',
@@ -127,19 +133,19 @@ $form = g('Forms', array('paste', $this));
         <fieldset class="verbose">
             <legend><?=$this->trans('type')?></legend>
             <!-- paste type and paste-type-specific options -->
-            <ul>
+            <ul class="radio-optiongroups">
                 <?php foreach ($this->_types as $idx => $type) : ?>
                     <?php
                     $name = (string) $type;
                     ?>
-                    <li class="field">
+                    <li class="type field">
                         <?php
                         $form->input('type_id', array(
                             'value' => $idx,
                             'label' => $t->trans($name)
                         ));
                         ?>
-                        <fieldset>
+                        <fieldset class="type-specific <?=urlencode($name)?>">
                             <?php
                             $type->render();
                             ?>
@@ -148,6 +154,12 @@ $form = g('Forms', array('paste', $this));
                 <?php endforeach; ?>
             </ul>
         </fieldset>
+
+        <?php if (!g()->auth->loggedIn()) : ?>
+            <p>
+                <?=$t->trans('Don\'t forget to read <a href="%s" target="_blank" class="ext">terms of use</a>.', $t->url2c('Paste', '', array('TOS'))); ?>
+            </p>
+        <?php endif; ?>
 
         <?php
         $this->inc('Forms/buttons', array(

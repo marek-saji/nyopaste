@@ -60,9 +60,10 @@ $conf['translations']['_global'] = array(
     'Entered CAPTCHA code is incorrect, try again' => 'Wpisany kod CAPTCHA jest nie poprawny, spróbuj ponownie',
 
     // text in the footer
-    'powered by %s' => 'napędzane przez %s',
-    'application version' => 'wersja aplikacji',
-
+    'This is <abbr title="version">v</abbr>%s of %s.' => 'Jest to wersja %s serwisu %s.',
+    'Created and maintained by <span class="vcard"><a class="fn url" href="https://github.com/marek-saji">Marek Augustynowicz</a></span>.'
+        => 'Twórcą jest <span class="vcard"><a class="fn url" href="https://github.com/marek-saji">Marek Augustynowicz</a></span>.',
+    'Kob objęty jest licencją <a rel="license" href="http://www.opensource.org/licenses/mit-license.php">MIT</a> i jest dostępny w serwisie <a href="https://github.com/marek-saji/nyopaste">github</a>.'
 
     // generic error messages
 
