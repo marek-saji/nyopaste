@@ -6,7 +6,7 @@ g()->view->setTitle($t->trans('Change password'));
 $form = g('Forms', array('lostpasswd_reset', $this));
 $form->create();
 ?>
-    <fieldset>
+    <fieldset id="content">
         <ul class="fields">
             <li>
                 <!--<label class="password">-->

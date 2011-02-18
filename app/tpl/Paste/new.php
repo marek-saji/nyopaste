@@ -20,7 +20,7 @@ $form = g('Forms', array('paste', $this));
         <?=$t->trans('Only fields marked with asterisk (<strong class="required">*</strong>) are required.')?>
     </p>
 
-    <div class="holoform">
+    <div class="holoform" id="content">
         <?php
         $form->create();
         ?>

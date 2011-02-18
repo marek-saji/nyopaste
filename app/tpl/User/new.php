@@ -24,7 +24,7 @@ $v->setTitle($title);
     <?php
     $form = g('Forms', array('new', $this));
     ?>
-    <div class="holoform">
+    <div class="holoform" id="content">
 
         <?php
         $form->create();

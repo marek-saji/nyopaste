@@ -10,7 +10,8 @@
 ob_start();
 $this->render();
 $contents = ob_get_clean();
-
+?>
+<?php
 // include JSes, CSS, set page title etc.
 $t->inc('main_common');
 ?>
@@ -44,7 +45,7 @@ $this->getPermaCtrl('usernav')->render();
 $t->inc('infos');
 ?>
 
-<div id="content">
+<div id="whole-content">
     <?= $contents ?>
 </div> <!-- #content -->
 

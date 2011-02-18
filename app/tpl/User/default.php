@@ -21,7 +21,7 @@ $v->setTitle($title);
         ?>
     </header>
 
-    <dl>
+    <dl id="content">
         <?php if ($row['website']) : ?>
             <!-- website -->
             <dt class="website text url">

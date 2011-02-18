@@ -42,7 +42,7 @@ $v->setTitle($title);
         ?>
     </header>
 
-    <article class="<?=$type->getType()?>">
+    <article id="content" class="<?=$type->getType()?>">
         <?php
         $type->render();
         ?>

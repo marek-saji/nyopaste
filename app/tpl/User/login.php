@@ -19,7 +19,7 @@ $form = g('Forms', array('login', $this));
     <?php
     $form = g('Forms', array('login', $this));
     ?>
-    <div class="holoform">
+    <div class="holoform" id="content">
 
         <?php
         $form->create($this->url2a($this->getLaunchedAction()));
