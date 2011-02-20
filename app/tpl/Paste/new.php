@@ -59,7 +59,10 @@ $form = g('Forms', array('paste', $this));
                     <?php if (!g()->auth->loggedIn()) : ?>
                         <div class="help">
                             <p>
-                                <?=$t->trans('posting anonymously. you can <a href="%s">sign-in</a> or <a href="%s">create an account</a>.',
+                                <?=$t->trans('Pasting anonymously.')?>
+                            </p>
+                            <p>
+                                <?=$t->trans('You can <a href="%s">sign-in</a> or <a href="%s">create an account</a> to be able to easily find your paste later and delete delete it, if you have to.',
                                     $this->url2c('User','login'), $this->url2c('User','new')
                                 )?>
                             </p>
@@ -77,7 +80,7 @@ $form = g('Forms', array('paste', $this));
                     ?>
                     <div class="help">
                         <p>
-                            <?=$t->trans('if different than paster. can also be URL to original context.')?>
+                            <?=$t->trans('If different than paster. Can also be URL to original context.')?>
                         </p>
                     </div>
                 </li>

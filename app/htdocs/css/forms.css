@@ -42,7 +42,10 @@
   font-size: 1em;
 }
 .holoform form fieldset legend {
-  font-size: 1.3em;
+  font-size: 1.1em;
+}
+.holoform form fieldset legend select {
+  font-size: 1em;
 }
 .holoform form fieldset ul, .holoform form fieldset ul li.field {
   list-style: none;
@@ -51,6 +54,7 @@
 }
 .holoform form fieldset ul li.field {
   margin: 0 0 1em 0;
+  position: relative;
 }
 .holoform form fieldset ul li.field:last-child {
   margin-bottom: 0;
@@ -100,11 +104,17 @@ body.js .holoform form .field_error, body.js .holoform form .help {
 body.js .holoform form fieldset ul li.field .help {
   display: none;
 }
-body.js .holoform form fieldset ul li.field.focus .help {
+body.js .holoform form fieldset ul li.field.recently-focused .help {
   display: block;
 }
-body.js .holoform form fieldset ul li.field.focus .field_error {
+body.js .holoform form fieldset ul li.field.recently-focused .field_error {
   display: none;
+}
+body.js .holoform form fieldset ul li.field.recently-focused.invalid .help {
+  display: none;
+}
+body.js .holoform form fieldset ul li.field.recently-focused.invalid .field_error {
+  display: block;
 }
 @media (max-width: 50em) {
   body.js .holoform form, .holoform form {

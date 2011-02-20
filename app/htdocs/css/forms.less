@@ -9,7 +9,7 @@
     -webkit-border-radius: @radius;
 }
 
-.aside-field-box()
+.field-box()
 {
     position: static;
     top: auto;
@@ -30,7 +30,7 @@
     .help
     {
         /* non-js; js styles at the bottom */
-        .aside-field-box;
+        .field-box;
     }
 
     fieldset fieldset
@@ -67,7 +67,10 @@
 
         legend
         {
-            font-size: 1.3em;
+            font-size: 1.1em;
+
+            select
+            { font-size: 1em; }
         }
 
         ul,
@@ -81,6 +84,7 @@
         ul li.field
         {
             margin: 0 0 1em 0;
+            position: relative;
 
             &:last-child
             {
@@ -159,10 +163,16 @@ body.js .holoform form
     {
         .help { display: none; }
 
-        &.focus
+        &.recently-focused
         {
             .help        { display: block; }
             .field_error { display: none; }
+
+            &.invalid
+            {
+                .help        { display: none; }
+                .field_error { display: block; }
+            }
         }
 
     }
@@ -180,7 +190,7 @@ body.js .holoform form
         .field_error,
         .help
         {
-            .aside-field-box;
+            .field-box;
         }
     }
 

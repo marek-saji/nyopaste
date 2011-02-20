@@ -427,9 +427,17 @@ $(function(){
  */
 $(':input')
     .live('focusin focusout', function(e){
+        var focusin = 'focusin'==e.type;
+
+        if (focusin)
+        {
+            $('.recently-focused').removeClass('recently-focused');
+        }
+
         $(this)
             .closest('.field')
                 .andSelf()
-                    .toggleClass('focus', 'focusin'==e.type);
+                    .addClass('recently-focused')
+                    .toggleClass('focus', focusin);
     });
 
