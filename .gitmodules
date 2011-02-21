@@ -1,3 +1,6 @@
 [submodule "hg"]
 	path = hg
 	url = git://git.holonglobe.com/hologram.git
+[submodule "app/htdocs/js/jquery.encapsulating"]
+	path = app/htdocs/js/jquery.encapsulating
+	url = git://github.com/marek-saji/jquery.encapsulating.git
