@@ -19,9 +19,16 @@ class PasteController extends PagesController
             'model' => 'Paste',
             'upload' => true,
             'inputs' => array(
-                'title',
                 'paster',
+                'title',
+                'author',
                 'source',
+                'preffered_url',
+                'tags' => array(
+                    'fields' => null,
+                    '_tpl'   => 'Forms/Encapsulating'
+                ),
+
                 'content_type' => array(
                     'fields' => null,
                     '_tpl'   => 'Forms/FRadio-single'
@@ -34,7 +41,7 @@ class PasteController extends PagesController
                     'fields' => null,
                     '_tpl'   => 'Forms/FFile'
                 ),
-                'tags' => array('fields' => null),
+
 
                 // privacy
                 'list',
