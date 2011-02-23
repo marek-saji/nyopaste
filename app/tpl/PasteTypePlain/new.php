@@ -24,6 +24,11 @@ $form = g('Forms', array('paste', $this));
             $form->input('wrap_at');
             ?>
         </label>
+        <div class="help">
+            <p>
+                <?=$t->trans('Wrap your text automatically after this column. You can also choose not to break words apart.')?>
+            </p>
+        </div>
         <fieldset>
             <ul>
                 <li class="field">

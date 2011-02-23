@@ -25,9 +25,19 @@ $v->setTitle($title);
                 ?>
             </small>
         </h2>
-        <?php if ($row['source']) : ?>
+        <?php if ($row['source_url']) : ?>
             <p>
-                source / original author: <?=$f->linkify($row['source'])?>
+                <?=$t->trans('source URL')?>: <a href="<?=$row['source_url']?>"><?=$row['source_url']?></a>
+            </p>
+        <?php endif; ?>
+        <?php if ($row['author']) : ?>
+            <p>
+                <?=$t->trans('original author')?>: <?=$row['author']?>
+            </p>
+        <?php endif; ?>
+        <?php if ($row['Tags']) : ?>
+            <p>
+                <?=$t->trans('tags')?>: <?=$this->inc('tags', array('tags'=>&$row['Tags']))?>
             </p>
         <?php endif; ?>
 

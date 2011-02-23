@@ -15,7 +15,7 @@ class PasteModel extends Model
 
         $this->_addField(new FId('id'));
         $this->_addField(new FString('title', true));
-        $this->_addField(new FMultilineString('content', true));
+        $this->_addField(new FMultilineString('content'));
 
         $this->_addField(new FString('paster'))
                 ->auto(array($this, 'autoValPaster'));
@@ -25,7 +25,13 @@ class PasteModel extends Model
 
         $this->_addField(new FInt('status', 2, true, STATUS_ACTIVE));
 
-        $this->_addField(new FString('source'));
+        $this->_addField(new FString('author'));
+        $this->_addField(new FURL('source_url'))
+            ->mess(array(
+                'unsupported protocol' => $this->trans('Please specify one of these protocols: http, https, ftp, gopher.'),
+                'syntax error'         => $this->trans('This does not look like a URL.'),
+                'no dns record'        => $this->trans('This host name does not exist.'),
+            ));
 
         $this->_addField(new FInt('type_id', 2, true));
 

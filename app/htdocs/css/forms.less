@@ -73,12 +73,25 @@
             { font-size: 1em; }
         }
 
+        ul + .less-important-options-toggler
+        {
+            display: block;
+            margin-top: 1em;
+            cursor: pointer;
+        }
+
         ul,
         ul li.field
         {
             list-style: none;
             padding: 0;
             margin: 0;
+        }
+
+        ul + ul,
+        ul + .less-important-options-toggler + ul
+        {
+            margin-top: 1em;
         }
 
         ul li.field
@@ -93,7 +106,8 @@
 
             input,
             select,
-            textarea
+            textarea,
+            .encapsulating-textarea
             {
                 width: 97%;
                 padding: .25em;
@@ -105,22 +119,27 @@
 
                 input,
                 select,
-                textarea
+                textarea,
+                .encapsulating-textarea
                 {
                     width: auto;
                 }
             }
 
+            /*
             .invalid
             {
                 border-color: red;
             }
+                */
 
             .field_error
             {
                 display: block;
                 background-color: #fbb;
                 z-index: 10;
+                list-style-position: inside;
+                list-style-type: disc;
             }
 
             .help
@@ -155,26 +174,44 @@ body.js .holoform form
         margin: 0 0 0 2.5em;
         padding: 1em;
         width: @formwidth * @formtoasideratio;
-        max-width: 100% * @formtoasideratio - 5;
+        max-width: 100% * @formtoasideratio - 10;
+        z-index: 30;
+        border: white solid thin;
         .border-radius(.5em);
     }
 
-    fieldset ul li.field
+    fieldset ul
     {
-        .help { display: none; }
-
-        &.recently-focused
+        &.less-important-options
         {
-            .help        { display: block; }
-            .field_error { display: none; }
-
-            &.invalid
-            {
-                .help        { display: none; }
-                .field_error { display: block; }
-            }
+            display: none;
         }
 
+        li.field
+        {
+            .help { display: none; }
+
+            &.focus
+            {
+                .field_error,
+                .help
+                {
+                    z-index: 50;
+                }
+            }
+
+            &.recently-focused
+            {
+                .help        { display: block; }
+                .field_error { display: none; }
+
+                &.invalid
+                {
+                    .help        { display: none; }
+                    .field_error { display: block; }
+                }
+            }
+        }
     }
 
 }

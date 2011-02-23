@@ -20,7 +20,7 @@ $form = g('Forms', array('paste', $this));
     </header>
 
     <p>
-        <?=$t->trans('Only fields marked with asterisk (<strong class="required">*</strong>) are required.')?>
+        <?=$t->trans('Fields marked with asterisk (<strong class="required">*</strong>) are required.')?>
     </p>
 
     <div class="holoform" id="content">
@@ -30,19 +30,6 @@ $form = g('Forms', array('paste', $this));
 
         <fieldset>
             <ul>
-
-                <!-- title -->
-                <li class="title field">
-                    <?php
-                    $form->label('title', 'title');
-                    ?>
-                    <?php
-                    $form->input('title');
-                    ?>
-                    <?php if (g()->debug->allowed()) : ?>
-                        @todo set, when creating new version
-                    <?php endif; ?>
-                </li>
 
                 <!-- paster -->
                 <li class="paster field">
@@ -70,20 +57,86 @@ $form = g('Forms', array('paste', $this));
                     <?php endif; ?>
                 </li>
 
-                <!-- author / source -->
-                <li class="source field">
+                <!-- title -->
+                <li class="title field">
                     <?php
-                    $form->label('source', 'author / source');
+                    $form->label('title', 'title');
                     ?>
                     <?php
-                    $form->input('source');
+                    $form->input('title');
                     ?>
+                    <?php if (g()->debug->allowed()) : ?>
+                        @todo set, when creating new version
+                    <?php endif; ?>
                     <div class="help">
                         <p>
-                            <?=$t->trans('If different than paster. Can also be URL to original context.')?>
+                            <?=$t->trans('You can call the paste with a filename (<abbr lang="la" title="exampli gratia">e.g.</abbr>&nbsp;<code>main.c</code>)')?>
                         </p>
                     </div>
                 </li>
+            </ul>
+
+            <?php
+            $less_important_options_json = htmlspecialchars(json_encode(array(
+                'expand' => $this->trans('more options including tags, original author, source URL and <q>keep for&hellip;</q>'),
+                'collapse' => $this->trans('it\'s too cluttered, hide these options'),
+            )), ENT_QUOTES);
+            ?>
+            <ul class="less-important-options" data-less-important-options='<?=$less_important_options_json?>'>
+                <!-- author -->
+                <li class="author field">
+                    <?php
+                    $form->label('author', 'original author');
+                    ?>
+                    <?php
+                    $form->input('author');
+                    ?>
+                    <div class="help">
+                        <p>
+                            <?=$t->trans('If different than paster.')?>
+                        </p>
+                    </div>
+                </li>
+
+                <!-- source -->
+                <li class="source_url field">
+                    <?php
+                    $form->label('source_url', 'source URL');
+                    ?>
+                    <?php
+                    $form->input('source_url');
+                    ?>
+                    <div class="help">
+                        <p>
+                            <?=$t->trans('URL address to original context.')?>
+                        </p>
+                    </div>
+                </li>
+
+                <!-- tags -->
+                <li class="tags field">
+                    <?php
+                    $form->label('tags', 'tags');
+                    ?>
+                    <?php
+                    $form->input('tags');
+                    ?>
+                    <div class="help">
+                        <p>
+                            <?php if (g()->auth->loggedIn()) : ?>
+                                <?=$t->trans('List of tags that will be helpful in searching this paste. After you <a href="%s">sign in</a>, you will be able to use them to group pastes at your profile page.', $this->url2c('User', 'login'))?>
+                            <?php else : ?>
+                                <?=$t->trans('Lista etykiet, które pozwolą na łatwiejsze wyszukanie wpisu. Możesz ich również użyć do grupowania wpisów na <a href="%s">swoim profilu</a>.', $this->url2c('User', '', array(g()->auth->id())))?>
+                            <?php endif; ?>
+                        </p>
+                    </div>
+                </li>
+
+                <?php if (g()->debug->allowed()) : ?>
+                <li class="keep_for field">
+                    @todo "keep for..", preffered_url
+                </li>
+                <?php endif; ?>
 
             </ul>
         </fieldset>
@@ -157,6 +210,23 @@ $form = g('Forms', array('paste', $this));
                 <?php endforeach; ?>
             </ul>
         </fieldset>
+
+
+        <?php if (g()->debug->allowed()) : ?>
+        <fieldset class="verbose">
+            <legend><?=$this->trans('privacy')?></legend>
+            <?php
+            $less_important_options_json = htmlspecialchars(json_encode(array(
+                'expand' => $this->trans('show options including per-user and group permissions and encryption'),
+                'collapse' => $this->trans('it\'s too cluttered, hide these options'),
+            )), ENT_QUOTES);
+            ?>
+            <ul class="less-important-options" data-less-important-options='<?=$less_important_options_json?>'>
+                <li>@todo</li>
+            </ul>
+        </fieldset>
+        <?php endif; ?>
+
 
         <?php if (!g()->auth->loggedIn()) : ?>
             <p>

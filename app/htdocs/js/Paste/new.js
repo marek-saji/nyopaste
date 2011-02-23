@@ -53,6 +53,41 @@ $(function(){
                 .end()
                 .show();
     });
+
+
+    $('ul.less-important-options').each(function(){
+        var $list = $(this),
+            visible = $list.is(':visible'),
+            data = $list.data('less-important-options'),
+            collapseLabel = '<strong>(-)</strong> '+data.collapse,
+            expandLabel   = '<strong>(+)</strong> '+data.expand,
+            $toggler = $('<a />', {
+                'class': 'less-important-options-toggler '+(visible?'':'expander'),
+                'html': visible ? collapseLabel : expandLabel
+            });
+
+        $toggler
+            .bind('click.less-important-options', function(e){
+                e.preventDefault();
+                if ($list.is(':visible'))
+                {
+                    $list.slideUp(function(){
+                        $toggler
+                            .html(expandLabel)
+                            .addClass('expander');
+                    });
+                }
+                else
+                {
+                    $list.slideDown(function(){
+                        $toggler
+                            .html(collapseLabel)
+                            .removeClass('expander');
+                    });
+                }
+            })
+            .insertBefore($list);
+    });
 });
 
 

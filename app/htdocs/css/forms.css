@@ -47,35 +47,55 @@
 .holoform form fieldset legend select {
   font-size: 1em;
 }
+.holoform form fieldset ul + .less-important-options-toggler {
+  display: block;
+  margin-top: 1em;
+  cursor: pointer;
+}
 .holoform form fieldset ul, .holoform form fieldset ul li.field {
   list-style: none;
   padding: 0;
   margin: 0;
 }
+.holoform form fieldset ul + ul, .holoform form fieldset ul + .less-important-options-toggler + ul {
+  margin-top: 1em;
+}
 .holoform form fieldset ul li.field {
   margin: 0 0 1em 0;
   position: relative;
+  /*
+            .invalid
+            {
+                border-color: red;
+            }
+                */
+
 }
 .holoform form fieldset ul li.field:last-child {
   margin-bottom: 0;
 }
-.holoform form fieldset ul li.field input, .holoform form fieldset ul li.field select, .holoform form fieldset ul li.field textarea {
+.holoform form fieldset ul li.field input,
+.holoform form fieldset ul li.field select,
+.holoform form fieldset ul li.field textarea,
+.holoform form fieldset ul li.field .encapsulating-textarea {
   width: 97%;
   padding: .25em;
 }
 .holoform form fieldset ul li.field label {
   display: block;
 }
-.holoform form fieldset ul li.field label input, .holoform form fieldset ul li.field label select, .holoform form fieldset ul li.field label textarea {
+.holoform form fieldset ul li.field label input,
+.holoform form fieldset ul li.field label select,
+.holoform form fieldset ul li.field label textarea,
+.holoform form fieldset ul li.field label .encapsulating-textarea {
   width: auto;
-}
-.holoform form fieldset ul li.field .invalid {
-  border-color: red;
 }
 .holoform form fieldset ul li.field .field_error {
   display: block;
   background-color: #fbb;
   z-index: 10;
+  list-style-position: inside;
+  list-style-type: disc;
 }
 .holoform form fieldset ul li.field .help {
   background-color: #bfb;
@@ -96,13 +116,21 @@ body.js .holoform form .field_error, body.js .holoform form .help {
   margin: 0 0 0 2.5em;
   padding: 1em;
   width: 25em;
-  max-width: 45%;
+  max-width: 40%;
+  z-index: 30;
+  border: white solid thin;
   border-radius: 0.5em;
   -moz-border-radius: 0.5em;
   -webkit-border-radius: 0.5em;
 }
+body.js .holoform form fieldset ul.less-important-options {
+  display: none;
+}
 body.js .holoform form fieldset ul li.field .help {
   display: none;
+}
+body.js .holoform form fieldset ul li.field.focus .field_error, body.js .holoform form fieldset ul li.field.focus .help {
+  z-index: 50;
 }
 body.js .holoform form fieldset ul li.field.recently-focused .help {
   display: block;

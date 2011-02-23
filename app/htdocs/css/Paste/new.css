@@ -4,4 +4,10 @@
 .holoform#content form .radio-optiongroups {
   margin-bottom: 1em;
 }
+.holoform#content form .less-important-options-toggler {
+  color: #777;
+}
+.holoform#content form .less-important-options-toggler strong {
+  font-family: monospace;
+}
 /* vim: set ft=css: */

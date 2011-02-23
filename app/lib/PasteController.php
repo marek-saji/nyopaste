@@ -22,8 +22,11 @@ class PasteController extends PagesController
                 'paster',
                 'title',
                 'author',
-                'source',
-                'preffered_url',
+                'source_url',
+                'preffered_url' => array(
+                    'fields' => null,
+                    '_tpl'   => 'Forms/Encapsulating'
+                ),
                 'tags' => array(
                     'fields' => null,
                     '_tpl'   => 'Forms/Encapsulating'
@@ -226,8 +229,33 @@ class PasteController extends PagesController
                         break;
                     }
 
+                    $paste_id = $paste->getData('id');
+
+
+                    if ($post_data['tags'])
+                    {
+                        $paste_tag = g('PasteTag', 'model');
+                        $tags = preg_split('/[\n\r,]+/', trim($post_data['tags']));
+                        $tags_insert = array();
+                        foreach ($tags as $tag)
+                        {
+                            $tag_insert[] = array(
+                                'paste_id' => $paste_id,
+                                'tag' => $tag
+                            );
+                        }
+                        if (true !== $err = $paste_tag->sync($tag_insert, true, 'insert'))
+                        {
+                            g()->addInfo('ds fail, inserting paste type', 'error',
+                                $this->trans('((error:DS:%s))', false) );
+                            g()->debug->dump($err);
+                            break;
+                        }
+                    }
+
+
                     $type = $this->_types[$post_data['type_id']];
-                    if (true !== $type->sync($paste, 'insert'))
+                    if (true !== $err = $type->sync($paste, 'insert'))
                     {
                         g()->addInfo('ds fail, inserting paste type', 'error',
                             $this->trans('((error:DS:%s))', false) );
@@ -239,14 +267,12 @@ class PasteController extends PagesController
                     g()->addInfo(null , 'info',
                                  $this->trans('Paste created') );
                     g()->db->completeTrans();
-                    //if (empty($post_data['_backlink']))
-                        $new_id = $paste->getData('id');
-                        $this->redirect($this->url2a('', array($new_id)));
-                    //else
-                    //    $this->redirect($post_data['_backlink']);
+                    $new_id = $paste->getData('id');
+                    $this->redirect($this->url2a('', array($new_id)));
                 }
                 // just so we can break on errors
                 while ('past' > 'future');
+
                 // if we are here, we have failed
                 g()->db->failTrans();
                 g()->db->completeTrans();
@@ -285,7 +311,15 @@ class PasteController extends PagesController
             }
         }
 
-        
+
+        $result['Tags'] = array();
+        $tags = g('PasteTag','model')->filter(array('paste_id'=>$id))->exec();
+        foreach ($tags as &$tag)
+        {
+            $result['Tags'][] = $tag['tag'];
+        }
+
+
         if (!$result['paster_id'])
         {
             $result['Paster'] = null;
