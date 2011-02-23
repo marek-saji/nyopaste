@@ -40,6 +40,9 @@ $v->addProfile('http://purl.org/uF/2008/03/');
 $v->addLess($this->file('common','less'));
 $v->addLess($this->file('forms','less'));
 
+// don't scale page on mobile devices
+$v->setMeta('viewport', 'width=device-width, minimum-scale=1.0, maximum-scale=1.0');
+
 
 ## meanwhile,
 ## in debug mode..
