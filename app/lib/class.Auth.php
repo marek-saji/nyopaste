@@ -69,6 +69,19 @@ class Auth extends HgBase implements IAuth
         return $this->get('id');
     }
 
+
+    /**
+     * Returns loggen-in user's ident
+     *
+     * @return boolean|string user's ident,
+     *          false, when user is not logged-in
+     */
+    public function ident()
+    {
+        return $this->get(g()->conf['users']['ident_field']);
+    }
+
+
     /**
      * Returns loggen-in user's display name
      *
