@@ -112,13 +112,13 @@ class PasteController extends PagesController
             $action = '';
         $removed = $db_data['status'] & STATUS_DELETED;
         $db_data['Actions'] = array(
-            'get'     => array($this, $action,   array($id, 'get')),
-            'plain'   => array($this, $action,   array($id, 'plain')),
-            'edit'    => array($this, 'edit',    array($id)),
+            'get'     => array($this, $action,   array($url, 'get')),
+            'plain'   => array($this, $action,   array($url, 'plain')),
+            'edit'    => array($this, 'edit',    array($url)),
             'remove'  => $removed ? false :
-                         array($this, 'remove',  array($id)),
+                         array($this, 'remove',  array($url)),
             'restore' => !$removed ? false :
-                         array($this, 'restore', array($id)),
+                         array($this, 'restore', array($url)),
         );
         foreach ($db_data['Actions'] as $action => & $url)
         {

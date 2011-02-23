@@ -9,8 +9,10 @@ g()->load('DataSets', null);
  */
 class PasteModel extends Model
 {
+    /**
+     * Used as a base for url field suffixes.
+     */
     const URL_BASE = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_';
-    const START_MICROTIME = 1298502760.10739300;
 
     public function __construct()
     {
@@ -107,9 +109,11 @@ class PasteModel extends Model
         $base_len = strlen($base)-1;
         if ('' === $url)
         {
-            $url = iconv('utf-8', 'ascii//translit', $title);
-            $url = trim(preg_replace("/[^{$base}]+/", '-', $url), '-');
+            $url = $title;
         }
+
+        $url = iconv('utf-8', 'ascii//translit', $title);
+        $url = trim(preg_replace("/[^".preg_quote($base)."]+/", '-', $url), '-');
 
         while ($this->filter(array('url'=>$url))->getCount())
         {
