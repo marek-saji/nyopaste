@@ -12,7 +12,7 @@
         foreach ($rows as & $row) :
         ?>
             <li>
-                <?=$t->l2a($row['title'], '', array($row['id']))?>
+                <?=$t->l2a($row['title'], '', array($row['url']))?>
                 <?php
                 var_dump($row);
                 ?>

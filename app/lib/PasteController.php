@@ -23,10 +23,7 @@ class PasteController extends PagesController
                 'title',
                 'author',
                 'source_url',
-                'preffered_url' => array(
-                    'fields' => null,
-                    '_tpl'   => 'Forms/Encapsulating'
-                ),
+                'url',
                 'tags' => array(
                     'fields' => null,
                     '_tpl'   => 'Forms/Encapsulating'
@@ -95,18 +92,18 @@ class PasteController extends PagesController
      */
     public function actionDefault(array $params)
     {
-        $id = @$params[0];
+        $url = @$params[0];
 
-        if (!$id)
+        if (!$url)
         {
             $this->redirect($this->url2a('new'));
         }
 
 
         // fetch main and paste type data
-        $this->_getOne($id, $db_data);
+        $this->_getOne($url, $db_data);
         $type = $this->_types[$db_data['type_id']];
-        $type->getOne($id, $db_data);
+        $type->getOne($db_data['id'], $db_data);
 
 
         // determine which action can be launched
@@ -221,6 +218,9 @@ class PasteController extends PagesController
                      */
 
                     $paste = g('Paste', 'model');
+                    $post_data['url'] = $paste->uniquifyURL(
+                        @$post_data['url'], @$post_data['title']
+                    );
                     if (true !== $err = $paste->sync($post_data, true, 'insert'))
                     {
                         g()->addInfo('ds fail, inserting paste', 'error',
@@ -267,8 +267,8 @@ class PasteController extends PagesController
                     g()->addInfo(null , 'info',
                                  $this->trans('Paste created') );
                     g()->db->completeTrans();
-                    $new_id = $paste->getData('id');
-                    $this->redirect($this->url2a('', array($new_id)));
+                    $new_url = $paste->getData('url');
+                    $this->redirect($this->url2a('', array($new_url)));
                 }
                 // just so we can break on errors
                 while ('past' > 'future');
@@ -293,9 +293,9 @@ class PasteController extends PagesController
      *        when no user fetched
      * @return bool success on fetching data
      */
-    protected function _getOne($id, & $result, $redirect=true)
+    protected function _getOne($url, & $result, $redirect=true)
     {
-        $filters = array('id' => $id);
+        $filters = array('url' => $url);
 
         $result = g('Paste','model')->getRow($filters);
 
@@ -313,7 +313,9 @@ class PasteController extends PagesController
 
 
         $result['Tags'] = array();
-        $tags = g('PasteTag','model')->filter(array('paste_id'=>$id))->exec();
+        $tags = g('PasteTag','model')
+                ->filter(array('paste_id'=>$result['id']))
+                ->exec();
         foreach ($tags as &$tag)
         {
             $result['Tags'][] = $tag['tag'];
@@ -419,9 +421,9 @@ class PasteController extends PagesController
         return $ret;
     }
 
-    public function validatePasteTitle()
+    public function validatePasteUrl(&$value)
     {
-        return array();
+        return array('stop_validation' => true);
     }
 
 

@@ -9,11 +9,15 @@ g()->load('DataSets', null);
  */
 class PasteModel extends Model
 {
+    const URL_BASE = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_';
+    const START_MICROTIME = 1298502760.10739300;
+
     public function __construct()
     {
         parent::__construct();
 
         $this->_addField(new FId('id'));
+        $this->_addField(new FString('url', true));
         $this->_addField(new FString('title', true));
         $this->_addField(new FMultilineString('content'));
 
@@ -88,5 +92,31 @@ class PasteModel extends Model
     }
 
 
+    /**
+     * Propose unique url.
+     * @author m.augustynowicz
+     *
+     * @param string $url user value, if it's not unique, will be suffixed
+     *        with some garbadge string
+     *
+     * @return string
+     */
+    public function uniquifyURL($url='', $title=null)
+    {
+        $base = self::URL_BASE;
+        $base_len = strlen($base)-1;
+        if ('' === $url)
+        {
+            $url = iconv('utf-8', 'ascii//translit', $title);
+            $url = trim(preg_replace("/[^{$base}]+/", '-', $url), '-');
+        }
+
+        while ($this->filter(array('url'=>$url))->getCount())
+        {
+            $url .= $base[rand(0,$base_len)];
+        }
+
+        return $url;
+    }
 }
 

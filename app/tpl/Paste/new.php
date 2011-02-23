@@ -132,6 +132,24 @@ $form = g('Forms', array('paste', $this));
                     </div>
                 </li>
 
+                <!-- preffered URL -->
+                <li class="preffered_url field">
+                    <?php
+                    $form->label('url', 'preffered URL', array('required'=>false));
+                    ?>
+                    <?php
+                    $form->input('url');
+                    ?>
+                    <div class="help">
+                        <p>
+                            <?=$t->trans('URL address under which you\'d like your paste to be posted.')?>
+                        </p>
+                        <p>
+                            <?=$t->trans('If none specified, will be generated from paste title.')?>
+                        </p>
+                    </div>
+                </li>
+
                 <?php if (g()->debug->allowed()) : ?>
                 <li class="keep_for field">
                     @todo "keep for..", preffered_url
