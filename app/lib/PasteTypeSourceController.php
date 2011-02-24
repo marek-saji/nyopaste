@@ -17,7 +17,9 @@ class PasteTypeSourceController extends PasteTypePlainController
                     '_tpl' => 'Forms/FSelect'
                 ),
                 'line_numbers',
-                'colour_scheme'
+                'colour_scheme' => array(
+                    '_tpl' => 'Forms/FSelect'
+                ),
             ) // forms[paste][inputs]
         ) // forms[paste]
     ); // forms
@@ -35,23 +37,26 @@ class PasteTypeSourceController extends PasteTypePlainController
      */
     public function actionNew(array $params)
     {
-        $modes = array_keys(g()->conf['paste_types']['source']['modes']);
+        $conf = &g()->conf['paste_types']['source'];
+
+        $modes = array_keys($conf['modes']);
         $this->assign('syntax_values', array_combine($modes, $modes));
+
+        $this->assign('colour_scheme_values', $conf['themes']);
     }
 
 
     /**
      * @url http://etherpad.mozilla.com:9000/ep/pad/view/oSW4EWUuOX/U5pPuVBBaT
      */
-    public function highlight($text, $syntax, $token_class_prefix='token_', $decode_entities=true)
+    public function highlight($text, $syntax, $token_class_prefix='ace_', $decode_entities=true)
     {
-        mb_internal_encoding('utf-8');
         if ($decode_entities)
         {
             $text = html_entity_decode($text);
         }
 
-        g()->readConfigFiles('paste_type_source', 'conf.rules.xml');
+        g()->readConfigFiles('paste_type_source', 'conf.rules.'.$syntax);
         $modes = & g()->conf['paste_types']['source']['modes'];
         if (!isset($modes[$syntax]))
         {
@@ -67,22 +72,29 @@ class PasteTypeSourceController extends PasteTypePlainController
         $state = 'start';
         $stack = array();
         $tokenized_text = '';
-        $parse_errors = 0;
+        $unclasified = 0;
         while ($text)
         {
             $len = mb_strlen($text);
             foreach($rules[$state] as &$rule)
             {
+                //var_dump(mb_substr($text, 0, 10), $rule['regex']);
                 if (preg_match("/^(?:{$rule['regex']})/", $text, $match))
                 {
-                    $class = $token_class_prefix . $rule['token'];
+                    $class = $rule['token'];
+                    $class = preg_replace('/\./', ' '.$token_class_prefix, $class);
+
+                    $attrs = array(
+                        'class' => $token_class_prefix . $class
+                    );
                     if (g()->debug->on('paste'))
                     {
-                        $class .= ' state_'.$state;
+                        $attrs['title'] = $attrs['class'] . '; state: '.$state;
+                        //$tokenized_text .= "<small><b>{$state}.{$rule['token']}</b></small>";
                     }
                     $tokenized_text .= $f->tag(
                         'span',
-                        array('class' => $class),
+                        $attrs,
                         htmlspecialchars($match[0])
                     );
                     $text = mb_substr($text, mb_strlen($match[0]));
@@ -91,24 +103,20 @@ class PasteTypeSourceController extends PasteTypePlainController
                         $state = $rule['next'];
                         continue(2);
                     }
+                    break;
                 }
             }
             if ($len == mb_strlen($text))
             {
                 $tokenized_text .= $f->tag(
                     'span',
-                    array('class' => $token_class_prefix . 'PARSE_ERROR'),
+                    array('class' => 'UNCLASIFIED'),
                     htmlspecialchars(mb_substr($text, 0, 1))
                 );
                 $text = mb_substr($text, 1);
-                $parse_errors++;
+                $unclasified++;
             }
             unset($rule);
-        }
-
-        if ($parse_errors)
-        {
-            trigger_error("Encountered {$parse_errors} parse errors while hightlighting.", E_USER_NOTICE);
         }
 
         return $tokenized_text;

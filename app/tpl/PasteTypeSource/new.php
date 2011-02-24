@@ -48,7 +48,7 @@ $less_important_options_json = htmlspecialchars(json_encode(array(
         $form->label('colour_scheme', 'syntax hightlight colour scheme');
         ?>
         <?php
-        $form->input('colour_scheme');
+        $form->input('colour_scheme', array('values' => $colour_scheme_values));
         ?>
     </li>
 
