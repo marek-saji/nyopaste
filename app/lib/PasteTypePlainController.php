@@ -7,7 +7,7 @@ g()->load('PasteType', 'controller');
 class PasteTypePlainController extends PasteTypeController
 {
     protected $_type = 'plain';
-    protected $_type_idx = 1;
+    protected $_type_idx = 3;
 
     public $forms = array(
         'paste' => array(

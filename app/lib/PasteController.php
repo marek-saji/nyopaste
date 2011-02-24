@@ -71,12 +71,15 @@ class PasteController extends PagesController
     }
     protected function _addPasteTypeSubcontrollers()
     {
-        foreach (array('plain', 'markup') as $type_name)
+        $paste_types = g()->conf['paste_types'];
+        foreach ($paste_types as $type_name => & $type_conf)
         {
             $type = $this->addChild('PasteType'.ucfirst($type_name), $type_name);
             $this->_types[$type->getIdx()] = $type;
             $type->_action_to_launch = $this->_action_to_launch;
         }
+        unset($type_conf);
+        ksort($this->_types);
     }
     protected function _prepareActionList(array & $params)
     {
