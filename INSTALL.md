@@ -5,26 +5,20 @@ setup
 
         git clone git://github.com/marek-saji/nyopaste.git src/
 
-2. update local, dev and test IPs/hostnames
-
-        vim src/app/htdocs/index.php
-
-   Don't commit these, if you did modify!
-
-3. checkout hologram:
+1. checkout hologram:
 
         git submodule init
         git submodule update
 
-4. prepare upload directory:
+1. prepare upload directory:
 
         mkdir -m 0700 upload/
         chown www-data:www-data upload/
 
-5. local configuration
+1. local configuration
 
     - prepare local conf directory
-   
+
             mkdir conf/
             chown www-data:www-data conf/
 
@@ -38,17 +32,18 @@ setup
             cp src/app/conf/conf.keys.php conf/
             edit conf/conf.keys.php
 
-6. configure apache
+1. configure apache
    - create vhost pointing to `src/app/htdocs/`
    - create alias `hg/` poining to `src/hg/htdocs/`
    - allow [.htaccess][] magic tricks
    - make sure [mod_rewrite][] is on
+   - set HG_ENVIRONMENT to one of LOCAL, DEV, TEST or PROD
 
-7. http://host.name/, enable favourite debugs
+1. http://host.name/, enable favourite debugs
 
-8. head to /DataSet/list and create all models
+1. head to /DataSet/list and create all models
 
-9. head to /Dev and launch these actions:
+1. head to /Dev and launch these actions:
    - addDefaults, updated 2010-06-17
 
 on production
