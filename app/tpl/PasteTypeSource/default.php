@@ -9,7 +9,7 @@ $v->addLess($this->file('default', 'less'));
 
 $line_numbers = $f->anyToBool($row['line_numbers']);
 $class = $line_numbers ? 'line_no' : '';
-$lines = explode("\n", $row['content']);
+$lines = explode("\n", $this->highlight($row['content'], $row['syntax']));
 ?>
 
 <pre class="<?=$class?>"><?php foreach ($lines as $i => $line) : ?><code id="line<?=$i?>" class="line"><?=$line?></code>

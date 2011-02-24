@@ -83,7 +83,7 @@ class PasteController extends PagesController
     }
     protected function _prepareActionList(array & $params)
     {
-        $type = $this->addChild('Paginator', 'p');
+        $this->addChild('Paginator', 'p');
     }
 
 

@@ -13,7 +13,7 @@ $form = g('Forms', array('paste', $this));
         $form->label('syntax', 'language');
         ?>
         <?php
-        $form->input('syntax');
+        $form->input('syntax', array('values' => $syntax_values));
         ?>
         <div class="help">
             <p><?=$t->trans('Syntax paste as it\'s written in this language.')?></p>
