@@ -7,7 +7,7 @@ $v->setTitle($title);
         <?=$title?>
     </h2>
     <p>
-        <?=$this->trans('Maybe try <a href="%s">looking it up</a>.', $this->url2a('list'))?>
+        <?=$this->trans('Maybe try <a href="%s">looking it up</a>.', $this->url2a('search'))?>
     </p>
 </section>
 

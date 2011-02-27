@@ -81,7 +81,7 @@ class PasteController extends PagesController
         unset($type_conf);
         ksort($this->_types);
     }
-    protected function _prepareActionList(array & $params)
+    protected function _prepareActionSearch(array & $params)
     {
         $this->addChild('Paginator', 'p');
     }
@@ -154,9 +154,12 @@ class PasteController extends PagesController
 
 
     /**
-     * Temporary listing action, for testing new request processing in hologram
+     * Search pastes.
+     * @todo make it more "search", than "list"
+     * @todo document params
+     * @author m.augustynowicz
      */
-    public function actionList(array $params)
+    public function actionSearch(array $params)
     {
         $model = g('Paste', 'model');
 
@@ -171,7 +174,6 @@ class PasteController extends PagesController
     /**
      * Create new paste
      * @author m.augustynowicz
-     * @todo accept content_file
      *
      * @param array $param request params, ignored
      */

@@ -21,7 +21,7 @@ $conf['acl'] = array(
 
     '/Paste/new'            => true,
     '/Paste/default'        => true,
-    '/Paste/list'           => true,
+    '/Paste/search'         => true,
     '/Paste/error404'       => true,
 
     '/User/login'           => array('unauthorized'=>true),
