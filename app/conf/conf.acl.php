@@ -13,6 +13,8 @@ $conf['acl'] = array(
     // common subcomponents
     'p' => true,
 
+    '/HttpErrors'           => true,
+
 
     '/Main/default'         => true,
     '/User/default'         => true,
@@ -20,6 +22,7 @@ $conf['acl'] = array(
     '/Paste/new'            => true,
     '/Paste/default'        => true,
     '/Paste/list'           => true,
+    '/Paste/error404'       => true,
 
     '/User/login'           => array('unauthorized'=>true),
     '/User/new'             => array('unauthorized'=>true),

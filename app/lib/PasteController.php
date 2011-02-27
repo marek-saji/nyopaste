@@ -104,7 +104,10 @@ class PasteController extends PagesController
 
 
         // fetch main and paste type data
-        $this->_getOne($url, $db_data);
+        if (!$this->_getOne($url, $db_data))
+        {
+            return false;
+        }
         $type = $this->_types[$db_data['type_id']];
         $type->getOne($db_data['id'], $db_data);
 
@@ -289,6 +292,21 @@ class PasteController extends PagesController
 
 
     /**
+     * Error 404: paste not found.
+     * @author m.augustynowicz
+     *
+     * @param array $params request params:
+     *        - [0] url of a missing paste
+     * @return void
+     */
+    public function actionError404(array $params)
+    {
+        $v->addHeader('HTTP/1.0 404 Not Found');
+        $this->assign('url', $params[0]);
+    }
+
+
+    /**
      * Common code for fetching one paste
      * @author m.augustynowicz
      *
@@ -308,7 +326,9 @@ class PasteController extends PagesController
         {
             if ($redirect)
             {
-                $this->redirect(array('HttpErrors', '', array(404)));
+                $params = $this->getParams();
+                $this->delegateAction('error404', $params);
+                return false;
             }
             else
             {
