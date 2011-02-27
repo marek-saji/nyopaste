@@ -44,7 +44,7 @@ $form = g('Forms', array('login', $this));
                     $form->input('passwd');
                     ?>
                     <p class="description">
-                        <small><?= $this->l2c($t->trans('I forgot my password'), 'User', 'lostPasswd'); ?></small>
+                        <small><?= $this->l2c($t->trans('I forgot my password'), 'User', 'lostPasswd', array(), array('class'=>'modal')); ?></small>
                     </p>
                 </li>
 
