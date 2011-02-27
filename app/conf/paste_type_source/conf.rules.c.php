@@ -4,6 +4,9 @@
  * @author m.augustynowicz ported from javascript
  * @url https://github.com/ajaxorg/ace/blob/master/lib/ace/mode/c_highlight_rules.js
  */
+
+$doc_comment = require(dirname(__FILE__) . DIRECTORY_SEPARATOR . 'doc_comment.php');
+
 $conf['paste_types']['source']['modes'] = array(
 
     'c' => array(
@@ -17,11 +20,7 @@ $conf['paste_types']['source']['modes'] = array(
                     'regex' => "\\/\\/.*$"
                 ),
 
-                array(
-                    'token' => "comment.doc", // doc comment
-                    'regex' => "\\/\\*\\*",
-                    'next' => 'doc-start',
-                ),
+                $doc_comment['start_rule'],
 
                 array(
                     'token' => "comment", // multi line comment
@@ -132,36 +131,10 @@ $conf['paste_types']['source']['modes'] = array(
                 ),
             ),
 
-            // from doc_comment_highlight_rules.js
-            'doc-start' => array(
-                array(
-                    'token' => "comment.docFOO", // closing comment
-                    'regex' => "\\*\\/",
-                    'next' => "start"
-                ),
-                array(
-                    'token' => "comment.doc.tag",
-                    'regex' => "@[\\w\\d_]+" // TODO: fix email addresses
-                ),
-                array(
-                    'token' => "comment.doc",
-                    'regex' => "\s+"
-                ),
-                array(
-                    'token' => "comment.doc",
-                    'regex' => "TODO"
-                ),
-                array(
-                    'token' => "comment.doc",
-                    'regex' => "[^@\\*]+"
-                ),
-                array(
-                    'token' => "comment.docDOT",
-                    'regex' => "."
-                ),
-            ),
-
         ), // rules
 
     ), // xml
 );
+
+$conf['paste_types']['source']['modes']['c']['rules'] += $doc_comment['rules'];
+
