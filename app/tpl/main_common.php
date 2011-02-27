@@ -20,6 +20,13 @@ else
 $v->setTitle($title);
 
 
+// set page description
+if (!($desc = $v->getMeta('description')))
+{
+    $v->setDescription($this->trans('A little more social pastebin.'));
+}
+
+
 
 // no need to go any further, when processing AJAX request
 // below this point are thing shat should already be there
