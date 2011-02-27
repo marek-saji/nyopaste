@@ -61,31 +61,16 @@ class PasteController extends PagesController
     ); // forms
 
 
-    protected function _prepareActionNew(array & $params)
-    {
-        $this->_addPasteTypeSubcontrollers();
-    }
+    /**
+     * Prepare default action.
+     *
+     * Add type-specific subcontrollers.
+     * @author m.augustynowicz
+     */
     protected function _prepareActionDefault(array & $params)
     {
         $this->_addPasteTypeSubcontrollers();
     }
-    protected function _addPasteTypeSubcontrollers()
-    {
-        $paste_types = g()->conf['paste_types'];
-        foreach ($paste_types as $type_name => & $type_conf)
-        {
-            $type = $this->addChild('PasteType'.ucfirst($type_name), $type_name);
-            $this->_types[$type->getIdx()] = $type;
-            $type->_action_to_launch = $this->_action_to_launch;
-        }
-        unset($type_conf);
-        ksort($this->_types);
-    }
-    protected function _prepareActionSearch(array & $params)
-    {
-        $this->addChild('Paginator', 'p');
-    }
-
 
     /**
      * Displaying a paste.
@@ -154,6 +139,17 @@ class PasteController extends PagesController
 
 
     /**
+     * Prepare "search" action.
+     *
+     * Add paginator.
+     * @author m.augustynowicz
+     */
+    protected function _prepareActionSearch(array & $params)
+    {
+        $this->addChild('Paginator', 'p');
+    }
+
+    /**
      * Search pastes.
      * @todo make it more "search", than "list"
      * @todo document params
@@ -170,6 +166,17 @@ class PasteController extends PagesController
         $this->assignByRef('rows', $rows);
     }
 
+
+    /**
+     * Prepare "new" action.
+     *
+     * Add type-specific subcontrollers.
+     * @author m.augustynowicz
+     */
+    protected function _prepareActionNew(array & $params)
+    {
+        $this->_addPasteTypeSubcontrollers();
+    }
 
     /**
      * Create new paste
@@ -364,6 +371,24 @@ class PasteController extends PagesController
         }
 
         return true;
+    }
+
+
+    /**
+     * Add type-specific subcontrollers.
+     * @author m.augustynowicz
+     */
+    protected function _addPasteTypeSubcontrollers()
+    {
+        $paste_types = g()->conf['paste_types'];
+        foreach ($paste_types as $type_name => & $type_conf)
+        {
+            $type = $this->addChild('PasteType'.ucfirst($type_name), $type_name);
+            $this->_types[$type->getIdx()] = $type;
+            $type->_action_to_launch = $this->_action_to_launch;
+        }
+        unset($type_conf);
+        ksort($this->_types);
     }
 
 
