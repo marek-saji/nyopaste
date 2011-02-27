@@ -12,6 +12,7 @@
  *           [DisplayName] link label
  *           [email] used to generate gravatar
  *        3. string: used as [login] and [DisplayName]
+ * @param string $class additional class names
  * @param integer|boolean $avatar size of awatar or false to hide
  *
  * @return string html code
@@ -27,6 +28,7 @@ extract(
                 'DisplayName' => g()->auth->displayName(),
                 'email' => g()->auth->get('email'),
             ),
+            'class' => '',
             'text' => '',
             'avatar' => 22,
         ),
@@ -48,7 +50,7 @@ $label = empty($text) ? $user['DisplayName'] : $text;
 
 ob_start();
 ?>
-<span class="vcard name">
+<span class="vcard name <?=$class?>">
     <?php if ($avatar) : ?>
         <img class="photo"
              src="http://gravatar.com/avatar/<?php

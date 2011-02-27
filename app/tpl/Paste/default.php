@@ -11,14 +11,21 @@ $v->setTitle($title);
 
 ?>
 
-<section>
+<section class="hentry">
     <header>
-        <h2>
-            <?=$title?>
-            <small>
+        <hgroup>
+            <h2 class="entry-title">
+                <?=$title?>
+            </h2>
+            <h3>
                 <?php
                 if ($row['paster_id'])
-                    $paster_html = $t->inc('user_link', array('user'=>$row['Paster']));
+                {
+                    $paster_html = $t->inc('user_link', array(
+                        'user'=>$row['Paster'],
+                        'class' => 'author'
+                    ));
+                }
                 else
                 {
                     if ($row['paster'])
@@ -27,7 +34,7 @@ $v->setTitle($title);
                         $paster = $t->trans('anonymous');
                     $paster_html = $f->tag(
                         'span',
-                        array('class' => 'vcard'),
+                        array('class' => 'author vcard'),
                         $f->tag(
                             'i',
                             array('class' => 'fn'),
@@ -36,8 +43,8 @@ $v->setTitle($title);
                     );
                 }
                 ?>
-                <?=$paster_html?>
-            </small>
+                <?=$this->trans('by %s', $paster_html)?>
+            </h3>
         </h2>
         <?php if ($row['source_url']) : ?>
             <p>
@@ -55,6 +62,13 @@ $v->setTitle($title);
             </p>
         <?php endif; ?>
 
+        <p>
+            <?=$this->trans('created')?>:
+            <time class="published" datetime="<?=$row['creation']?>">
+                <?=$f->formatDate($row['creation'])?>
+            </time>
+        </p>
+
         <?php
         $type->inc('meta');
         ?>
@@ -66,7 +80,7 @@ $v->setTitle($title);
         ?>
     </header>
 
-    <article id="content" class="<?=$type->getType()?>">
+    <article id="content" class="entry-content <?=$type->getType()?>">
         <?php
         $type->render();
         ?>
