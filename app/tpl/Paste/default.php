@@ -8,7 +8,8 @@
 
 $title = $row['title'];
 $v->setTitle($title);
-
+$v->setMeta('og:type', 'article', 'property');
+$v->setMeta('og:url', $this->url2a('', array($row['url']), true), 'property');
 ?>
 
 <section class="hentry">
