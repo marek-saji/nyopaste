@@ -58,9 +58,10 @@ $v->setMeta('og:url', $this->url2a('', array($row['url']), true), 'property');
             </p>
         <?php endif; ?>
         <?php if ($row['Tags']) : ?>
-            <p>
-                <?=$t->trans('tags')?>: <?=$this->inc('tags', array('tags'=>&$row['Tags']))?>
-            </p>
+            <?=$t->trans('tags')?>:
+            <?php
+            $this->inc('tags', array('tags'=>&$row['Tags']));
+            ?>
         <?php endif; ?>
 
         <p>

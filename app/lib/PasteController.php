@@ -127,7 +127,6 @@ class PasteController extends PagesController
                     $url = false;
             }
         }
-        var_dump($db_data['Actions']);
 
 
         $this->assignByRef('row', $db_data);
