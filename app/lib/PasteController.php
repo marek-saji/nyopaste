@@ -225,12 +225,13 @@ class PasteController extends PagesController
                     }
                      */
 
+                    $paste = g('Paste', 'model');
+
                     // url field must be not null and unique.
                     $post_data['url'] = $paste->uniquifyURL(
                         @$post_data['url'], @$post_data['title']
                     );
 
-                    $paste = g('Paste', 'model');
                     if (true !== $err = $paste->sync($post_data, true, 'insert'))
                     {
                         g()->addInfo('ds fail, inserting paste', 'error',
