@@ -8,7 +8,7 @@ $v->addJs($this->file('default', 'js'));
 $v->addLess($this->file('default', 'less'));
 
 $line_numbers = $f->anyToBool($row['line_numbers']);
-$class = $line_numbers ? 'line_no' : '';
+$class = $line_numbers ? 'line_no ' : '';
 $class .= $row['colour_scheme'];
 
 $lines = explode("\n", $this->highlight($row['content'], $row['syntax']));

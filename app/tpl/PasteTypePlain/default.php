@@ -18,7 +18,7 @@ if ($row['wrap_at'])
 
 $line_numbers = $f->anyToBool($row['line_numbers']);
 
-$class = $line_numbers ? 'line_no' : '';
+$class = $line_numbers ? 'line_no ' : '';
 
 $lines = explode("\n", $row['content']);
 ?>
