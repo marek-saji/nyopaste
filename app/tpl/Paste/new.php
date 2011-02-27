@@ -167,7 +167,6 @@ $form = g('Forms', array('paste', $this));
             <!-- content: upload or paste -->
             <ul class="radio-optiongroups">
 
-                <?php if (g()->debug->allowed()) : ?>
                 <li class="file content field">
                     <?php
                     $form->input(
@@ -182,7 +181,6 @@ $form = g('Forms', array('paste', $this));
                     $form->input('content_file');
                     ?>
                 </li>
-                <?php endif; ?>
 
                 <li class="text content field">
                     <?php

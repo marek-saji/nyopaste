@@ -33,9 +33,7 @@ $(function(){
                     {
                         $select.val($radio.val());
                     }
-                    $label
-                        .hide()
-                        .insertBefore($list);
+                    $label.hide();
                 });
 
         $select
@@ -45,7 +43,9 @@ $(function(){
                     .siblings(':visible')
                         .slideUp()
                     .end()
-                    .slideDown();
+                    .slideDown()
+                    .find('input[type="radio"]:first')
+                        .click();
             })
             .find(':selected').data('suboptions')
                 .siblings()
