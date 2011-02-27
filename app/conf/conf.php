@@ -3,17 +3,26 @@
  * Technical settings
  */
 
-// even consider the idea of debug mode being enabled
-$conf['allow_debug'] = true;
+// even consider the idea of debug mode being enabled?
+switch (getenv('HG_ENVIRONMENT'))
+{
+    case 'LOCAL' :
+    case 'DEV' :
+    //case 'TEST' :
+        $conf['allow_debug'] = true;
+        break;
+    default :
+        $conf['allow_debug'] = false;
+}
 
 $conf['controllers']['lib']['default'] = 'Paste';
 $conf['controllers']['debug']['sub'] = array (
-    'name'=>'lib',
-    'type'=>'Library',
+    'name' => 'lib',
+    'type' => 'Library',
 );
 $conf['controllers']['debug/lib'] = & $conf['controllers']['lib'];
 
-// it's not obligatory, but let's show debug toolbar, when deebug is enabled
+// it's not obligatory, but let's show debug toolbar, when debug is enabled
 if ($conf['allow_debug'])
 {
     // be awesome (debug toolbar etc)
