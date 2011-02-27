@@ -17,12 +17,26 @@ $v->setTitle($title);
             <?=$title?>
             <small>
                 <?php
-                    if ($row['paster_id'])
-                        $paster = $t->inc('user_link', array('user'=>$row['Paster']));
-                    else
+                if ($row['paster_id'])
+                    $paster_html = $t->inc('user_link', array('user'=>$row['Paster']));
+                else
+                {
+                    if ($row['paster'])
                         $paster = $row['paster'];
-                    echo $t->trans('by %s', $paster);
+                    else
+                        $paster = $t->trans('anonymous');
+                    $paster_html = $f->tag(
+                        'span',
+                        array('class' => 'vcard'),
+                        $f->tag(
+                            'i',
+                            array('class' => 'fn'),
+                            $paster
+                        )
+                    );
+                }
                 ?>
+                <?=$paster_html?>
             </small>
         </h2>
         <?php if ($row['source_url']) : ?>
