@@ -49,7 +49,7 @@ class PasteTypeSourceController extends PasteTypePlainController
     /**
      * @url http://etherpad.mozilla.com:9000/ep/pad/view/oSW4EWUuOX/U5pPuVBBaT
      */
-    public function highlight($text, $syntax, $token_class_prefix='ace_', $decode_entities=true)
+    public function highlight($text, $syntax, $class_prefix='ace_', $decode_entities=true)
     {
         if ($decode_entities)
         {
@@ -78,25 +78,23 @@ class PasteTypeSourceController extends PasteTypePlainController
             $len = mb_strlen($text);
             foreach($rules[$state] as &$rule)
             {
-                //var_dump(mb_substr($text, 0, 10), $rule['regex']);
                 if (preg_match("/^(?:{$rule['regex']})/", $text, $match))
                 {
                     $class = $rule['token'];
-                    $class = preg_replace('/\./', ' '.$token_class_prefix, $class);
+                    $class = preg_replace('/\./', ' '.$class_prefix, $class);
 
                     $attrs = array(
-                        'class' => $token_class_prefix . $class
+                        'class' => $class_prefix . $class
                     );
                     if (g()->debug->on('paste'))
                     {
                         $attrs['title'] = $attrs['class'] . '; state: '.$state;
-                        //$tokenized_text .= "<small><b>{$state}.{$rule['token']}</b></small>";
                     }
-                    $tokenized_text .= $f->tag(
-                        'span',
-                        $attrs,
-                        htmlspecialchars($match[0])
-                    );
+                    $open_tag  = $f->tag('span', $attrs, null, 'open');
+                    $close_tag = $f->tag('span', $attrs, null, 'close');
+                    $line = htmlspecialchars($match[0]);
+                    $line = preg_replace("/\n/", "{$close_tag}\n{$open_tag}", $line);
+                    $tokenized_text .= $open_tag . $line . $close_tag;
                     $text = mb_substr($text, mb_strlen($match[0]));
                     if (isset($rule['next']))
                     {
