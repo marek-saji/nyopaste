@@ -10,6 +10,10 @@ $title = $row['title'];
 $v->setTitle($title);
 $v->setMeta('og:type', 'article', 'property');
 $v->setMeta('og:url', $this->url2a('', array($row['url']), true), 'property');
+$v->setDescription($this->trans(
+    'a paste by %s',
+    $row['Paster'] ? $row['Paster']['DisplayName'] : $row['paster']
+));
 ?>
 
 <section class="hentry">

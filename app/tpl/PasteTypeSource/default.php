@@ -3,6 +3,14 @@
  * Paste with source code, render contents
  * @author m.augustynowicz
  */
+if ($row['syntax'])
+{
+    $v->setDescription($this->trans(
+        'a %s paste by %s',
+        $row['syntax'],
+        $row['Paster'] ? $row['Paster']['DisplayName'] : $row['paster']
+    ));
+}
 
 $v->addJs($this->file('default', 'js'));
 $v->addLess($this->file('default', 'less'));
