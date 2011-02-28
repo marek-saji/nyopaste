@@ -43,6 +43,14 @@ class PasteTypeSourceController extends PasteTypePlainController
         $this->assign('syntax_values', array_combine($modes, $modes));
 
         $this->assign('colour_scheme_values', $conf['themes']);
+
+        $this->data['paste'] =
+            (isset($this->data['paste']) ? (array)$this->data['paste'] : array())
+            +
+            array(
+                'syntax' => $conf['default mode'],
+                'colour_scheme' => $conf['default theme']
+            );
     }
 
 

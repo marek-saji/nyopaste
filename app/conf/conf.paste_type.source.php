@@ -1,9 +1,13 @@
 <?php
 $conf['paste_types']['source'] = array(
+
     'modes' => array(
         'c' => array(true),
         'xml' => array(true),
     ),
+
+    'default mode' => 'c',
+
 
     'themes' => array(
         'ace-clouds' => 'Clouds',
@@ -19,5 +23,8 @@ $conf['paste_types']['source'] = array(
         'ace-tm' => 'Textmate',
         'ace-twilight' => 'Twilight',
     ),
+
+    'default theme' => 'ace-tm',
+
 );
 
