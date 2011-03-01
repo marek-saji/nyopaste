@@ -30,6 +30,8 @@ $v->addCss($this->file('themes/'.$row['colour_scheme'], 'css'));
 </style>
 <?php endif; ?>
 
-<pre class="<?=$class?>"><div class="ace_scroller ace_text-layer"><?php foreach ($lines as $i => $line) : ?><code id="line<?=$i?>" class="line ace_line"><?=$line?></code>
-<?php endforeach; ?></div></pre>
+<div class="wrapper <?=$class?>">
+    <pre class="content ace_scroller ace_text-layer"><?php foreach ($lines as $i => $line) : ?><code id="line<?=$i?>" class="line ace_line"><?=$line?></code>
+<?php endforeach; ?></pre>
+</div>
 

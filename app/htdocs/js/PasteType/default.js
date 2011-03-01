@@ -1,5 +1,5 @@
 $(function(){
-    $('pre.line_no').each(function(){
+    $('.wrapper.line_no > .content').each(function(){
         var $pre  = $(this),
             $code = $pre.children('code'),
             $numbers = $('<div />', {
@@ -11,9 +11,8 @@ $(function(){
                 no = id.replace(/[^0-9]/g, '');
             $('<a />', {
                 'href': '#' + id,
-                'text': no
+                'text': 1+parseInt(no)
             }).appendTo($numbers);
-            $('<br />').appendTo($numbers);
         });
     });
 });

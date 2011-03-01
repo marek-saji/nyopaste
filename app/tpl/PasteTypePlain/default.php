@@ -23,5 +23,5 @@ $class = $line_numbers ? 'line_no ' : '';
 $lines = explode("\n", $row['content']);
 ?>
 
-<pre class="<?=$class?>"><?php foreach ($lines as $i => $line) : ?><code id="line<?=$i?>" class="line"><?=$line?></code><?php endforeach; ?></pre>
+<div class="wrapper <?=$class?>"><pre class="content"><?php foreach ($lines as $i => $line) : ?><code id="line<?=$i?>" class="line"><?=$line?></code><?php endforeach; ?></pre>
 
