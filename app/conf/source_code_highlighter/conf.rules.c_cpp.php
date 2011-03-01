@@ -7,7 +7,7 @@
 
 $doc_comment = require(dirname(__FILE__) . DIRECTORY_SEPARATOR . 'doc_comment.php');
 
-$conf['paste_types']['source']['modes'] = array(
+$conf['source_code_highlighter']['modes'] = array(
 
     'c_cpp' => array(
 
@@ -136,5 +136,5 @@ $conf['paste_types']['source']['modes'] = array(
     ), // xml
 );
 
-$conf['paste_types']['source']['modes']['c_cpp']['rules'] += $doc_comment['rules'];
+$conf['source_code_highlighter']['modes']['c_cpp']['rules'] += $doc_comment['rules'];
 

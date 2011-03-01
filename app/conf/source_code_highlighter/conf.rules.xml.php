@@ -4,7 +4,7 @@
  * @author m.augustynowicz ported from javascript
  * @url https://github.com/ajaxorg/ace/blob/master/lib/ace/mode/xml_highlight_rules.js
  */
-$conf['paste_types']['source']['modes'] = array(
+$conf['source_code_highlighter']['modes'] = array(
 
     'xml' => array(
 

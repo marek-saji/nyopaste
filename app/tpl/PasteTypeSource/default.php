@@ -19,7 +19,7 @@ $line_numbers = $f->anyToBool($row['line_numbers']);
 $class = $line_numbers ? 'line_no ' : '';
 $class .= $row['colour_scheme'];
 
-$lines = explode("\n", $this->highlight($row['content'], $row['syntax']));
+$lines = explode("\n", g('SourceCodeHighlighter')->highlight($row['content'], $row['syntax']));
 
 $v->addCss($this->file('themes/'.$row['colour_scheme'], 'css'));
 ?>

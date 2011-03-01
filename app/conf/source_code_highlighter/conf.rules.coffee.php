@@ -12,7 +12,7 @@ $stringfill = array(
     'regex' => ".+"
 );
 
-$conf['paste_types']['source']['modes'] = array(
+$conf['source_code_highlighter']['modes'] = array(
 
     'coffee' => array(
 
