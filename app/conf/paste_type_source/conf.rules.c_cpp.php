@@ -17,14 +17,14 @@ $conf['paste_types']['source']['modes'] = array(
 
                 array(
                     'token' => "comment",
-                    'regex' => "\\/\\/.*$"
+                    'regex' => "//.*"
                 ),
 
                 $doc_comment['start_rule'],
 
                 array(
                     'token' => "comment", // multi line comment
-                    'regex' => "\\/\\*",
+                    'regex' => "/\\*",
                     'next' => "comment"
                 ),
                 array(
@@ -98,7 +98,7 @@ $conf['paste_types']['source']['modes'] = array(
             'comment' => array(
                 array(
                     'token' => "comment", // closing comment
-                    'regex' => ".*?\\*\\/",
+                    'regex' => ".*?\\*/",
                     'next' => "start"
                 ),
                 array(

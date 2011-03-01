@@ -8,15 +8,15 @@ return array(
 
     'start_rule' => array(
         'token' => "comment.doc", // doc comment
-        'regex' => "\\/\\*\\*",
+        'regex' => "/\\*\\*",
         'next' => 'doc-start',
     ),
 
     'rules' => array(
         'doc-start' => array(
             array(
-                'token' => "comment.docFOO", // closing comment
-                'regex' => "\\*\\/",
+                'token' => "comment.doc", // closing comment
+                'regex' => "\\*/",
                 'next' => "start"
             ),
             array(
@@ -36,7 +36,7 @@ return array(
                 'regex' => "[^@\\*]+"
             ),
             array(
-                'token' => "comment.docDOT",
+                'token' => "comment.doc",
                 'regex' => "."
             ),
         ),
