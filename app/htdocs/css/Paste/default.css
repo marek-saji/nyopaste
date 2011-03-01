@@ -1,0 +1,31 @@
+.paste.hentry hgroup h2, .paste.hentry hgroup h3 {
+  display: inline;
+  margin: 0;
+  padding: 0;
+}
+.paste.hentry hgroup h2 {
+  font-size: 2em;
+}
+.paste.hentry hgroup h3 {
+  font-size: 1.2em;
+}
+.paste.hentry .actions.wrapper {
+  overflow: hidden;
+  width: 100%;
+}
+.paste.hentry .actions.wrapper .actions {
+  float: left;
+  font-size: .8em;
+  margin: 0 0 .2em 0;
+}
+.paste.hentry .actions.wrapper .actions.basic {
+  float: right;
+}
+.paste.hentry .actions.wrapper .actions ul {
+  margin: 0;
+  padding: 0;
+}
+.paste.hentry .actions.wrapper .actions .action {
+  display: inline;
+}
+/* vim: set ft=css: */

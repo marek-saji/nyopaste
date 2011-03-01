@@ -1,5 +1,6 @@
 body.Paste article#content .wrapper.line_no pre.content {
   overflow: hidden;
+  margin: 0;
 }
 body.Paste article#content .wrapper.line_no pre.content .numbers {
   float: left;

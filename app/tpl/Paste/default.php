@@ -14,9 +14,11 @@ $v->setDescription($this->trans(
     'a paste by %s',
     $row['Paster'] ? $row['Paster']['DisplayName'] : $row['paster']
 ));
+
+$v->addLess($this->file('default', 'less'));
 ?>
 
-<section class="hentry">
+<section class="paste hentry">
     <header>
         <hgroup>
             <h2 class="entry-title">
@@ -79,11 +81,19 @@ $v->setDescription($this->trans(
         $type->inc('meta');
         ?>
 
-        <?php
-        $t->inc('row_actions', array(
-            'actions' => & $row['Actions']
-        ));
-        ?>
+        <div class="actions wrapper">
+            <?php
+            $t->inc('row_actions', array(
+                'actions' => & $row['Actions']
+            ));
+            ?>
+            <?php
+            $t->inc('row_actions', array(
+                'actions' => & $row['BasicActions'],
+                'class' => 'basic'
+            ));
+            ?>
+        </div> <!-- .actions.wrapper -->
     </header>
 
     <article id="content" class="entry-content <?=$type->getType()?>">

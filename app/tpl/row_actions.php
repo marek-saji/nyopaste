@@ -10,12 +10,14 @@
  *        the action, whereas true renders link to action with the same
  *        parameters as current action
  */
-
-$name = $t->getName();
 $actions = (array) $actions;
+$name = $t->getName();
+@$____local_variables['class'] .= ' ' . $name . ' actions';
+unset($____local_variables['actions']);
+$attrs = $f->xmlAttr($____local_variables);
 ?>
 
-<nav class="<?=$name?> actions">
+<nav <?=$attrs?>>
     <ul>
         <?php foreach ($actions as $action => & $value) : ?>
             <?php

@@ -77,10 +77,12 @@ class PasteController extends PagesController
      *
      * @param array request params:
      *        - [0] pase's id, if none given, redirect to actionNew
+     *        - [1] eigher "get" or "raw"
      */
     public function actionDefault(array $params)
     {
         $url = @$params[0];
+        $display_type = @$params[1];
 
         if (!$url)
         {
@@ -96,22 +98,34 @@ class PasteController extends PagesController
         $type = $this->_types[$db_data['type_id']];
         $type->getOne($db_data['id'], $db_data);
 
+        switch ($display_type)
+        {
+            case 'get' :
+                $filename = urlencode($db_data['title']) . '.' . g()->conf['paste_types']['source']['modes'][$db_data['syntax']]['extension'];
+                header('Content-Disposition: attachment; filename="'.$filename.'"');
+            case 'raw' :
+                $this->assign('content', $db_data['content']);
+                g()->view = g('TextView');
+                $this->_setTemplate('default.raw');
+                return;
+        }
 
         // determine which action can be launched
         $action = $this->getLaunchedAction();
         if ($this->_default_action == $action)
             $action = '';
         $removed = $db_data['status'] & STATUS_DELETED;
-        $db_data['Actions'] = array(
-            'get'     => array($this, $action,   array($url, 'get')),
-            'plain'   => array($this, $action,   array($url, 'plain')),
-            'edit'    => array($this, 'edit',    array($url)),
-            'remove'  => $removed ? false :
-                         array($this, 'remove',  array($url)),
-            'restore' => !$removed ? false :
-                         array($this, 'restore', array($url)),
+        $all_actions = array(
+            'download'  => array($this, $action,   array($url, 'get')),
+            'raw'       => array($this, $action,   array($url, 'raw')),
+            'permalink' => array($this, $action,   array($url)),
+            'edit'      => array($this, 'edit',    array($url)),
+            'remove'    => $removed ? false :
+                           array($this, 'remove',  array($url)),
+            'restore'   => !$removed ? false :
+                           array($this, 'restore', array($url)),
         );
-        foreach ($db_data['Actions'] as $action => & $url)
+        foreach ($all_actions as $action => & $url)
         {
             if (false === $url)
                 continue;
@@ -127,6 +141,16 @@ class PasteController extends PagesController
                     $url = false;
             }
         }
+
+        $basic_actions = array('download'=>1, 'raw'=>1, 'permalink'=>1);
+        $db_data['BasicActions'] = array_intersect_key(
+            $all_actions,
+            $basic_actions
+        );
+        $db_data['Actions'] = array_diff_key(
+            $all_actions,
+            $basic_actions
+        );
 
 
         $this->assignByRef('row', $db_data);

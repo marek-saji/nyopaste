@@ -2,9 +2,18 @@
 $conf['paste_types']['source'] = array(
 
     'modes' => array(
-        'c_cpp'         => array('name' => 'C/C++'),
-        'coffee'        => array('name' => 'Coffee'),
-        'xml'           => array('name' => 'XML'),
+        'c_cpp' => array(
+            'name'      => 'C/C++',
+            'extension' => 'c'
+        ),
+        'coffee' => array(
+            'name'      => 'CoffeeScript',
+            'extension' => 'coffee'
+        ),
+        'xml' => array(
+            'name'      => 'XML',
+            'extension' => 'xml'
+        ),
     ),
 
     'default mode' => 'c',
