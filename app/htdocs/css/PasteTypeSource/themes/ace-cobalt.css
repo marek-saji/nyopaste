@@ -49,7 +49,8 @@ border-left: 0px;
 border-bottom: 1px solid #FFFFFF;
 }
 
-.ace-cobalt .ace_marker-layer .ace_selection {
+.ace-cobalt *::selection,
+.ace-cobalt *::-moz-selection {
 background: rgba(179, 101, 57, 0.75);
 }
 

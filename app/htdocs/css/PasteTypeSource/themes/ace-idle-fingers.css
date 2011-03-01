@@ -49,7 +49,8 @@ border-left: 0px;
 border-bottom: 1px solid #91FF00;
 }
 
-.ace-idle-fingers .ace_marker-layer .ace_selection {
+.ace-idle-fingers *::selection,
+.ace-idle-fingers *::-moz-selection {
 background: rgba(90, 100, 126, 0.88);
 }
 

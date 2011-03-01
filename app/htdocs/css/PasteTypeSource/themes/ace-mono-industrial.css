@@ -49,7 +49,8 @@ border-left: 0px;
 border-bottom: 1px solid #FFFFFF;
 }
 
-.ace-mono-industrial .ace_marker-layer .ace_selection {
+.ace-mono-industrial *::selection,
+.ace-mono-industrial *::-moz-selection {
 background: rgba(145, 153, 148, 0.40);
 }
 

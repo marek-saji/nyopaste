@@ -114,7 +114,8 @@ color: rgb(49, 132, 149);
 color: rgb(104, 104, 91);
 }
 
-.ace-tm .ace_marker-layer .ace_selection {
+.ace-tm *::selection,
+.ace-tm *::-moz-selection {
 background: rgb(181, 213, 255);
 }
 

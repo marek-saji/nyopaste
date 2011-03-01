@@ -77,7 +77,8 @@ color: rgb(63, 127, 127);
 color: rgb(104, 104, 91);
 }
 
-.ace-eclipse .ace_marker-layer .ace_selection {
+.ace-eclipse *::selection,
+.ace-eclipse *::-moz-selection {
 background: rgb(181, 213, 255);
 }
 

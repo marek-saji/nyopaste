@@ -49,7 +49,8 @@ border-left: 0px;
 border-bottom: 1px solid #000000;
 }
 
-.ace-clouds .ace_marker-layer .ace_selection {
+.ace-clouds *::selection,
+.ace-clouds *::-moz-selection {
 background: #BDD5FC;
 }
 

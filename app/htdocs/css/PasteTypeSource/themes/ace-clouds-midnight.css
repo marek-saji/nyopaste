@@ -48,7 +48,8 @@ border-left: 0px;
 border-bottom: 1px solid #7DA5DC;
 }
 
-.ace-clouds-midnight .ace_marker-layer .ace_selection {
+.ace-clouds-midnight *::selection,
+.ace-clouds-midnight *::-moz-selection {
 background: #000000;
 }
 
