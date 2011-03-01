@@ -1,6 +1,6 @@
 <?php
 /**
- * Rules for highlighting in C mode.
+ * Rules for highlighting in C/C++ mode.
  * @author m.augustynowicz ported from javascript
  * @url https://github.com/ajaxorg/ace/blob/master/lib/ace/mode/c_highlight_rules.js
  */
@@ -9,7 +9,7 @@ $doc_comment = require(dirname(__FILE__) . DIRECTORY_SEPARATOR . 'doc_comment.ph
 
 $conf['paste_types']['source']['modes'] = array(
 
-    'c' => array(
+    'c_cpp' => array(
 
         'rules' => array(
 
@@ -136,5 +136,5 @@ $conf['paste_types']['source']['modes'] = array(
     ), // xml
 );
 
-$conf['paste_types']['source']['modes']['c']['rules'] += $doc_comment['rules'];
+$conf['paste_types']['source']['modes']['c_cpp']['rules'] += $doc_comment['rules'];
 
