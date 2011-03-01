@@ -39,10 +39,15 @@ class PasteTypeSourceController extends PasteTypePlainController
     {
         $conf = &g()->conf['paste_types']['source'];
 
-        $modes = array_keys($conf['modes']);
-        $this->assign('syntax_values', array_combine($modes, $modes));
+        $modes = array();
+        foreach ($conf['modes'] as $key => &$mode)
+        {
+            $modes[$key] = $mode['name'];
+        }
+        unset($mode);
+        $this->assignByRef('syntax_values', $modes);
 
-        $this->assign('colour_scheme_values', $conf['themes']);
+        $this->assignByRef('colour_scheme_values', $conf['themes']);
 
         $this->data['paste'] =
             (isset($this->data['paste']) ? (array)$this->data['paste'] : array())
@@ -51,6 +56,46 @@ class PasteTypeSourceController extends PasteTypePlainController
                 'syntax' => $conf['default mode'],
                 'colour_scheme' => $conf['default theme']
             );
+    }
+
+
+    /**
+     * Loads configs files with mode rules
+     * @author m.augustynowicz
+     *
+     * @param string $mode mode name
+     *
+     * @return bool success of operation
+     */
+    protected function _loadRules($mode, &$rules=array())
+    {
+        $conf = &g()->conf['paste_types']['source']['modes'][$mode];
+        if (!isset($conf['rules']))
+        {
+            g()->readConfigFiles('paste_type_source', 'conf.rules.'.$mode);
+
+            if (!isset($conf['rules']))
+            {
+                trigger_error("Mode {$mode} not defined.", E_USER_WARNING);
+                return false;
+            }
+
+            foreach ($conf['rules'] as &$state_rules)
+            {
+                foreach ($state_rules as &$rule)
+                {
+                    $rule['regex'] = '/^(?:'
+                        . str_replace('/', '\/', $rule['regex'])
+                        . ')/';
+                }
+                unset($rule);
+            }
+            unset($state_rules);
+        }
+
+        $rules = $conf['rules'];
+
+        return true;
     }
 
 
@@ -64,15 +109,9 @@ class PasteTypeSourceController extends PasteTypePlainController
             $text = html_entity_decode($text);
         }
 
-        g()->readConfigFiles('paste_type_source', 'conf.rules.'.$syntax);
-        $modes = & g()->conf['paste_types']['source']['modes'];
-        if (!isset($modes[$syntax]))
+        if (!$this->_loadRules($syntax, $rules))
         {
             return htmlspecialchars($text);
-        }
-        else
-        {
-            $rules = & $modes[$syntax]['rules'];
         }
 
         $f = g('Functions');
@@ -86,7 +125,7 @@ class PasteTypeSourceController extends PasteTypePlainController
             $len = mb_strlen($text);
             foreach($rules[$state] as &$rule)
             {
-                if (preg_match("/^(?:{$rule['regex']})/", $text, $match))
+                if (preg_match($rule['regex'], $text, $match))
                 {
                     $class = $rule['token'];
                     $class = preg_replace('/\./', ' '.$class_prefix, $class);

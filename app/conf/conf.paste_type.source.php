@@ -2,8 +2,8 @@
 $conf['paste_types']['source'] = array(
 
     'modes' => array(
-        'c' => array(true),
-        'xml' => array(true),
+        'c_cpp'         => array('name' => 'C/C++'),
+        'xml'           => array('name' => 'XML'),
     ),
 
     'default mode' => 'c',
