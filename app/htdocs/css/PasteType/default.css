@@ -1,10 +1,10 @@
 body.Paste article#content .wrapper.line_no pre.content {
-  overflow: hidden;
   margin: 0;
 }
 body.Paste article#content .wrapper.line_no pre.content .numbers {
   float: left;
   margin-right: 1em;
+  color: gray;
 }
 body.Paste article#content .wrapper.line_no pre.content .numbers a {
   color: inherit;
