@@ -3,6 +3,7 @@ $conf['paste_types']['source'] = array(
 
     'modes' => array(
         'c_cpp'         => array('name' => 'C/C++'),
+        'coffee'        => array('name' => 'Coffee'),
         'xml'           => array('name' => 'XML'),
     ),
 
