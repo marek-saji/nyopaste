@@ -8,5 +8,15 @@ $conf['js-libs'] = array(
         ),
         'onload' => '$(".encapsulating").encapsulating()',
     ),
+
+    /**
+     * CSS2-3 selectors for IE
+     * @url http://selectivizr.com/
+     */
+    'selectivizr' => array(
+        'filename'      => 'selectivizr',
+        'min_filename'  => 'selectivizr-development',
+        'ie'            => '(gte IE 6)&(lte IE 8)',
+    ),
 );
 
