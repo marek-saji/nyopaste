@@ -107,10 +107,4 @@ section {
 #foot p a {
   color: #333;
 }
-strong.required {
-  color: #bb0000;
-}
-.sign-in.holoform .required {
-  display: none;
-}
 /* vim: set ft=css: */

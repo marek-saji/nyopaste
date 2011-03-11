@@ -18,8 +18,9 @@ $v->setTitle($title);
     </header>
 
     <p>
-        <?=$t->trans('Fields marked with asterisk (<strong class="required">*</strong>) are required.')?>
+        <?=$this->trans('Only fields marked with <q class="required"><span class="inside"><small class="required">(field required)</small></span></q> are required.')?>
     </p>
+
 
     <?php
     $form = g('Forms', array('new', $this));

@@ -216,6 +216,25 @@ body.js .holoform form
 
 }
 
+/* outside of form for demoing purposes */
+.required
+{
+    .inside
+    {
+        padding: 7px 14px 7px 0; /* image is 12x12px */
+        background: transparent url(../gfx/asterisk.png) scroll no-repeat right center;
+    }
+    small.required
+    {
+        display: none;
+    }
+}
+.sign-in.holoform .required
+{
+    display: none;
+}
+
+
 @media (max-width: 50em)
 {
     body.js .holoform form,
