@@ -59,11 +59,9 @@ $(function(){
         var $list = $(this),
             visible = $list.is(':visible'),
             data = $list.data('less-important-options'),
-            collapseLabel = '<strong>(-)</strong> '+data.collapse,
-            expandLabel   = '<strong>(+)</strong> '+data.expand,
             $toggler = $('<a />', {
-                'class': 'less-important-options-toggler '+(visible?'':'expander'),
-                'html': visible ? collapseLabel : expandLabel
+                'class': 'less-important-options-toggler '+(visible?'collapser':'expander'),
+                'html': visible ? data.collapse : data.expand
             });
 
         $toggler
@@ -73,16 +71,18 @@ $(function(){
                 {
                     $list.slideUp(function(){
                         $toggler
-                            .html(expandLabel)
-                            .addClass('expander');
+                            .html(data.expand)
+                            .addClass('expander')
+                            .removeClass('collapser');
                     });
                 }
                 else
                 {
                     $list.slideDown(function(){
                         $toggler
-                            .html(collapseLabel)
-                            .removeClass('expander');
+                            .html(data.collapse)
+                            .removeClass('expander')
+                            .addClass('collapser');
                     });
                 }
             })

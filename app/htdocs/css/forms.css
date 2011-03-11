@@ -47,10 +47,23 @@
 .holoform form fieldset legend select {
   font-size: 1em;
 }
-.holoform form fieldset ul + .less-important-options-toggler {
+.holoform form fieldset .less-important-options-toggler {
   display: block;
+  padding-left: 20px;
+  /* images are 16x16px */
+
+  min-height: 20px;
   margin-top: 1em;
   cursor: pointer;
+}
+.holoform form fieldset .less-important-options-toggler.expander {
+  background: transparent url(../gfx/expand.png) scroll no-repeat left top;
+}
+.holoform form fieldset .less-important-options-toggler.collapser {
+  background: transparent url(../gfx/collapse.png) scroll no-repeat left top;
+}
+.holoform form fieldset legend + .less-important-options-toggler {
+  margin-top: 0;
 }
 .holoform form fieldset ul, .holoform form fieldset ul li.field {
   list-style: none;
