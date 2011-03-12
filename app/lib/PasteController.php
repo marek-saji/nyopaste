@@ -213,6 +213,15 @@ class PasteController extends PagesController
         $form_id = 'paste';
         $inputs = & $this->forms[$form_id]['inputs'];
         $post_data = & $this->data[$form_id];
+        $db_data = array();
+
+        $this->assign(
+            'max_upload_size_mb',
+            min(
+                $f->parseBytes(ini_get('upload_max_filesize')),
+                $f->parseBytes(ini_get('post_max_size'))
+            ) / 1024 / 1024
+        );
 
         // list of static fields -- text gets rendered instead of input
         // key: name, value: text

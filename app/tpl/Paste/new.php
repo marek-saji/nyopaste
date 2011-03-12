@@ -180,6 +180,7 @@ $form = g('Forms', array('paste', $this));
                     <?php
                     $form->input('content_file');
                     ?>
+                    <small><?=$this->trans('max file size: %0.2f <abbr title="megabyte(s)">MB</abbr>', $max_upload_size_mb);?></small>
                 </li>
 
                 <li class="text content field">
