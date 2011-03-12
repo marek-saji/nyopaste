@@ -7,7 +7,6 @@ g()->load('PasteTypeSource', 'controller');
 class PasteTypeSourceController extends PasteTypePlainController
 {
     protected $_type = 'source';
-    protected $_type_idx = 1;
 
     public $forms = array(
         'paste' => array(
@@ -37,7 +36,9 @@ class PasteTypeSourceController extends PasteTypePlainController
      */
     public function actionNew(array $params)
     {
-        $conf = &g()->conf['paste_types']['source'];
+        parent::actionNew($params);
+
+        $conf = &g()->conf['paste_types'][$this->_type];
 
         $modes = array();
         foreach ($conf['modes'] as $key => &$mode)
@@ -49,13 +50,6 @@ class PasteTypeSourceController extends PasteTypePlainController
 
         $this->assignByRef('colour_scheme_values', $conf['themes']);
 
-        $this->data['paste'] =
-            (isset($this->data['paste']) ? (array)$this->data['paste'] : array())
-            +
-            array(
-                'syntax' => $conf['default mode'],
-                'colour_scheme' => $conf['default theme']
-            );
     }
 
 }

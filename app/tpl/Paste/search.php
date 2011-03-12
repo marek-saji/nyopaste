@@ -7,12 +7,12 @@
 <section>
     <h2>@todo title</h2>
 
-    <ol id="content">
+    <ol id="content" start="<?=$this->getChild('p')->getFirstItemIndex()?>">
         <?php
         foreach ($rows as & $row) :
         ?>
             <li>
-                <?=$t->l2a($row['title'], '', array($row['url']))?>
+                <?=$t->l2a($row['title'], '', array($row['url'], 'v'=>$row['version']))?>
                 <?php
                 var_dump($row);
                 ?>

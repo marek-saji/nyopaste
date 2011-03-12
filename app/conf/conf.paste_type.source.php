@@ -16,9 +16,6 @@ $conf['paste_types']['source'] = array(
         ),
     ),
 
-    'default mode' => 'c',
-
-
     'themes' => array(
         'ace-clouds' => 'Clouds',
         'ace-clouds-midnight' => 'Clouds Midnight',
@@ -34,7 +31,11 @@ $conf['paste_types']['source'] = array(
         'ace-twilight' => 'Twilight',
     ),
 
-    'default theme' => 'ace-tm',
+
+    'defaults' => array(
+        'syntax' => 'c_cpp',
+        'colour_scheme' => 'ace-tm',
+    ),
 
 );
 

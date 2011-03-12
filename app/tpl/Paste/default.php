@@ -100,6 +100,11 @@ $v->addLess($this->file('default', 'less'));
         <?php
         $type->render();
         ?>
+
+        <?php
+        //var_dump($row['Tree']);
+        $this->inc('tree', array('tree'=>&$row['Tree']));
+        ?>
     </article>
 
 </section>

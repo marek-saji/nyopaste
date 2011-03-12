@@ -52,7 +52,7 @@ $form = g('Forms', array('paste', $this));
                                 <?=$t->trans('Pasting anonymously.')?>
                             </p>
                             <p>
-                                <?=$t->trans('You can <a href="%s">sign-in</a> or <a href="%s">create an account</a> to be able to easily find your paste later and delete delete it, if you have to.',
+                                <?=$t->trans('You can <a href="%s">sign-in</a> or <a href="%s">create an account</a> to be able to easily find your paste later and delete it, if you have to.',
                                     $this->url2c('User','login'), $this->url2c('User','new')
                                 )?>
                             </p>
@@ -63,14 +63,13 @@ $form = g('Forms', array('paste', $this));
                 <!-- title -->
                 <li class="title field">
                     <?php
-                    $form->label('title', 'title');
+                    $form->label('title', 'title', array(
+                        'required' => !(bool)@$static_fields['title']
+                    ));
                     ?>
                     <?php
                     $form->input('title');
                     ?>
-                    <?php if (g()->debug->allowed()) : ?>
-                        @todo set, when creating new version
-                    <?php endif; ?>
                     <div class="help">
                         <p>
                             <?=$t->trans('You can call the paste with a filename (<abbr lang="la" title="exampli gratia">e.g.</abbr>&nbsp;<code>main.c</code>)')?>
@@ -138,24 +137,28 @@ $form = g('Forms', array('paste', $this));
                 <!-- preffered URL -->
                 <li class="preffered_url field">
                     <?php
-                    $form->label('url', 'preffered URL', array('required'=>false));
+                    $label = ((bool)@$static_fields['url'] ? '' : 'preffered ') . 'URL';
+                    $form->label('url', $label, array('required'=>false));
                     ?>
                     <?php
                     $form->input('url');
                     ?>
                     <div class="help">
                         <p>
-                            <?=$t->trans('URL address under which you\'d like your paste to be posted.')?>
+                            <?=$t->trans('End of URL address under which you\'d like paste will be visible at.')?>
                         </p>
                         <p>
                             <?=$t->trans('If none specified, will be generated from paste title.')?>
+                        </p>
+                        <p>
+                            <?=$t->trans('Allowed characters are letters, numbers, dash (<q>-</q>) and underscore (<q>_</q>). Other characters will get converted to a dash.')?>
                         </p>
                     </div>
                 </li>
 
                 <?php if (g()->debug->allowed()) : ?>
                 <li class="keep_for field">
-                    @todo "keep for..", preffered_url
+                    @todo "keep for.."
                 </li>
                 <?php endif; ?>
 
@@ -207,28 +210,40 @@ $form = g('Forms', array('paste', $this));
         </fieldset>
 
         <fieldset class="verbose">
-            <legend><?=$this->trans('type')?></legend>
-            <!-- paste type and paste-type-specific options -->
-            <ul class="radio-optiongroups">
-                <?php foreach ($this->_types as $idx => $type) : ?>
+            <?php if (@$static_fields['type']) : ?>
+                <legend><?=$this->trans('type: %s', $static_fields['type'])?></legend>
+                <ul>
                     <?php
-                    $name = (string) $type;
+                    $type = reset($this->_types);
                     ?>
-                    <li class="type field">
+                    <fieldset class="type-specific <?=urlencode($type)?>">
                         <?php
-                        $form->input('type_id', array(
-                            'value' => $idx,
-                            'label' => $t->trans($name)
-                        ));
+                        $type = reset($this->_types);
+                        $type->render();
                         ?>
-                        <fieldset class="type-specific <?=urlencode($name)?>">
+                    </fieldset>
+                </ul>
+            <?php else : ?>
+                <legend><?=$this->trans('type')?></legend>
+                <!-- paste type and paste-type-specific options -->
+                <ul class="radio-optiongroups">
+                    <?php foreach ($this->_types as $idx => $type) : ?>
+                        <li class="type field">
                             <?php
-                            $type->render();
+                            $form->input('type', array(
+                                'value' => $idx,
+                                'label' => $t->trans($type)
+                            ));
                             ?>
-                        </fieldset>
-                    </li>
-                <?php endforeach; ?>
-            </ul>
+                            <fieldset class="type-specific <?=urlencode($type)?>">
+                                <?php
+                                $type->render();
+                                ?>
+                            </fieldset>
+                        </li>
+                    <?php endforeach; ?>
+                </ul>
+            <?php endif; ?>
         </fieldset>
 
 
@@ -253,6 +268,11 @@ $form = g('Forms', array('paste', $this));
                 <?=$t->trans('Don\'t forget to read <a href="%s" target="_blank" class="ext">terms of use</a>.', $t->url2c('Paste', '', array('TOS'))); ?>
             </p>
         <?php endif; ?>
+
+        <?php
+        $form->input('root_id');
+        $form->input('parent_id');
+        ?>
 
         <?php
         $this->inc('Forms/buttons', array(

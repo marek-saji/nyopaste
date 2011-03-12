@@ -40,9 +40,12 @@ $conf['translations']['_global'] = array(
     'create an account' => 'załóż konto',
 
     'cancel' => 'anuluj', // close modal XOR go back
+
+    'Fields marked with asterisk are required.'
+        => 'Pola oznaczone <q class="required"><span class="inside"><small class="required">(field required)</small></span></q> są wymagane.',
+
     'field required' => 'pole wymagane',
-    'Only fields marked with asterisk (<strong class="required">*</strong>) are required.' =>
-        'Tylko pola oznaczone gwiazdką (<strong class="required">*</strong>) są wymagane.',
+    '(field required)' => '(pole wymagane)',
 
     // form input error messages
     'Field required' => 'Pole wymagane',

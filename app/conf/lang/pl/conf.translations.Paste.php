@@ -40,8 +40,9 @@ $conf['translations']['Paste'] = array(
 
     // actions
     '((action:%s:%s))' => array(
-        'get' => 'pobierz',
-        'plain' => 'pokaż jako tekst',
+        'download' => 'pobierz',
+        'raw' => 'pokaż jako tekst',
+        'newVer' => 'stwórz nową wersję',
     ),
 );
 

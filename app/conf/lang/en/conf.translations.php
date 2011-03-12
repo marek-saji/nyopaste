@@ -43,6 +43,9 @@ $conf['translations']['_global'] = array(
 
     // when form submission conflict has been detected
     '((error:POST conflict))' => 'Someone posted this form, while you were editing it. Your data has <strong>not</em> been saved now. If you want to overwrite these changes, submit the form once again',
+
+    'Fields marked with asterisk are required.'
+        => 'Fields marked with <q class="required"><span class="inside"><small class="required">(field required)</small></span></q> are required.',
 );
 
 
@@ -50,6 +53,12 @@ $conf['translations']['user'] = array(
     // actions that can be performed on user object:
     '((action:%s:%s))' => array(
         'default' => 'show profile',
+    ),
+);
+
+$conf['translations']['paste'] = array(
+    '((action:%s:%s))' => array(
+        'newVer' => 'create new version',
     ),
 );
 

@@ -6,6 +6,7 @@
  * @param string $url url of missing paste
  */
 $title = $this->trans('Bummer, there is no paste called <q>%s</q>', $url);
+$v->addHeader('HTTP/1.0 404 Not Found');
 $v->setTitle($title);
 ?>
 <section class="error 404">

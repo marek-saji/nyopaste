@@ -14,6 +14,8 @@ class PasteController extends PagesController
 {
     protected $_types = array();
 
+    protected $_getOne_cache = null;
+
     public $forms = array(
         'paste' => array(
             'model' => 'Paste',
@@ -27,6 +29,13 @@ class PasteController extends PagesController
                 'tags' => array(
                     'fields' => null,
                     '_tpl'   => 'Forms/Encapsulating'
+                ),
+
+                'parent_id' => array(
+                    '_tpl' => 'Forms/hidden'
+                ),
+                'root_id' => array(
+                    '_tpl' => 'Forms/hidden'
                 ),
 
                 'content_type' => array(
@@ -49,7 +58,7 @@ class PasteController extends PagesController
                 'enc_passwd',
                 //'acl' =>
 
-                'type_id' => array(
+                'type' => array(
                     'fields' => null,
                     '_tpl'=>'Forms/FRadio-single'
                 ),
@@ -59,6 +68,7 @@ class PasteController extends PagesController
             ), // forms[paste][inputs]
         ), // forms[paste]
     ); // forms
+
 
 
     /**
@@ -78,10 +88,12 @@ class PasteController extends PagesController
      * @param array request params:
      *        - [0] pase's id, if none given, redirect to actionNew
      *        - [1] eigher "get" or "raw"
+     *        - [v] paste version
      */
     public function actionDefault(array $params)
     {
         $url = @$params[0];
+        $ver = @$params['v'];
         $display_type = @$params[1];
 
         if (!$url)
@@ -91,18 +103,18 @@ class PasteController extends PagesController
 
 
         // fetch main and paste type data
-        if (!$this->_getOne($url, $db_data))
+        if (!$this->getOne($url, $ver, true, $db_data))
         {
             return false;
         }
-        $type = $this->_types[$db_data['type_id']];
-        $type->getOne($db_data['id'], $db_data);
 
         switch ($display_type)
         {
             case 'get' :
-                $filename = urlencode($db_data['title']) . '.' . g()->conf['paste_types']['source']['modes'][$db_data['syntax']]['extension'];
-                header('Content-Disposition: attachment; filename="'.$filename.'"');
+                $this->assign(
+                    'filename',
+                    urlencode($db_data['title']) . '.' . g()->conf['paste_types']['source']['modes'][$db_data['syntax']]['extension']
+                );
             case 'raw' :
                 $this->assign('content', $db_data['content']);
                 g()->view = g('TextView');
@@ -115,15 +127,17 @@ class PasteController extends PagesController
         if ($this->_default_action == $action)
             $action = '';
         $removed = $db_data['status'] & STATUS_DELETED;
+        $action_params = array($url) + ($ver ? array('v'=>$ver) : array());
         $all_actions = array(
-            'download'  => array($this, $action,   array($url, 'get')),
-            'raw'       => array($this, $action,   array($url, 'raw')),
-            'permalink' => array($this, $action,   array($url)),
-            'edit'      => array($this, 'edit',    array($url)),
+            'download'  => array($this, $action,   array(1=>'get') + $action_params),
+            'raw'       => array($this, $action,   array(1=>'raw') + $action_params),
+            'permalink' => array($this, $action,   $action_params),
+            'newVer'    => array($this, 'new',     $action_params),
+            'edit'      => array($this, 'edit',    $action_params),
             'remove'    => $removed ? false :
-                           array($this, 'remove',  array($url)),
+                           array($this, 'remove',  $action_params),
             'restore'   => !$removed ? false :
-                           array($this, 'restore', array($url)),
+                           array($this, 'restore', $action_params),
         );
         foreach ($all_actions as $action => & $url)
         {
@@ -152,11 +166,10 @@ class PasteController extends PagesController
             $basic_actions
         );
 
-
+        $type = $this->_types[$db_data['type']];
         $this->assignByRef('row', $db_data);
-        $this->assignByRef('type', $type);
-        $type->assignByRef('row', $db_data);
-
+        $this->assign('type', $type);
+        $type->assign('row', $db_data);
 
     }
 
@@ -205,10 +218,14 @@ class PasteController extends PagesController
      * Create new paste
      * @author m.augustynowicz
      *
-     * @param array $param request params, ignored
+     * @param array $param request params:
+     *        - [0] when creating new version of a paste, its the parent
      */
     public function actionNew(array $params)
     {
+        $parent_url = @$params[0];
+        $parent_ver = @$params['v'];
+
         $f = g('Functions');
         $form_id = 'paste';
         $inputs = & $this->forms[$form_id]['inputs'];
@@ -227,26 +244,50 @@ class PasteController extends PagesController
         // key: name, value: text
         $static_fields = array();
 
+        $new_ver = (bool) $parent_url;
+        if($new_ver)
+        {
+            $this->getOne($parent_url, $parent_ver, false, $db_data);
+            $static_fields = array(
+                'title'         => &$db_data['title'],
+                'url'           => &$db_data['url'],
+                //'author'        => &$db_data['author'],
+                //'source_url'    => &$db_data['source_url'],
+                'tags'          => &$db_data['tags'],
+                'paster'        => g()->auth->displayName(),
+                'type'          => &$db_data['type'],
+            );
+            $one_type = $this->_types[$static_fields['type']];
+            $this->_types = array();
+            $this->_types[$static_fields['type']] = $one_type;
+        }
 
         /** @todo handle editing? */
         if (empty($post_data))
         {
             // fill up form data
-            /*
-            $post_data = $db_data;
-             */
-            if (g()->auth->loggedIn())
+            if ($parent_url)
             {
-                $static_fields['paster'] = $post_data['paster']
-                        = g()->auth->displayName();
+                $post_data = $db_data;
+                $post_data['content_text'] = & $post_data['content'];
+                $post_data['parent_id'] = $db_data['id'];
+                $post_data['root_id'] = $db_data['root_id'];
+
+                /*
+                foreach ($this->_types as $type)
+                {
+                    $type->data[$form_id] = $post_data;
+                }
+                 */
             }
 
-            $this->data[$form_id]['content_type'] = 'content_text';
+            $post_data = (array)$post_data + g()->conf['paste']['defaults'];
         }
         else
         {
-            if ($this->_validated[$form_id])
+            if (@$this->_validated[$form_id])
             {
+                $insert_data = $static_fields + $this->data[$form_id];
                 g()->db->startTrans();
                 do // just so we can break on errors
                 {
@@ -267,11 +308,16 @@ class PasteController extends PagesController
                     $paste = g('Paste', 'model');
 
                     // url field must be not null and unique.
-                    $post_data['url'] = $paste->uniquifyURL(
-                        @$post_data['url'], @$post_data['title']
-                    );
+                    if (!@$static_fields['url'])
+                    {
+                        $insert_data['url'] = $paste->uniquifyURL(
+                            @$insert_data['url'], @$insert_data['title']
+                        );
+                    }
 
-                    if (true !== $err = $paste->sync($post_data, true, 'insert'))
+                    $insert_data = $paste->getNewTreeData(@$db_data) + $insert_data;
+
+                    if (true !== $err = $paste->sync($insert_data, true, 'insert'))
                     {
                         g()->addInfo('ds fail, inserting paste', 'error',
                             $this->trans('((error:DS:%s))', false) );
@@ -281,11 +327,26 @@ class PasteController extends PagesController
 
                     $paste_id = $paste->getData('id');
 
+                    if (!$post_data['root_id'])
+                    {
+                        $update_data = array(
+                            'id' => $paste_id,
+                            'root_id' => $paste_id
+                        );
+                        if (true !== $err = g('Paste','model')->sync($update_data, true, 'update'))
+                        {
+                        g()->addInfo('ds fail, inserting paste, updating root_id', 'error',
+                            $this->trans('((error:DS:%s))', false) );
+                        g()->debug->dump($err);
+                        break;
+                        }
+                    }
 
-                    if ($post_data['tags'])
+
+                    if ($insert_data['tags'])
                     {
                         $paste_tag = g('PasteTag', 'model');
-                        $tags = preg_split('/[\n\r,]+/', trim($post_data['tags']));
+                        $tags = preg_split('/[\n\r,]+/', trim($insert_data['tags']));
                         $tags_insert = array();
                         foreach ($tags as $tag)
                         {
@@ -304,7 +365,7 @@ class PasteController extends PagesController
                     }
 
 
-                    $type = $this->_types[$post_data['type_id']];
+                    $type = $this->_types[$paste->getData('type')];
                     if (true !== $err = $type->sync($paste, 'insert'))
                     {
                         g()->addInfo('ds fail, inserting paste type', 'error',
@@ -314,11 +375,16 @@ class PasteController extends PagesController
                     }
 
                     // if we got here, everything's must have gone fine
-                    g()->addInfo(null , 'info',
+                    g()->addInfo(null, 'info',
                                  $this->trans('Paste created') );
                     g()->db->completeTrans();
-                    $new_url = $paste->getData('url');
-                    $this->redirect($this->url2a('', array($new_url)));
+                    $this->redirect($this->url2a(
+                        '',
+                        array(
+                            $paste->getData('url'),
+                            'v' => $paste->getData('version')
+                        )
+                    ));
                 }
                 // just so we can break on errors
                 while ('past' > 'future');
@@ -329,6 +395,16 @@ class PasteController extends PagesController
             }
         }
 
+        if (g()->auth->loggedIn())
+        {
+            $static_fields['paster'] = $post_data['paster']
+                    = g()->auth->displayName();
+        }
+
+        foreach ($static_fields as $input_name => $static_value)
+        {
+            $this->forms[$form_id]['inputs'][$input_name]['tpl'] = 'Forms/static';
+        }
         $this->assignByRef('static_fields', $static_fields);
     }
 
@@ -343,7 +419,6 @@ class PasteController extends PagesController
      */
     public function actionError404(array $params)
     {
-        $v->addHeader('HTTP/1.0 404 Not Found');
         $this->assign('url', $params[0]);
     }
 
@@ -358,11 +433,17 @@ class PasteController extends PagesController
      *        when no user fetched
      * @return bool success on fetching data
      */
-    protected function _getOne($url, & $result, $redirect=true)
+    public function getOne($url, $ver, $with_tree=false, &$result, $redirect=true)
     {
-        $filters = array('url' => $url);
+        if (isset($this->_getOne_cache[$url][$ver][$with_tree]))
+        {
+            $result = $this->_getOne_cache[$url][$ver][$with_tree];
+            return false !== $result;
+        }
 
-        $result = g('Paste','model')->getRow($filters);
+        $model = g('Paste', 'model');
+
+        $result = $model->getByUrl($url, $ver);
 
         if (!$result)
         {
@@ -378,30 +459,28 @@ class PasteController extends PagesController
             }
         }
 
+        $this->_types[$result['type']]
+            ->getOne($result['id'], $result);
 
-        $result['Tags'] = array();
-        $tags = g('PasteTag','model')
-                ->filter(array('paste_id'=>$result['id']))
-                ->exec();
-        foreach ($tags as &$tag)
+        if ($with_tree)
         {
-            $result['Tags'][] = $tag['tag'];
+            $model->order('creation', 'ASC');
+            $model->order('id', 'ASC');
+            $result['Tree'] = $model
+                ->whiteList(array(
+                    'parent_id',
+                    'id',
+                    'url',
+                    'version',
+                    'title',
+                    'paster',
+                    'paster_id',
+                    'creation',
+                ))
+                ->getTree();
         }
 
-
-        if (!$result['paster_id'])
-        {
-            $result['Paster'] = null;
-        }
-        else
-        {
-            $result['Paster'] = g('User','model')
-                    ->getRow(array('id'=>$result['paster_id']));
-            $display_name_field = g()->conf['users']['display_name_field'];
-            $result['Paster']['DisplayName'] =
-                    &$result['Paster'][$display_name_field];
-        }
-
+        $this->_getOne_cache[$url][$ver][$with_tree] = $result;
         return true;
     }
 
@@ -416,7 +495,7 @@ class PasteController extends PagesController
         foreach ($paste_types as $type_name => & $type_conf)
         {
             $type = $this->addChild('PasteType'.ucfirst($type_name), $type_name);
-            $this->_types[$type->getIdx()] = $type;
+            $this->_types[$type_name] = $type;
             $type->_action_to_launch = $this->_action_to_launch;
         }
         unset($type_conf);
@@ -531,6 +610,21 @@ class PasteController extends PagesController
         return $err;
     }
      */
+
+
+    /**
+     * Checks access to "new" action
+     * @todo implement me (for $params[0]
+     * @author m.augustynowicz
+     *
+     * @param array $params request params
+     *
+     * @return bool
+     */
+    public function hasAccessToNew(array &$params)
+    {
+        return true;
+    }
 
 }
 
