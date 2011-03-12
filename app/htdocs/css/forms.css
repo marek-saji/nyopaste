@@ -170,6 +170,11 @@ body.js .holoform form fieldset ul li.field.recently-focused.invalid .field_erro
 .sign-in.holoform .required {
   display: none;
 }
+@media speech, aural {
+  .required small.required {
+    display: inline;
+  }
+}
 @media (max-width: 50em) {
   body.js .holoform form, .holoform form {
     width: 100%;
