@@ -18,5 +18,16 @@ $conf['js-libs'] = array(
         'min_filename'  => 'selectivizr-development',
         'ie'            => '(gte IE 6)&(lte IE 8)',
     ),
+
+
+    /**
+     * Ajax.org's and Mozilla's ACE editor
+     * @url http://github.com/ajaxorg/ace/
+     */
+    'ace' => array(
+        'cdn_path' => 'http://ajaxorg.github.com/ace/build/textarea/src/ace-uncompressed.js',
+        'min_cdn_path' => 'http://ajaxorg.github.com/ace/build/textarea/src/ace.js',
+        'autoload' => false
+    ),
 );
 

@@ -88,6 +88,49 @@ $(function(){
             })
             .insertBefore($list);
     });
-});
 
+
+    /**
+     * ACE companion
+     * @url http://ajaxorg.github.com/ace/build/textarea/editor.html
+     */
+    function load(path, module, callback)
+    {
+        path = "http://ajaxorg.github.com/ace/build/textarea/src/" + path;
+        if (!load.scripts[path])
+        {
+            load.scripts[path] = {
+                loaded: false,
+                callbacks: [callback]
+            };
+            $('<script />', {'src': path}).appendTo('head');
+            var loader = window.setInterval(function(){
+                if (window.__ace_shadowed__ && window.__ace_shadowed__.define.modules[module])
+                {
+                    window.clearInterval(loader);
+                    load.scripts[path].loaded = true;
+                    load.scripts[path].callbacks.forEach(function (callback) {
+                        callback();
+                    });
+                }
+            }, 50);
+        }
+        else if (load.scripts[path].loaded)
+        {
+            callback();
+        }
+        else
+        {
+            load.scripts[path].callbacks.push(callback);
+        }
+    }
+    load.scripts = {};
+    window.__ace_shadowed_load__ = load;
+
+    var ace = window.__ace_shadowed__,
+        $textarea = $('.editor');
+    $textarea.data('ace_editor', ace.transformTextarea($textarea[0]));
+
+
+});
 

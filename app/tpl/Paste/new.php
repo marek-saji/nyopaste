@@ -9,6 +9,7 @@ $title = $this->trans('add new paste');
 $v->setTitle($title);
 
 $v->addLess($this->file('new', 'less'));
+$v->loadJsLib('ace');
 $v->addJs($this->file('new', 'js'));
 
 $form = g('Forms', array('paste', $this));
@@ -200,7 +201,7 @@ $form = g('Forms', array('paste', $this));
                     $form->input(
                         'content_text',
                         array(
-                            'class' => 'autoexpandable'
+                            'class' => 'editor'
                         )
                     );
                     ?>

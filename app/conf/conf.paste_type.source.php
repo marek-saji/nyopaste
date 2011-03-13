@@ -35,6 +35,7 @@ $conf['paste_types']['source'] = array(
     'defaults' => array(
         'syntax' => 'c_cpp',
         'colour_scheme' => 'ace-tm',
+        'line_numbers' => 1,
     ),
 
 );

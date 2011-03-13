@@ -20,6 +20,26 @@
     {
         font-family: monospace;
     }
+
+    /* hide the ACE settings icon.
+     * it does not have a classname itself, so.. */
+    .ace_editor
+    {
+        div
+        {
+            display: none;
+        }
+
+        .ace_gutter,
+        .ace_gutter div,
+        .ace_scroller,
+        .ace_scroller div,
+        .ace_sb,
+        .ace_sb div
+        {
+            display: block;
+        }
+    }
 }
 
 /* vim: set ft=css: */

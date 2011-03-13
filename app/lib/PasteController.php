@@ -495,6 +495,7 @@ class PasteController extends PagesController
         foreach ($paste_types as $type_name => & $type_conf)
         {
             $type = $this->addChild('PasteType'.ucfirst($type_name), $type_name);
+            $type->data['paste'] = & $this->data['paste'];
             $this->_types[$type_name] = $type;
             $type->_action_to_launch = $this->_action_to_launch;
         }

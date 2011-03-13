@@ -4,6 +4,8 @@
  * @author m.augustynowicz
  */
 $form = g('Forms', array('paste', $this));
+
+$v->addJs($this->file('type-new', 'js'));
 ?>
 
 <ul>
