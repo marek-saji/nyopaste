@@ -55,12 +55,13 @@
   min-height: 20px;
   margin-top: 1em;
   cursor: pointer;
+  background: transparent url(../gfx/expand-collapse.png) scroll no-repeat -16px -16px;
 }
 .holoform form fieldset .less-important-options-toggler.expander {
-  background: transparent url(../gfx/expand.png) scroll no-repeat left top;
+  background-position: -16px 0;
 }
 .holoform form fieldset .less-important-options-toggler.collapser {
-  background: transparent url(../gfx/collapse.png) scroll no-repeat left top;
+  background-position: 0 -16px;
 }
 .holoform form fieldset legend + .less-important-options-toggler {
   margin-top: 0;

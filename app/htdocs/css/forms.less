@@ -80,14 +80,15 @@
             min-height: 20px;
             margin-top: 1em;
             cursor: pointer;
+            background: transparent url(../gfx/expand-collapse.png) scroll no-repeat -16px -16px;
 
             &.expander
             {
-                background: transparent url(../gfx/expand.png) scroll no-repeat left top;
+                background-position: -16px 0;
             }
             &.collapser
             {
-                background: transparent url(../gfx/collapse.png) scroll no-repeat left top;
+                background-position: 0 -16px;
             }
         }
         legend + .less-important-options-toggler
