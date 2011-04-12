@@ -50,19 +50,35 @@ $login = $user[$login_field];
 
 $label = empty($text) ? $user['DisplayName'] : $text;
 
-
 ob_start();
 ?>
 <span class="vcard name <?=$class?>">
-    <?php if ($avatar && array_key_exists('email', $user)) : ?>
-        <img class="photo"
-             src="http://gravatar.com/avatar/<?php
-                    echo md5(@$user['email']);
-                ?>?s=<?php 
-                    echo $avatar;
-                ?>&amp;d=identicon"
-        />
-    <?php endif; ?>
+    <?php
+    if ($avatar && array_key_exists('email', $user))
+    {
+        $gravatar = sprintf(
+            'http://gravatar.com/avatar/%s?%s',
+            md5($user['email']),
+            http_build_query(array(
+                's' => $avatar,
+                'd' => 'identicon'
+            ))
+        );
+
+        $label = sprintf(
+            '%s%s',
+            $f->tag(
+                'img',
+                array(
+                    'class' => 'photo',
+                    'src'   => $gravatar
+                )
+            ),
+            $label
+        );
+    }
+    ?>
+
     <?=$t->l2c($label, 'User', '', array($login), array('class'=>'fn n url'))?>
 </span>
 <?php
