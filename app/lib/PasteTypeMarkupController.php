@@ -14,7 +14,7 @@ class PasteTypeMarkupController extends PasteTypeController
             'model' => 'PasteTypeMarkup',
             'inputs' => array(
                 'parser' => array(
-                    '_tpl' => 'Forms/FRadio'
+                    '_tpl' => 'Forms/FRadio-single'
                 ),
             ) // forms[paste][inputs]
         ) // forms[paste]
@@ -32,14 +32,15 @@ class PasteTypeMarkupController extends PasteTypeController
      */
     public function actionNew(array $params)
     {
+        parent::actionNew($params);
+
+
         $parsers = array_combine(
             array_keys(g()->conf['parsers']),
             array_keys(g()->conf['parsers'])
         );
         $this->assignByRef('parsers', $parsers);
     }
-    
-
 
 
     public function getOne($id, array & $db_data)

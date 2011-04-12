@@ -50,6 +50,7 @@ abstract class PasteTypeController extends Component
             {
                 $this->getParent()->getOne($url, $ver, true, $this->data['paste']);
             }
+            $this->data['paste']['_empty'] = true;
         }
 
         $this->data['paste'] =

@@ -3,8 +3,11 @@
   margin: 0;
   padding: 0;
 }
-.paste.hentry hgroup h2 {
+.paste.hentry hgroup h2.entry-title {
   font-size: 2em;
+}
+.paste.hentry hgroup h2.entry-title .version {
+  font-size: .7em;
 }
 .paste.hentry hgroup h3 {
   font-size: 1.2em;
@@ -21,11 +24,28 @@
 .paste.hentry .actions.wrapper .actions.basic {
   float: right;
 }
+.paste.hentry .actions.wrapper .actions.share {
+  clear: both;
+}
 .paste.hentry .actions.wrapper .actions ul {
   margin: 0;
   padding: 0;
 }
 .paste.hentry .actions.wrapper .actions .action {
   display: inline;
+}
+.paste.hentry article.entry-content {
+  border-color: #ddd;
+  border-style: solid;
+  border-width: thin 0;
+}
+body.js .paste.hentry .actions.wrapper .share.actions, #nyroModalContent .share.actions {
+  float: none;
+}
+body.js .paste.hentry .actions.wrapper .share.actions .action, #nyroModalContent .share.actions .action {
+  display: block;
+}
+body.js .paste.hentry .actions.wrapper .share.actions .action.copy-to-clipboard input.copyable, #nyroModalContent .share.actions .action.copy-to-clipboard input.copyable {
+  width: 30em;
 }
 /* vim: set ft=css: */

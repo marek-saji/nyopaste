@@ -10,9 +10,14 @@
             padding: 0;
         }
 
-        h2
+        h2.entry-title
         {
             font-size: 2em;
+
+            .version
+            {
+                font-size: .7em;
+            }
         }
 
         h3
@@ -23,8 +28,8 @@
 
     .actions.wrapper
     {
-        overflow: hidden;
-        width: 100%;
+        overflow      : hidden;
+        width         : 100%;
 
         .actions
         {
@@ -35,6 +40,11 @@
             &.basic
             {
                 float: right;
+            }
+
+            &.share
+            {
+                clear: both;
             }
 
             ul
@@ -49,6 +59,32 @@
             }
         }
 
+    }
+
+    article.entry-content
+    {
+        border-color : #ddd;
+        border-style : solid;
+        border-width : thin 0;
+    }
+}
+
+body.js .paste.hentry .actions.wrapper,
+#nyroModalContent
+{
+    .share.actions
+    {
+        float: none;
+
+        .action
+        {
+            display: block;
+
+            &.copy-to-clipboard input.copyable
+            {
+                width: 30em;
+            }
+        }
     }
 }
 

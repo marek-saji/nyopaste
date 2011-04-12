@@ -1,6 +1,6 @@
 <?php
 /**
- * Polish translations
+ * English translations
  *
  * BASICS (by example)
  *
@@ -60,5 +60,7 @@ $conf['translations']['paste'] = array(
     '((action:%s:%s))' => array(
         'newVer' => 'create new version',
     ),
+
+    'v%s' => '<abbr title="version">v</abbr>%s',
 );
 

@@ -1,3 +1,5 @@
+hg.init = {};
+
 /**
  * Help values (displayed when form input is empty)
  * @author m.augustynowicz
@@ -440,4 +442,68 @@ $(':input')
                     .addClass('recently-focused')
                     .toggleClass('focus', focusin);
     });
+
+
+/**
+ * Inputs just to be copied to a clipboard
+ */
+(hg.init.copyToClipboard = function(){
+    if (typeof ZeroClipboard != 'object')
+    {
+        return false;
+    }
+
+    for (var i in ZeroClipboard.clients)
+    {
+        ZeroClipboard.clients[i].reposition();
+    }
+
+    $('embed[id^=ZeroClipboardMovie_]').parent().remove();
+    $('.copier').remove();
+
+    $(':input.copyable[id][readonly]')
+        .each(function(){
+            var $input   = $(this),
+                copierId = $input.attr('id') + '-copier',
+                clip     = new ZeroClipboard.Client(),
+                options  = {
+                    'text'      : 'copy',
+                    'title'     : 'click to copy to system clipboard',
+                    'afterText' : 'copied!'
+                }
+            ;
+
+            $.extend(options, $input.data('copyable'));
+
+            var $copier = $('<span />', {
+                    'id'    : copierId,
+                    'text'  : options.text,
+                    'class' : 'copier',
+                    'data'  : {'source' : $input}
+                })
+                .insertAfter($input)
+            ;
+
+            clip.setHandCursor(true);
+            clip.addEventListener('onMouseDown', function(client){
+                clip.setText($($(client.domElement).data('source')).val());
+            });
+            clip.addEventListener('onComplete', function(client, text){
+                $(client.domElement).text(options.afterText);
+                client.reposition();
+            });
+            clip.glue(copierId);
+
+            if (options.title)
+            {
+                $copier
+                    .add($('#ZeroClipboardMovie_' + clip.id))
+                        .attr('title', options.title)
+                ;
+            }
+        })
+    ;
+
+    return true;
+})();
 

@@ -113,7 +113,7 @@ class PasteController extends PagesController
             case 'get' :
                 $this->assign(
                     'filename',
-                    urlencode($db_data['title']) . '.' . g()->conf['paste_types']['source']['modes'][$db_data['syntax']]['extension']
+                    (trim($db_data['title'])) . '.' . g()->conf['paste_types']['source']['modes'][$db_data['syntax']]['extension']
                 );
             case 'raw' :
                 $this->assign('content', $db_data['content']);
@@ -193,12 +193,24 @@ class PasteController extends PagesController
      */
     public function actionSearch(array $params)
     {
-        $model = g('Paste', 'model');
+        $model_class = g()->load('Paste', 'model');
+        $model = g('Paste', 'model')->whiteList(array('url', 'version'));
+
+        $model->order('creation', 'DESC');
 
         // let paginator set margins
         $this->getChild('p')->setMargins($model);
 
         $rows = $model->exec();
+
+        $model->whiteListAll();
+        foreach ($rows as &$row)
+        {
+            $row = $model_class::getByUrl($row['url'], $row['version']);
+            preg_match("/^(.*$\s*){7}/m", $row['content'], $matches);
+            $row['content_excerpt'] = rtrim($matches[0]);
+        }
+
         $this->assignByRef('rows', $rows);
     }
 
@@ -263,7 +275,7 @@ class PasteController extends PagesController
         }
 
         /** @todo handle editing? */
-        if (empty($post_data))
+        if (empty($post_data) || @$post_data['_empty'])
         {
             // fill up form data
             if ($parent_url)
@@ -282,6 +294,7 @@ class PasteController extends PagesController
             }
 
             $post_data = (array)$post_data + g()->conf['paste']['defaults'];
+            $post_data['content_type'] = 'content_text';
         }
         else
         {
@@ -400,6 +413,10 @@ class PasteController extends PagesController
             $static_fields['paster'] = $post_data['paster']
                     = g()->auth->displayName();
         }
+        else
+        {
+            unset($static_fields['paster']);
+        }
 
         foreach ($static_fields as $input_name => $static_value)
         {
@@ -441,9 +458,10 @@ class PasteController extends PagesController
             return false !== $result;
         }
 
+        $model_class = g()->load('Paste', 'model');
         $model = g('Paste', 'model');
 
-        $result = $model->getByUrl($url, $ver);
+        $result = $model_class::getByUrl($url, $ver);
 
         if (!$result)
         {
@@ -477,7 +495,7 @@ class PasteController extends PagesController
                     'paster_id',
                     'creation',
                 ))
-                ->getTree();
+                ->getTree($result['root_id']);
         }
 
         $this->_getOne_cache[$url][$ver][$with_tree] = $result;
@@ -495,7 +513,10 @@ class PasteController extends PagesController
         foreach ($paste_types as $type_name => & $type_conf)
         {
             $type = $this->addChild('PasteType'.ucfirst($type_name), $type_name);
-            $type->data['paste'] = & $this->data['paste'];
+            $type->data['paste'] =
+                (array) $type->data['paste']
+                + (array) $this->data['paste']
+            ;
             $this->_types[$type_name] = $type;
             $type->_action_to_launch = $this->_action_to_launch;
         }

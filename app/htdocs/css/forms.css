@@ -19,7 +19,7 @@
   -webkit-border-radius: 0.5em;
 }
 .holoform form fieldset fieldset {
-  padding: 0 1em;
+  padding: 0 1em 0 2em;
 }
 .holoform form fieldset {
   border: none;
@@ -122,6 +122,20 @@
 .holoform form fieldset ul li.field .help p + p {
   margin-top: .5em;
 }
+.holoform form fieldset ul li.field .description {
+  font-size: .8em;
+  color: #666;
+}
+.holoform form fieldset ul li.field .description.advice {
+  background-color: #ffb;
+  padding: .5em 1em;
+  border-radius: 0.5em;
+  -moz-border-radius: 0.5em;
+  -webkit-border-radius: 0.5em;
+}
+.holoform form fieldset ul li.field .description p {
+  margin: .75em 0;
+}
 /* .holoform form */
 body.js .holoform form .field_error, body.js .holoform form .help {
   position: absolute;
@@ -136,6 +150,9 @@ body.js .holoform form .field_error, body.js .holoform form .help {
   border-radius: 0.5em;
   -moz-border-radius: 0.5em;
   -webkit-border-radius: 0.5em;
+}
+body.js .holoform form fieldset fieldset {
+  padding: 0 1em;
 }
 body.js .holoform form fieldset ul.less-important-options {
   display: none;

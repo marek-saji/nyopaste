@@ -31,7 +31,18 @@ $v->addCss($this->file('themes/'.$row['colour_scheme'], 'css'));
 <?php endif; ?>
 
 <div class="wrapper <?=$class?>">
-    <pre class="content ace_scroller ace_text-layer"><?php foreach ($lines as $i => $line) : ?><code id="line<?=$i?>" class="line ace_line"><?=$line?></code>
+    <?php
+    $data = array(
+        'texts' => array(
+            'lineLink' => $this->trans('link to line %%d')
+        )
+    );
+    $attrs = array(
+        'class'      => 'content ace_scroller ace_text-layer',
+        'data-paste' => json_encode($data)
+    );
+    ?>
+    <pre <?=$f->xmlAttr($attrs)?>><?php foreach ($lines as $i => $line) : ?><code id="line<?=$i?>" class="line ace_line"><?=$line?></code>
 <?php endforeach; ?></pre>
 </div>
 

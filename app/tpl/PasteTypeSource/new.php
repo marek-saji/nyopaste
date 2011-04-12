@@ -52,6 +52,11 @@ $less_important_options_json = htmlspecialchars(json_encode(array(
         <?php
         $form->input('colour_scheme', array('values' => $colour_scheme_values));
         ?>
+        <noscript>
+            <p class="nojs advice description">
+                <?=$this->trans('With JavaScript available, changing this would also set the scheme in the editor above. Try enabling JavaScript, if you can.')?>
+            </p>
+        </noscript>
     </li>
 
 </ul>

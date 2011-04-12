@@ -207,14 +207,32 @@ class PasteModel extends Model
      *
      * @return array
      */
-    public function getByUrl($url, $ver=null)
+    static public function getByUrl($url, $ver=null)
     {
         $filters = array(
             'url' => $url,
             'version' => $ver
         );
 
-        $result = $this->getRow($filters);
+        $model = new PasteModel();
+
+        $display_field = g()->conf['users']['display_name_field'];
+        $ident_field   = g()->conf['users']['display_name_field'];
+        $whitelist =
+            array_keys($model->getFields()) // Paste.*
+            +
+            array(
+                "Paster+$ident_field" => "User.$ident_field",
+                'Paster+DisplayName'  => "User.$display_field",
+                'Paster+email'        => 'User.email',
+            )
+        ;
+
+        $result = $model
+            ->rel('Paster')
+                ->whiteList($whitelist)
+                ->getRow($filters)
+        ;
 
         if (!$result)
         {
@@ -232,19 +250,6 @@ class PasteModel extends Model
         }
         $result['tags'] = implode(', ', $result['Tags']);
 
-
-        if (!$result['paster_id'])
-        {
-            $result['Paster'] = null;
-        }
-        else
-        {
-            $result['Paster'] = g('User','model')
-                    ->getRow($result['paster_id']);
-            $display_name_field = g()->conf['users']['display_name_field'];
-            $result['Paster']['DisplayName'] =
-                    &$result['Paster'][$display_name_field];
-        }
 
         return $result;
     }

@@ -35,7 +35,7 @@
 
     fieldset fieldset
     {
-        padding: 0 1em;
+        padding: 0 1em 0 2em;
     }
 
     fieldset
@@ -173,6 +173,24 @@
                     margin-top: .5em;
                 }
             }
+
+            .description
+            {
+                font-size : .8em;
+                color     : #666;
+
+                &.advice
+                {
+                    background-color: #ffb;
+                    padding: .5em 1em;
+                    .border-radius();
+                }
+
+                p
+                {
+                    margin: .75em 0;
+                }
+            }
         } /* ul li.field */
 
     } /* fieldset */
@@ -194,6 +212,11 @@ body.js .holoform form
         z-index: 30;
         border: white solid thin;
         .border-radius(.5em);
+    }
+
+    fieldset fieldset
+    {
+        padding: 0 1em;
     }
 
     fieldset ul

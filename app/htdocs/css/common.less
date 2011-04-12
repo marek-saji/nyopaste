@@ -140,6 +140,51 @@ menu, nav, section { display: block; }
     margin: 0 1em;
 }
 
+#whole-content,
+#nyroModalContent
+{
+    .copier
+    {
+        background : url(../gfx/clipboard.png) no-repeat scroll left center transparent; /* 16x16px */
+        padding    : 8px 0 8px 20px;
+    }
+
+    a.share.action
+    {
+        background : url(data:image/gif;base64,AAAA) no-repeat scroll left center transparent; /* 16x16px */
+        padding: 8px 0 8px 20px;
+
+        &.twitter  { background-image: url(../gfx/share-twitter.png); }
+        &.identica { background-image: url(../gfx/share-identica.png); }
+        &.mail     { background-image: url(../gfx/share-mail.png); }
+        &.addthis  { background-image: url(../gfx/share-addthis.png); }
+    }
+
+    .tags,
+    .tags li
+    {
+        list-style : none;
+        margin     : 0;
+        padding    : 0;
+        display : inline;
+    }
+}
+
+body.js
+{
+    label.copyable .inside
+    {
+        display: none;
+    }
+}
+
+
+.vcard a .photo
+{
+    vertical-align : middle;
+    border-right   : white solid .33em; /* warning, dirty hack */
+}
+
 
 #foot
 {

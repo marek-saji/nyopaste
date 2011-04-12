@@ -4,7 +4,7 @@ echo $f->tag(
     array(
         'class' => $data ? '' : 'empty'
     ),
-    $data ? $data : $this->trans('(empty)')
+    $data ? $data : $this->trans('(not specified)')
 );
 
 return $this->inc('Forms/hidden', $____local_variables);

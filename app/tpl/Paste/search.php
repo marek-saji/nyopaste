@@ -7,14 +7,23 @@
 <section>
     <h2>@todo title</h2>
 
-    <ol id="content" start="<?=$this->getChild('p')->getFirstItemIndex()?>">
+    <ol id="content" class="hfeed" start="<?=$this->getChild('p')->getFirstItemIndex()?>">
         <?php
         foreach ($rows as & $row) :
         ?>
-            <li>
-                <?=$t->l2a($row['title'], '', array($row['url'], 'v'=>$row['version']))?>
+            <li class="hentry">
+                <h4>
+                    <span class="entry-title">
+                        <?=$t->l2a($row['title'], '', array($row['url'], 'v'=>$row['version']))?>
+                    </span>
+                    by <?=$this->inc('paster', $row)?>
+                </h4>
+                <div class="entry-content">
+                    <pre><?=$row['content_excerpt']?></pre>
+                </div>
                 <?php
-                var_dump($row);
+                $this->inc('tags', array('tags'=>&$row['Tags']));
+                //var_dump($row);
                 ?>
             </li>
         <?php

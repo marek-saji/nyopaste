@@ -94,6 +94,48 @@ section {
 #infos, #whole-content {
   margin: 0 1em;
 }
+#whole-content .copier, #nyroModalContent .copier {
+  background: url(../gfx/clipboard.png) no-repeat scroll left center transparent;
+  /* 16x16px */
+
+  padding: 8px 0 8px 20px;
+}
+#whole-content a.share.action, #nyroModalContent a.share.action {
+  background: url(data:image/gif;base64,AAAA) no-repeat scroll left center transparent;
+  /* 16x16px */
+
+  padding: 8px 0 8px 20px;
+}
+#whole-content a.share.action.twitter, #nyroModalContent a.share.action.twitter {
+  background-image: url(../gfx/share-twitter.png);
+}
+#whole-content a.share.action.identica, #nyroModalContent a.share.action.identica {
+  background-image: url(../gfx/share-identica.png);
+}
+#whole-content a.share.action.mail, #nyroModalContent a.share.action.mail {
+  background-image: url(../gfx/share-mail.png);
+}
+#whole-content a.share.action.addthis, #nyroModalContent a.share.action.addthis {
+  background-image: url(../gfx/share-addthis.png);
+}
+#whole-content .tags,
+#nyroModalContent .tags,
+#whole-content .tags li,
+#nyroModalContent .tags li {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: inline;
+}
+body.js label.copyable .inside {
+  display: none;
+}
+.vcard a .photo {
+  vertical-align: middle;
+  border-right: white solid .33em;
+  /* warning, dirty hack */
+
+}
 #foot {
   margin-top: 2em;
 }

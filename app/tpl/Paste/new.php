@@ -205,6 +205,11 @@ $form = g('Forms', array('paste', $this));
                         )
                     );
                     ?>
+                    <noscript>
+                        <p class="nojs advice description">
+                            <?=$this->trans('With JavaScript available, this field would become a neat editor. Try enabling it, if you can.')?>
+                        </p>
+                    </noscript>
                 </li>
 
             </ul>

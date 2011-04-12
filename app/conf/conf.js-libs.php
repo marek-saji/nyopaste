@@ -29,5 +29,17 @@ $conf['js-libs'] = array(
         'min_cdn_path' => 'http://ajaxorg.github.com/ace/build/textarea/src/ace.js',
         'autoload' => false
     ),
+
+
+    /**
+     * ZeroClipboard (clipboard copier)
+     * @url https://code.google.com/p/zeroclipboard/
+     */
+    'zeroclipboard' => array(
+        'filename' => 'ZeroClipboard',
+        'autoload' => false,
+        'onload'   => 'ZeroClipboard.setMoviePath("./js/ZeroClipboard.swf"); hg.init.copyToClipboard();'
+    ),
+
 );
 
