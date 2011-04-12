@@ -1,13 +1,25 @@
 <?php
 /**
- * Temporary listing action, for testing new request processing in hologram
+ * Listing search results.
  */
 
+$title = $this->trans('Pastes');
+$v->setTitle($title);
+$v->setMeta('og:type', 'website', 'property');
+$v->setMeta('og:url', $this->url2a('search', $this->getParams(), true), 'property');
+/*
+$v->setDescription($this->trans(
+    'a paste by %s',
+    $row['Paster'] ? $row['Paster']['DisplayName'] : $row['paster']
+));
+ */
+
+$v->addLess($this->file('search', 'less'));
 ?>
 <section>
-    <h2>@todo title</h2>
+    <h2><?=$title?></h2>
 
-    <ol id="content" class="hfeed" start="<?=$this->getChild('p')->getFirstItemIndex()?>">
+    <ol id="content" class="pastes hfeed" start="<?=$this->getChild('p')->getFirstItemIndex()?>">
         <?php
         foreach ($rows as & $row) :
         ?>

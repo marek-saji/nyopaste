@@ -12,6 +12,9 @@
 .paste.hentry hgroup h3 {
   font-size: 1.2em;
 }
+.paste.hentry hgroup .meta-toggler {
+  font-size: .5em;
+}
 .paste.hentry .actions.wrapper {
   overflow: hidden;
   width: 100%;

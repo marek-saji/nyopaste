@@ -24,6 +24,36 @@
         {
             font-size: 1.2em;
         }
+
+        .meta-toggler
+        {
+            font-size : .7em;
+            text-decoration: none;
+            color: #666;
+
+            .text
+            {
+                padding-right: .25em;
+            }
+
+            @metatogglericonsize: 12px;
+
+            .icon
+            {
+                background : url(../../gfx/more-less.png) no-repeat scroll 0 center transparent; /* 12x12px */
+                padding: @metatogglericonsize/2 @metatogglericonsize @metatogglericonsize/2 0;
+
+            }
+            &.collapser .icon
+            {
+                background-position: -1*@metatogglericonsize center;
+            }
+        }
+    }
+
+    #meta
+    {
+        font-size : .8em;
     }
 
     .actions.wrapper
@@ -45,6 +75,11 @@
             &.share
             {
                 clear: both;
+
+                p
+                {
+                    display: none;
+                }
             }
 
             ul
@@ -67,26 +102,43 @@
         border-style : solid;
         border-width : thin 0;
     }
-}
 
-body.js .paste.hentry .actions.wrapper,
-#nyroModalContent
-{
-    .share.actions
+    section.tree
     {
-        float: none;
-
-        .action
+        ol
         {
-            display: block;
+            list-style : none;
+            padding    : 0;
 
-            &.copy-to-clipboard input.copyable
+            ol
             {
-                width: 30em;
+                padding-left : 2em;
             }
         }
     }
 }
+
+.share.actions .copy-to-clipboard.action input.copyable
+{
+    width: 30em;
+}
+
+#nyroModalContent
+{
+    .share.actions .action
+    {
+        display: block;
+    }
+}
+
+body.js
+{
+    #meta
+    {
+        display : none; /* toggable with js */
+    }
+}
+
 
 /* vim: set ft=css: */
 

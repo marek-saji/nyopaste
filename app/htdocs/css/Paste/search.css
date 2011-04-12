@@ -1,0 +1,4 @@
+body.Paste__search .pastes.hfeed .hentry .entry-content {
+  overflow: auto;
+}
+/* vim: set ft=css: */

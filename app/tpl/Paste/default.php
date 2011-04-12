@@ -16,9 +16,15 @@ $v->setDescription($this->trans(
 ));
 
 $v->addLess($this->file('default', 'less'));
+$v->addJs($this->file('default', 'js'));
+
+$meta_data_toggler = json_encode(array(
+    'showLabel' => $this->trans('more info'),
+    'hideLabel' => $this->trans('less info')
+));
 ?>
 
-<section class="paste hentry">
+<section class="paste hentry" id="paste">
     <header>
         <hgroup>
             <h2 class="entry-title">
@@ -30,36 +36,42 @@ $v->addLess($this->file('default', 'less'));
             <h3>
                 <?=$this->trans('by %s', $this->inc('paster', $row))?>
             </h3>
-        </h2>
-        <?php if ($row['source_url']) : ?>
-            <p>
-                <?=$t->trans('source URL')?>: <a href="<?=$row['source_url']?>"><?=$row['source_url']?></a>
-            </p>
-        <?php endif; ?>
-        <?php if ($row['author']) : ?>
-            <p>
-                <?=$t->trans('original author')?>: <?=$row['author']?>
-            </p>
-        <?php endif; ?>
-        <?php if ($row['Tags']) : ?>
-            <div>
-                <?=$t->trans('tags')?>:
-                <?php
-                $this->inc('tags', array('tags'=>&$row['Tags']));
-                ?>
-            </div>
-        <?php endif; ?>
+        </hgroup>
 
-        <p>
-            <?=$this->trans('created')?>:
-            <time class="published" datetime="<?=$row['creation']?>">
-                <?=$f->formatDate($row['creation'], DATE_HUMAN_FORMAT|DATE_SHOW_ALL)?>
-            </time>
-        </p>
+        <dl <?=$f->xmlAttr(array('id' => 'meta', 'data-toggler' => $meta_data_toggler))?>>
 
-        <?php
-        $type->inc('meta');
-        ?>
+            <dt><?=$this->trans('created')?></dt>
+            <dd>
+                <time class="published" datetime="<?=$row['creation']?>">
+                    <?=$f->formatDate($row['creation'], DATE_HUMAN_FORMAT|DATE_SHOW_ALL)?>
+                </time>
+            </dd>
+
+            <?php if ($row['source_url']) : ?>
+                <dt><?=$t->trans('source URL')?></dt>
+                <dd><a href="<?=$row['source_url']?>"><?=$row['source_url']?></a></dd>
+                </p>
+            <?php endif; ?>
+
+            <?php if ($row['author']) : ?>
+                <dt><?=$t->trans('original author')?></dt>
+                <dd><?=$row['author']?></dd>
+            <?php endif; ?>
+
+            <?php
+            $type->inc('meta');
+            ?>
+
+            <?php if ($row['Tags']) : ?>
+                <dt><?=$t->trans('tags')?></dt>
+                <dd>
+                    <?php
+                    $this->inc('tags', array('tags'=>&$row['Tags']));
+                    ?>
+                </dd>
+            <?php endif; ?>
+
+        </dl>
 
         <div class="actions wrapper">
             <?php
@@ -161,7 +173,7 @@ $v->addLess($this->file('default', 'less'));
 
     <?php if (@$row['Tree'][$row['root_id']]['Children']) : ?>
         <section class="tree">
-            <h3><?=$this->trans('Other versions of this paste:')?></h3>
+            <h3><?=$this->trans('All versions of this paste:')?></h3>
 
             <?php
             $this->inc('tree', array('tree'=>&$row['Tree']));
