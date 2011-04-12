@@ -23,19 +23,20 @@ $attrs = $f->xmlAttr($____local_variables);
             <?php
             if (false === $value)
                 continue;
-            else if (true === $value)
+
+            $label_f = '((action:%s:%s))';
+            $label = $t->trans($label_f, $action, $name);
+            if (sprintf($label_f, $action, $name) == $label)
+                $label = $action;
+
+            if (true === $value)
             {
                 $params = $this->getParams();
                 $value = array($this, $action, $params);
             }
-            else
             ?>
             <li class="<?=$action?> action">
                 <?php
-                $label_f = '((action:%s:%s))';
-                $label = $t->trans($label_f, $action, $name);
-                if (sprintf($label_f, $action, $name) == $label)
-                    $label = $action;
                 $action == $this->_default_action and $action='';
                 switch ($action)
                 {
@@ -47,7 +48,17 @@ $attrs = $f->xmlAttr($____local_variables);
                     default :
                         $value[3] = array();
                 }
-                echo $t->l2c($label, $value);
+
+                if (true === $value[0])
+                {
+                    $value['href'] = $value[1];
+                    unset($value[0], $value[1], $value[2], $value[3]);
+                    echo $f->tag('a', $value, $label);
+                }
+                else
+                {
+                    echo $t->l2c($label, $value);
+                }
                 ?>
             </li>
         <?php endforeach; ?>

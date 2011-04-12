@@ -129,19 +129,19 @@ class PasteController extends PagesController
         $removed = $db_data['status'] & STATUS_DELETED;
         $action_params = array($url) + ($ver ? array('v'=>$ver) : array());
         $all_actions = array(
-            'download'  => array($this, $action,   array(1=>'get') + $action_params),
-            'raw'       => array($this, $action,   array(1=>'raw') + $action_params),
-            'permalink' => array($this, $action,   $action_params),
-            'newVer'    => array($this, 'new',     $action_params),
-            'edit'      => array($this, 'edit',    $action_params),
-            'remove'    => $removed ? false :
-                           array($this, 'remove',  $action_params),
-            'restore'   => !$removed ? false :
-                           array($this, 'restore', $action_params),
+            'download'   => array($this, $action,   array(1=>'get') + $action_params),
+            'plain text' => array($this, $action,   array(1=>'raw') + $action_params),
+            'share'      => array(true, '#share', 'class'=>'modal'),
+            'newVer'     => array($this, 'new',     $action_params),
+            'edit'       => array($this, 'edit',    $action_params),
+            'remove'     => $removed ? false :
+                            array($this, 'remove',  $action_params),
+            'restore'    => !$removed ? false :
+                            array($this, 'restore', $action_params),
         );
         foreach ($all_actions as $action => & $url)
         {
-            if (false === $url)
+            if (!is_array($url) || true === $url[0])
                 continue;
             $real_action = $url[1] ? $url[1] : 'default';
             if ($url[0] === $this)
@@ -156,7 +156,7 @@ class PasteController extends PagesController
             }
         }
 
-        $basic_actions = array('download'=>1, 'raw'=>1, 'permalink'=>1);
+        $basic_actions = array('download'=>1, 'plain text'=>1, 'share'=>1);
         $db_data['BasicActions'] = array_intersect_key(
             $all_actions,
             $basic_actions
