@@ -13,5 +13,10 @@ $conf['keys'] = array(
     // http://google.com/analytics/
     'google analytics' => null,
 
+
+    // Uservoice
+    // https://uservoice.com/
+    'uservoice' => 'F2YuEsODHWbif21rCtjw',
+
 );
 

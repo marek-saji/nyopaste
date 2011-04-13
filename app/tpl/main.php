@@ -74,20 +74,23 @@ $t->inc('infos');
             <?= $this->trans('Created and maintained by <span class="vcard"><a class="fn url" href="https://github.com/marek-saji">Marek Augustynowicz</a></span>.') ?>
         </p>
         <p>
-            <?= $this->trans('It\'s licensed under <a rel="license" href="http://www.opensource.org/licenses/mit-license.php">MIT License</a> and it\'s source is available at <a href="https://github.com/marek-saji/nyopaste">github</a>.') ?>
+            <?= $this->trans('Licensed under <a rel="license" href="http://www.opensource.org/licenses/mit-license.php">MIT License</a>. Source is available at <a href="https://github.com/marek-saji/nyopaste">GitHub</a>.') ?>
+        </p>
+        <p>
+            <?=$this->trans('If you have an idea how we can improve the site, please <a class="uservoice" href="https://nyopaste.uservoice.com">let us know</a>.')?>
         </p>
     </section> <!-- .powered -->
 </footer> <!-- #foot -->
 
 
-<?php if (null !== @g()->conf['keys']['google analytics']) : ?>
+<?php if (null !== ($key = @g()->conf['keys']['google analytics'])) : ?>
     <script type="text/javascript">
         var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
         document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
         </script>
         <script type="text/javascript">
         try {
-        var pageTracker = _gat._getTracker("<?=g()->conf['keys']['google analytics']?>");
+        var pageTracker = _gat._getTracker("<?=$key?>");
         pageTracker._trackPageview();
         <?php
         /** @todo think of more custom vars, see http://code.google.com/apis/analytics/docs/tracking/gaTrackingCustomVariables.html */
@@ -95,6 +98,23 @@ $t->inc('infos');
         pageTracker._setCustomVar(1, 'authorized', '<?=g()->auth->loggedIn()?'yes':'no'?>', 1);
         } catch(err) {}
     </script>
-<?php endif; // google analytics
+<?php endif; /* google analytics */ ?>
+
+<?php if (null !== ($key = @g()->conf['keys']['uservoice'])) : ?>
+    <script type="text/javascript">
+        (function() {
+            var uv = document.createElement('script');
+            uv.type = 'text/javascript';
+            uv.async = true;
+            uv.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'widget.uservoice.com/<?=$key?>.js';
+            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(uv, s);
+
+            $('.uservoice').bind('click.uservoice', function(e){
+                e.preventDefault();
+                UserVoice.showPopupWidget();
+            });
+        })();
+    </script>
+<?php endif; ?>
 
 
