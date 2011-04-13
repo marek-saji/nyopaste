@@ -104,7 +104,7 @@ section {
   background: url(data:image/gif;base64,AAAA) no-repeat scroll left center transparent;
   /* 16x16px */
 
-  padding: 8px 0 8px 20px;
+  padding: 8px 0 8px 21.333333333333332px;
 }
 #whole-content a.share.action.twitter, #nyroModalContent a.share.action.twitter {
   background-image: url(../gfx/share-twitter.png);

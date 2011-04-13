@@ -13,7 +13,24 @@
   font-size: 1.2em;
 }
 .paste.hentry hgroup .meta-toggler {
-  font-size: .5em;
+  font-size: .7em;
+  text-decoration: none;
+  color: #666;
+}
+.paste.hentry hgroup .meta-toggler .text {
+  padding-right: .25em;
+}
+.paste.hentry hgroup .meta-toggler .icon {
+  background: url(../../gfx/more-less.png) no-repeat scroll 0 center transparent;
+  /* 12x12px */
+
+  padding: 6px 12px 6px 0;
+}
+.paste.hentry hgroup .meta-toggler.collapser .icon {
+  background-position: -12px center;
+}
+.paste.hentry #meta {
+  font-size: .8em;
 }
 .paste.hentry .actions.wrapper {
   overflow: hidden;
@@ -30,6 +47,9 @@
 .paste.hentry .actions.wrapper .actions.share {
   clear: both;
 }
+.paste.hentry .actions.wrapper .actions.share p {
+  display: none;
+}
 .paste.hentry .actions.wrapper .actions ul {
   margin: 0;
   padding: 0;
@@ -42,13 +62,22 @@
   border-style: solid;
   border-width: thin 0;
 }
-body.js .paste.hentry .actions.wrapper .share.actions, #nyroModalContent .share.actions {
-  float: none;
+.paste.hentry section.tree ol {
+  list-style: none;
+  padding: 0;
 }
-body.js .paste.hentry .actions.wrapper .share.actions .action, #nyroModalContent .share.actions .action {
+.paste.hentry section.tree ol ol {
+  padding-left: 2em;
+}
+.share.actions .copy-to-clipboard.action input.copyable {
+  width: 30em;
+}
+#nyroModalContent .share.actions .action {
   display: block;
 }
-body.js .paste.hentry .actions.wrapper .share.actions .action.copy-to-clipboard input.copyable, #nyroModalContent .share.actions .action.copy-to-clipboard input.copyable {
-  width: 30em;
+body.js #meta {
+  display: none;
+  /* toggable with js */
+
 }
 /* vim: set ft=css: */
