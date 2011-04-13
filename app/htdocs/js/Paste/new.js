@@ -1,13 +1,4 @@
 $(function(){
-    $('.holoform .field_error').live('click', function(e){
-        $('.field.recently-focused')
-            .removeClass('recently-focused');
-
-        $(this)
-            .closest('.field')
-                .addClass('recently-focused');
-    });
-
 
     $('ul.radio-optiongroups').each(function(){
         var $list = $(this),

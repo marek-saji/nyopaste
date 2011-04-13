@@ -440,8 +440,27 @@ $(':input')
             .closest('.field')
                 .andSelf()
                     .addClass('recently-focused')
-                    .toggleClass('focus', focusin);
-    });
+                    .toggleClass('focus', focusin)
+        ;
+    })
+;
+
+
+/**
+ * Move "recently focus" to form field of a clicked message
+ * @author m.augustynowicz
+ */
+$('.holoform .field_error')
+    .live('click', function(e){
+        $('.field.recently-focused')
+            .removeClass('recently-focused');
+
+        $(this)
+            .closest('.field')
+                .addClass('recently-focused');
+    })
+;
+
 
 
 /**
