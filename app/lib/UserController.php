@@ -161,7 +161,12 @@ class UserController extends PagesController implements IUserController
                 if ('not_active' == $err_name)
                     $err_msg = 'This account has not been activated yet';
                 else
-                    $err_msg = 'Wrong login or password';
+                {
+                    $err_msg = $this->trans(
+                        'Wrong login or password. Don\'t remember your password? You can %s.',
+                        $this->l2c($this->trans('reset it'), 'User', 'lostPasswd', array(), array('class'=>'modal', 'title'=>$this->trans('reset your password')))
+                    );
+                }
                 $err_ident = 'siging in';
                 if (g()->debug->on())
                     $err_ident .= ' ' . $err_name;

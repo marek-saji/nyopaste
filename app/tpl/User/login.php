@@ -29,11 +29,14 @@ $form = g('Forms', array('login', $this));
             <ul>
                 <li class="field">
                     <?php
-                    $form->label('login', 'login');
+                    $form->label('login', 'login or e-mail');
                     ?>
                     <?php
                     $form->input('login');
                     ?>
+                    <p class="help">
+                        <?=$this->trans('Enter your login. E-mail address is fine too.')?>
+                    </p>
                 </li>
 
                 <li class="field">
@@ -43,8 +46,8 @@ $form = g('Forms', array('login', $this));
                     <?php
                     $form->input('passwd');
                     ?>
-                    <p class="description">
-                        <small><?= $this->l2c($t->trans('I forgot my password'), 'User', 'lostPasswd', array(), array('class'=>'modal')); ?></small>
+                    <p class="help">
+                        <?=$this->trans('Forgot your password? You may %s.', $this->l2c($t->trans('reset it'), 'User', 'lostPasswd', array(), array('class'=>'modal', 'title'=>$this->trans('reset your password'))))?>
                     </p>
                 </li>
 
