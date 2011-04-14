@@ -7,22 +7,31 @@ $(function(){
         return;
     }
 
-    $('.type-specific.source :input[name$="[syntax]"]').change(function(){
-        ace_editor.setOption('mode', $(this).val());
-    });
+    $('.type-specific.source :input[name$="[syntax]"]')
+        .bind('change.ace', function(){
+            ace_editor.setOption('mode', $(this).val());
+        })
+        .trigger('change.ace')
+    ;
 
-    $('.type-specific.source :input[name$="[colour_scheme]"]').change(function(){
-        ace_editor.setOption(
-            'theme',
-            $(this).val()
-                .replace(/ace-/, '')
-                .replace('-', '_')
-        );
-    });
+    $('.type-specific.source :input[name$="[colour_scheme]"]')
+        .bind('change.ace', function(){
+            ace_editor.setOption(
+                'theme',
+                $(this).val()
+                    .replace(/ace-/, '')
+                    .replace('-', '_')
+            );
+        })
+        .trigger('change.ace')
+    ;
 
-    $('.type-specific.source :input[name$="[line_numbers]"]').change(function(){
-        ace_editor.setOption('gutter', $(this).is(':checked') ? 'true' : 'false');
-    });
+    $('.type-specific.source :input[name$="[line_numbers]"]')
+        .bind('change.ace', function(){
+            ace_editor.setOption('gutter', $(this).is(':checked') ? 'true' : 'false');
+        })
+        .trigger('change.ace')
+    ;
 
 });
 
