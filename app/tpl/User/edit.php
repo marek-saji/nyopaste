@@ -25,65 +25,72 @@ $form = g('Forms', array('edit', $this));
         ?>
     </header>
 
-    <?php
-    $form->create();
-    ?>
-        <fieldset>
-            <dl>
-                <!-- website -->
-                <dt class="email text url">
-                    <label for="<?=$f->uniqueId(false)?>">
-                        <?= $t->trans('email'); ?>
-                    </label>
-                </dt>
-                <dd class="email text url">
-                    <?php
-                    $form->input('email');
-                    ?>
-                </dd>
-                <!-- website -->
-                <dt class="website text url">
-                    <label for="<?=$f->uniqueId(false)?>">
-                        <?= $t->trans('website'); ?>
-                    </label>
-                </dt>
-                <dd class="website text url">
-                    <?php
-                    $form->input('website');
-                    ?>
-                </dd>
-                <!-- about me -->
-                <dt class="about_me text big">
-                    <label for="<?=$f->uniqueId(false)?>">
-                        <?= $t->trans('something about you'); ?>
-                    </label>
-                </dt>
-                <dd class="about_me text big">
-                    <?php
-                    $form->input('about_me', array(
-                        'class' => 'autoexpandable'
-                    ));
-                    ?>
-                    <p class="help">
-                        <small>
-                            You can use
-                            <a href="http://daringfireball.net/projects/markdown/syntax">Markdown</a>
-                            here. With some
-                            <a href="http://michelf.com/projects/php-markdown/extra/">extra syntax</a>.
-                        </small>
-                    </p>
-                </dd>
-            </dl>
-        </fieldset>
+    <div class="holoform">
         <?php
-        $t->inc('Forms/buttons', array(
-            'form' => & $form,
-            'submit' => 'update profile info',
-            'cancel' => 'cancel'
-        ));
+        $form->create();
         ?>
-    <?php
-    $form->end();
-    ?>
+            <fieldset>
+                <ul>
+                    <!-- e-mail -->
+                    <li class="email field">
+                        <?php
+                        $form->label('email', 'e-mail');
+                        ?>
+                        <?php
+                        $form->input('email');
+                        ?>
+                        <div class="help">
+                            <p>
+                                <?=$this->trans('Don\'t worry, your e-mail address will not be publicly available, nor used in any evil way.')?>
+                            </p>
+                        </div>
+                    </li>
+                    <!-- website -->
+                    <li class="website field">
+                        <?php
+                        $form->label('website', 'website');
+                        ?>
+                        <?php
+                        $form->input('website');
+                        ?>
+                        <div class="help">
+                            <p>
+                                <?=$this->trans('Your blog, twitter, github profile. Any URL with more information about you.')?>
+                            </p>
+                        </div>
+                    </li>
+                    <!-- about me -->
+                    <li class="about_me field">
+                        <?php
+                        $form->label('about_me', 'something about you');
+                        ?>
+                        <?php
+                        $form->input('about_me', array(
+                            'class' => 'autoexpandable'
+                        ));
+                        ?>
+                        <div class="help">
+                            <p>
+                                <?=$this->trans('Tell other people something about yourself.')?>
+                            </p>
+                            <p>
+                                <?=$this->trans('You can use <a href="http://daringfireball.net/projects/markdown/syntax">Markdown</a> here. With some <a href="http://michelf.com/projects/php-markdown/extra/">extra syntax</a>.')?>
+                            </p>
+                        </div>
+                    </li>
+                </ul>
+            </fieldset>
+            <?php
+            $t->inc('Forms/buttons', array(
+                'form' => & $form,
+                'submit' => 'update profile info',
+                'cancel' => 'cancel'
+            ));
+            ?>
+        <?php
+        $form->end();
+        ?>
+    </div> <!-- .holoform -->
+
 </section>
 
