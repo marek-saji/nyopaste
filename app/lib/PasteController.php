@@ -194,8 +194,12 @@ class PasteController extends PagesController
     public function actionSearch(array $params)
     {
         $model_class = g()->load('Paste', 'model');
-        $model = g('Paste', 'model')->whiteList(array('url', 'version'));
+        $model = g('Paste', 'model')
+            ->whiteList(array('url', 'version'))
+            ->distinct(array('root_id'))
+        ;
 
+        $model->order('root_id', 'DESC');
         $model->order('creation', 'DESC');
 
         // let paginator set margins

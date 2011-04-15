@@ -25,9 +25,16 @@ $v->addLess($this->file('search', 'less'));
         ?>
             <li class="hentry">
                 <h4>
-                    <span class="entry-title">
-                        <?=$t->l2a($row['title'], '', array($row['url'], 'v'=>$row['version']))?>
-                    </span>
+                    <?=$t->l2a(
+                        sprintf(
+                            '%s %s',
+                            $row['title'],
+                            $f->tag('span', array('class'=>'version'), $this->trans('v%s', $row['version']))
+                        ),
+                        '',
+                        array($row['url'], 'v'=>$row['version']),
+                        array('class' => 'entry-title')
+                    )?>
                     by <?=$this->inc('paster', $row)?>
                 </h4>
                 <div class="entry-content">
