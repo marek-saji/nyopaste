@@ -49,8 +49,9 @@ class PasteModel extends Model
         $this->_addField(new FString('type', true));
 
         // privacy
-        $this->_addField(new FBool('list'));
+        $this->_addField(new FEnum('privacy', 'paste_privacy', true, 'public'));
         $this->_addField(new FMD5String('enc_passwd', false));
+        $this->_addField(new FBool('publicly_versionable', true, true));
 
         $this->_addField(new FTimestamp('creation'))
                 ->auto(array($this, 'autoValCreation'));

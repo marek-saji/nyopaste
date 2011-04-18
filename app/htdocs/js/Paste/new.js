@@ -46,39 +46,70 @@ $(function(){
     });
 
 
-    $('ul.less-important-options').each(function(){
-        var $list = $(this),
-            visible = $list.is(':visible'),
-            data = $list.data('less-important-options'),
-            $toggler = $('<a />', {
-                'class': 'less-important-options-toggler '+(visible?'collapser':'expander'),
-                'html': visible ? data.collapse : data.expand
-            });
+    $('ul.less-important-options')
+        .each(function(){
+            var $list = $(this),
+                visible = $list.is(':visible'),
+                data = $list.data('less-important-options'),
+                $toggler = $('<a />', {
+                    'class': 'less-important-options-toggler '+(visible?'collapser':'expander'),
+                    'html': visible ? data.collapse : data.expand
+                });
 
-        $toggler
-            .bind('click.less-important-options', function(e){
-                e.preventDefault();
-                if ($list.is(':visible'))
-                {
-                    $list.slideUp(function(){
-                        $toggler
-                            .html(data.expand)
-                            .addClass('expander')
-                            .removeClass('collapser');
-                    });
-                }
-                else
-                {
-                    $list.slideDown(function(){
-                        $toggler
-                            .html(data.collapse)
-                            .removeClass('expander')
-                            .addClass('collapser');
-                    });
-                }
-            })
-            .insertBefore($list);
-    });
+            $toggler
+                .bind('click.less-important-options', function(e){
+                    e.preventDefault();
+                    var way = $list.is(':visible');
+
+                    $list
+                        .slideToggle(way, function(){
+                            $toggler
+                                .html(data[way ? 'expand' : 'collapse'])
+                                .toggleClass('expander', way)
+                                .toggleClass('collapser', !way)
+                            ;
+                        })
+                        .data('less-important-options')
+                            .$exceprt
+                                .slideToggle(!way)
+                    ;
+                })
+                .insertBefore($list)
+            ;
+
+            if (!$list.is('.with-excerpt'))
+            {
+                data.$exceprt = $();
+            }
+            else
+            {
+                data.$exceprt = 
+                    $('<p />', {
+                        'class' : 'less-important-options-excerpt'
+                    })
+                    .insertBefore($toggler)
+                ;
+            }
+        })
+        .filter('.with-excerpt')
+            .find(':input')
+                .bind('change.less-important-options', function(){
+                    var $list = $(this).closest('.less-important-options'),
+                        data = $list.data('less-important-options')
+                    ;
+                    switch (true)
+                    {
+                        case $list.is('.privacy') :
+                            var privacy = $list.find(':input[name="Paste_paste[privacy]"]:checked').val();
+                            $list
+                                .siblings('.less-important-options-excerpt')
+                                    .html(data.excerpts[privacy])
+                            ;
+                            break;
+                    }
+                })
+                .trigger('change.less-important-options')
+    ;
 
 
     /**

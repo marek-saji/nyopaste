@@ -47,6 +47,13 @@
 .holoform form fieldset legend select {
   font-size: 1em;
 }
+.holoform form fieldset label.disabled,
+.holoform form fieldset input.disabled,
+.holoform form fieldset textarea.disabled,
+.holoform form fieldset select.disabled,
+.holoform form fieldset button.disabled {
+  color: gray;
+}
 .holoform form fieldset .less-important-options-toggler {
   display: block;
   padding-left: 20px;

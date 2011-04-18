@@ -53,7 +53,7 @@ class PasteController extends PagesController
 
 
                 // privacy
-                'list',
+                'privacy',
                 'encode' => array('fields' => null),
                 'enc_passwd',
                 //'acl' =>
@@ -62,6 +62,12 @@ class PasteController extends PagesController
                     'fields' => null,
                     '_tpl'=>'Forms/FRadio-single'
                 ),
+
+                'privacy' => array(
+                    '_tpl' => 'Forms/FRadio-single',
+                ),
+
+                'publicly_versionable',
 
                 // + captcha
                 // + [accept TOS and add]
@@ -199,6 +205,17 @@ class PasteController extends PagesController
             ->distinct(array('root_id'))
         ;
 
+        $or_chain = new FoBinaryChain(
+            new FoBinary($model['privacy'], '=', $model['privacy']->dbString('public')),
+            'OR'
+        );
+        if (g()->auth->loggedIn())
+        {
+            $or_chain->also(new FoBinary($model['paster_id'], '=', $model['paster_id']->dbString(g()->auth->id())));
+            /** @todo OR is allowed to see */
+        }
+        $model->filter($or_chain);
+
         $model->order('root_id', 'DESC');
         $model->order('creation', 'DESC');
 
@@ -265,13 +282,14 @@ class PasteController extends PagesController
         {
             $this->getOne($parent_url, $parent_ver, false, $db_data);
             $static_fields = array(
-                'title'         => &$db_data['title'],
-                'url'           => &$db_data['url'],
-                //'author'        => &$db_data['author'],
-                //'source_url'    => &$db_data['source_url'],
-                'tags'          => &$db_data['tags'],
-                'paster'        => g()->auth->displayName(),
-                'type'          => &$db_data['type'],
+                'title'                => &$db_data['title'],
+                'url'                  => &$db_data['url'],
+                //'author'               => &$db_data['author'],
+                //'source_url'           => &$db_data['source_url'],
+                'tags'                 => &$db_data['tags'],
+                'paster'               => g()->auth->displayName(),
+                'type'                 => &$db_data['type'],
+                'publicly_versionable' => &$db_data['publicly_versionable']
             );
             $one_type = $this->_types[$static_fields['type']];
             $this->_types = array();
@@ -463,8 +481,6 @@ class PasteController extends PagesController
         }
 
         $model_class = g()->load('Paste', 'model');
-        $model = g('Paste', 'model');
-
         $result = $model_class::getByUrl($url, $ver);
 
         if (!$result)
@@ -486,6 +502,8 @@ class PasteController extends PagesController
 
         if ($with_tree)
         {
+            $model = g('Paste', 'model');
+
             $model->order('creation', 'ASC');
             $model->order('id', 'ASC');
             $result['Tree'] = $model
@@ -649,7 +667,39 @@ class PasteController extends PagesController
      */
     public function hasAccessToNew(array &$params)
     {
-        return true;
+        $url = @$params[0];
+        $ver = @$params['v'];
+
+        // new paste
+
+        if (!$url)
+        {
+            return true;
+        }
+
+
+        // new version of a existing paste
+
+        if (!$this->getOne($url, $ver, true, $result))
+        {
+            return false;
+        }
+
+        $publicly_versionable = g('Functions')->anyToBool($result['publicly_versionable']);
+
+        if ($publicly_versionable)
+        {
+            return true;
+        }
+        else if ($result['paster_id'])
+        {
+            return $result['paster_id'] == g()->auth->id();
+        }
+        else
+        {
+            return false;
+        }
+
     }
 
 }

@@ -58,6 +58,10 @@ $meta_data_toggler = json_encode(array(
                 <dd><?=$row['author']?></dd>
             <?php endif; ?>
 
+            <?php if (!$f->anyToBool($row['publicly_versionable'])) : ?>
+                <dt><?=$this->trans('creating new versions by other users denied')?></dt>
+            <?php endif; ?>
+
             <?php
             $type->inc('meta');
             ?>

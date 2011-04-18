@@ -253,20 +253,75 @@ $form = g('Forms', array('paste', $this));
         </fieldset>
 
 
-        <?php if (g()->debug->allowed()) : ?>
         <fieldset class="verbose">
             <legend><?=$this->trans('privacy')?></legend>
             <?php
             $less_important_options_json = htmlspecialchars(json_encode(array(
-                'expand' => $this->trans('show options including per-user and group permissions and encryption'),
+                //'expand TODO'   => $this->trans('show options including per-user and group permissions and encryption'),
+                'expand'   => $this->trans('show options'),
                 'collapse' => $this->trans('it\'s too cluttered, hide these options'),
+                'excerpts' => array(
+                    'public'     => $this->trans('Your paste will be listed in "pastes" section and indexed by search engines.'),
+                    'not listed' => $this->trans('Your paste will not be listed in "pastes" section nor indexed by search engines. It will be accessible only by knowing it\'s address.'),
+                    'private'    => $this->trans('Only users and groups of your selection will be able to access your paste.'),
+                ),
             )), ENT_QUOTES);
             ?>
-            <ul class="less-important-options" data-less-important-options='<?=$less_important_options_json?>'>
-                <li>@todo</li>
+            <ul class="less-important-options with-excerpt privacy" data-less-important-options='<?=$less_important_options_json?>'>
+                <li class="privacy field">
+                    <ul>
+                        <li class="public privacy field">
+                            <?php
+                            $form->input(
+                                'privacy',
+                                array(
+                                    'value' => 'public',
+                                    'label' => 'public: list in <q>pastes</q>, allow to be searchable'
+                                )
+                            );
+                            ?>
+                        </li>
+                        <li class="not-listed privacy field">
+                            <?php
+                            $form->input(
+                                'privacy',
+                                array(
+                                    'value' => 'not listed',
+                                    'label' => 'not listed: access only for people who know the address'
+                                )
+                            );
+                            ?>
+                        </li>
+                        <?php if (g()->debug->allowed()) : ?>
+                        <li class="private privacy field">
+                            @todo
+                            <?php
+                            $form->input(
+                                'privacy',
+                                array(
+                                    'value' => 'private',
+                                    'label' => 'allow only selected groups and users'
+                                )
+                            );
+                            ?>
+                        </li>
+                        <?php endif; /* g()->debug->allowed( */ ?>
+                    </ul>
+                </li>
+                <?php if (g()->auth->loggedIn()) : ?>
+                    <li class="field">
+                        <?php
+                        $form->input('publicly_versionable', array('label' => 'allow other users to create new versions of this paste'));
+                        ?>
+                        <div class="help">
+                            <p>
+                                <?=$this->trans('Normally, other users can create new versions of a paste, which will be listed on paste\'s page. If you do not want that, uncheck this option.')?>
+                            </p>
+                        </div>
+                    </li>
+                <?php endif; /* g()->auth->loggedIn( */ ?>
             </ul>
         </fieldset>
-        <?php endif; ?>
 
 
         <?php if (!g()->auth->loggedIn()) : ?>
@@ -281,9 +336,10 @@ $form = g('Forms', array('paste', $this));
         ?>
 
         <?php
+        $submit = g()->auth->loggedIn() ? 'add' : 'accept terms of use and add';
         $this->inc('Forms/buttons', array(
-            'form' => & $form,
-            'submit' => 'accept terms of use and add',
+            'form'   => & $form,
+            'submit' => $submit,
             'cancel' => g()->req->getReferer() ? 'cancel' : false,
         ));
         ?>
