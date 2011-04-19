@@ -70,8 +70,10 @@ ob_start();
             $f->tag(
                 'img',
                 array(
-                    'class' => 'photo',
-                    'src'   => $gravatar
+                    'class'  => 'photo',
+                    'src'    => $gravatar,
+                    'width'  => $avatar,
+                    'height' => $avatar
                 )
             ),
             $label
