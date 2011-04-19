@@ -15,6 +15,8 @@ $v->addJs($this->file('new', 'js'));
 $form = g('Forms', array('paste', $this));
 ?>
 
+<strong> <big>FIXME: adding new version does not work (parent_id etc)</big> </strong>
+
 <section>
     <header>
         <h2><?=$title?></h2>
@@ -336,11 +338,29 @@ $form = g('Forms', array('paste', $this));
         ?>
 
         <?php
-        $submit = g()->auth->loggedIn() ? 'add' : 'accept terms of use and add';
+        if ($new_version)
+        {
+            $submit = 'create new version';
+        }
+        else
+        {
+            $submit = 'create new paste';
+        }
+        if (!g()->auth->loggedIn())
+        {
+            $submit = 'accept terms of use and ' . $submit;
+        }
         $this->inc('Forms/buttons', array(
-            'form'   => & $form,
-            'submit' => $submit,
-            'cancel' => g()->req->getReferer() ? 'cancel' : false,
+            'form'    => & $form,
+            'submit'  => $submit,
+            'buttons' => array(
+                array(
+                    'name'  => 'store_settings',
+                    'value' => $this->trans('save settings as default'),
+                    'class' => 'store-settings',
+                )
+            ),
+            'cancel'  => g()->req->getReferer() ? 'cancel' : false,
         ));
         ?>
         <?php if (g()->debug->allowed()) : ?>

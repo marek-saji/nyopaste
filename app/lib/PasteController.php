@@ -71,6 +71,11 @@ class PasteController extends PagesController
 
                 // + captcha
                 // + [accept TOS and add]
+
+                'store_settings' => array(
+                    'fields' => null,
+                    '_tpl'   => 'empty' // dummpy, input added as button
+                )
             ), // forms[paste][inputs]
         ), // forms[paste]
     ); // forms
@@ -245,6 +250,33 @@ class PasteController extends PagesController
     protected function _prepareActionNew(array & $params)
     {
         $this->_addPasteTypeSubcontrollers();
+
+        if (g()->auth->loggedIn())
+        {
+            $setting = g('UserSetting', 'model')->getRow(array(
+                'user_id' => g()->auth->id(),
+                'class'   => 'paste',
+                'name'    => 'defaults for paste form'
+            ));
+            $setting_value = (array) json_decode($setting['value'], true);
+            $post_data_was_empty = @empty($this->data['paste']);
+            $this->data['paste'] = array_merge(
+                (array) $setting_value[''],
+                (array) @$this->data['paste']
+            );
+            if ($post_data_was_empty)
+            {
+                $this->data['paste']['_empty'] = true;
+            }
+            foreach ($this->_types as $type_name => &$type)
+            {
+                $type->data['paste'] = array_merge(
+                    (array) @$setting_value[$type_name],
+                    (array) @$type->data['paste']
+                );
+            }
+            unset($type_name, $type);
+        }
     }
 
     /**
@@ -260,10 +292,81 @@ class PasteController extends PagesController
         $parent_ver = @$params['v'];
 
         $f = g('Functions');
-        $form_id = 'paste';
-        $inputs = & $this->forms[$form_id]['inputs'];
-        $post_data = & $this->data[$form_id];
-        $db_data = array();
+
+        $form_id            = 'paste';
+        $inputs             = & $this->forms[$form_id]['inputs'];
+        $post_data          = & $this->data[$form_id];
+        $post_data_is_empty = empty($post_data) || @$post_data['_empty'];
+        $db_data            = array();
+
+
+        $this->assign('new_version', (bool) $parent_url);
+
+
+        // don't create new paste -- just store settings for future
+        if (g()->auth->loggedIn() && @$this->data[$form_id]['store_settings'])
+        {
+            $setting = g('UserSetting', 'model');
+            // used as filters and then to insert setting
+            $setting_data = array(
+                'user_id' => g()->auth->id(),
+                'class'   => 'paste',
+                'name'    => 'defaults for paste form'
+            );
+            $setting->filter($setting_data)->delete(true);
+
+            // main controller data
+            $setting_value = array(
+                '' => $this->data[$form_id]
+            );
+            unset($setting_value['']['store_settings']);
+
+            // paste types data
+            foreach ($this->_types as $type_name => $type)
+            {
+                $setting_value[$type_name] = @$type->data[$form_id];
+            }
+            unset($type_name, $type);
+
+            // unset underscore fields
+            foreach ($setting_value as $setting_form_id => &$setting_form)
+            {
+                foreach ($setting_form as $key => &$value)
+                {
+                    if ('_' == $key[0])
+                    {
+                        unset($setting_form[$key]);
+                    }
+                }
+            }
+            unset($value);
+
+            $setting_data['value'] = json_encode($setting_value);
+            $result = $setting->sync($setting_data, true, 'insert');
+
+            if (true === $result)
+            {
+                // (dirty) unset all form-related error messages
+                unset(g()->infos['forms']);
+
+                g()->addInfo(
+                    'Paste_paste form settings stored',
+                    'info',
+                    $this->trans('Settings saved as new form defaults')
+                );
+            }
+            else
+            {
+                g()->addInfo(
+                    'Paste_paste form settings not stored',
+                    'error',
+                    $this->trans('Error occurred while storing form defaults.')
+                );
+            }
+
+            $this->redirect(g()->req->getRequestUrl());
+        }
+
 
         $this->assign(
             'max_upload_size_mb',
@@ -277,44 +380,54 @@ class PasteController extends PagesController
         // key: name, value: text
         $static_fields = array();
 
-        $new_ver = (bool) $parent_url;
-        if($new_ver)
+        // creating new version
+        if ($parent_url)
         {
             $this->getOne($parent_url, $parent_ver, false, $db_data);
+
             $static_fields = array(
                 'title'                => &$db_data['title'],
                 'url'                  => &$db_data['url'],
                 //'author'               => &$db_data['author'],
                 //'source_url'           => &$db_data['source_url'],
                 'tags'                 => &$db_data['tags'],
-                'paster'               => g()->auth->displayName(),
                 'type'                 => &$db_data['type'],
                 'publicly_versionable' => &$db_data['publicly_versionable']
             );
-            $one_type = $this->_types[$static_fields['type']];
+
+            // limit to one type
+
+            $one_type = &$this->_types[$static_fields['type']];
             $this->_types = array();
             $this->_types[$static_fields['type']] = $one_type;
-        }
 
-        /** @todo handle editing? */
-        if (empty($post_data) || @$post_data['_empty'])
-        {
             // fill up form data
-            if ($parent_url)
+
+            if ($post_data_is_empty)
             {
                 $post_data = $db_data;
                 $post_data['content_text'] = & $post_data['content'];
-                $post_data['parent_id'] = $db_data['id'];
-                $post_data['root_id'] = $db_data['root_id'];
-
-                /*
-                foreach ($this->_types as $type)
-                {
-                    $type->data[$form_id] = $post_data;
-                }
-                 */
             }
+            $post_data['parent_id'] = $db_data['id'];
+            $post_data['root_id']   = $db_data['root_id'];
 
+            // fill up types form data too
+            foreach ($this->_types as $type_name => $type)
+            {
+                $type->data[$form_id] =
+                    (array) $post_data
+                    +
+                    (array) (@$type->data[$form_id])
+                    +
+                    (array) g()->conf['paste_types'][$type_name]['defaults']
+                ;
+            }
+        }
+
+
+        /** @todo handle editing? */
+        if ($post_data_is_empty)
+        {
             $post_data = (array)$post_data + g()->conf['paste']['defaults'];
             $post_data['content_type'] = 'content_text';
         }
@@ -427,8 +540,8 @@ class PasteController extends PagesController
                 // if we are here, we have failed
                 g()->db->failTrans();
                 g()->db->completeTrans();
-            }
-        }
+            } // is validated
+        } // if post data is empty else
 
         if (g()->auth->loggedIn())
         {
@@ -439,6 +552,8 @@ class PasteController extends PagesController
         {
             unset($static_fields['paster']);
         }
+
+        // switch templates of static fields
 
         foreach ($static_fields as $input_name => $static_value)
         {

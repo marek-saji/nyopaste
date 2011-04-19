@@ -40,24 +40,6 @@ abstract class PasteTypeController extends Component
     // dummy
     public function actionNew(array $params)
     {
-        $conf = &g()->conf['paste_types'][$this->_type];
-
-        if (empty($this->data['paste']))
-        {
-            $url = $this->getParentParam('Paste', 'new', 0);
-            $ver = $this->getParentParam('Paste', 'new', 'v');
-            if ($url)
-            {
-                $this->getParent()->getOne($url, $ver, true, $this->data['paste']);
-            }
-            $this->data['paste']['_empty'] = true;
-        }
-
-        $this->data['paste'] =
-            ((array) @$this->data['paste'])
-            +
-            ((array) @$conf['defaults'])
-        ;
     }
 
 

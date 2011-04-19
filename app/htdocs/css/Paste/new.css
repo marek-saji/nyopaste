@@ -27,4 +27,7 @@
 .holoform#content form .ace_editor .ace_sb div {
   display: block;
 }
+.holoform#content form .buttons .store-settings {
+  font-size: .6em;
+}
 /* vim: set ft=css: */
