@@ -15,7 +15,9 @@ $v->addJs($this->file('new', 'js'));
 $form = g('Forms', array('paste', $this));
 ?>
 
-<strong> <big>FIXME: adding new version does not work (parent_id etc)</big> </strong>
+<?php if (g()->debug->allowed()) : ?>
+    <strong> <big>FIXME: adding new version does not work (parent_id etc)</big> </strong>
+<?php endif; /* debug allowed */ ?>
 
 <section>
     <header>

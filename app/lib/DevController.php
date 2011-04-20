@@ -50,19 +50,36 @@ class DevController extends DeveloperController
             array(
                 array(
                     'id'     => -1,
-                    'login'  => 'admin',
-                    'passwd' => 'foo',
                     'type'   => USER_TYPE_ADMIN,
                     'status' => STATUS_ACTIVE,
-                ),
+                ) + g()->conf['users']['admin']
             )
         );
 
 
         $this->_insertSomething(
-            'PasteType',
+            'Paste',
             array(
-                array('name' => 'Plain'),
+                array(
+                    'id'                   => -1,
+                    'paster_id'            => -1, // admin
+                    'url'                  => 'TOS',
+                    'title'                => 'Terms of Use',
+                    'content'              => file_get_contents(APP_DIR.'/conf/default_pastes/TOS.markdown'),
+                    'type'                 => 'markup',
+                    'publicly_versionable' => false
+                )
+            )
+        );
+
+
+        $this->_insertSomething(
+            'PasteTypeMarkup',
+            array(
+                array(
+                    'id'     => -1,
+                    'parser' => 'markdown'
+                ),
             )
         );
 
