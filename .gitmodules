@@ -4,3 +4,6 @@
 [submodule "app/htdocs/js/jquery.encapsulating"]
 	path = app/htdocs/js/jquery.encapsulating
 	url = git://github.com/marek-saji/jquery.encapsulating.git
+[submodule "app/htdocs/js/ace"]
+	path = app/htdocs/js/ace
+	url = https://github.com/ajaxorg/ace.git
