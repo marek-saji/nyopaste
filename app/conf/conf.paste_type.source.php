@@ -17,25 +17,27 @@ $conf['paste_types']['source'] = array(
     ),
 
     'themes' => array(
-        'ace-clouds' => 'Clouds',
+        'ace-clouds'          => 'Clouds',
         'ace-clouds-midnight' => 'Clouds Midnight',
-        'ace-cobalt' => 'Cobalt',
-        'ace-dawn' => 'Dawn',
-        'ace-eclipse' => 'Eclipse',
-        'ace-idle-fingers' => 'Idle Fingers',
-        'ace-kr-theme' => 'KR Theme',
+        'ace-cobalt'          => 'Cobalt',
+        'ace-dawn'            => 'Dawn',
+        'ace-eclipse'         => 'Eclipse',
+        'ace-idle-fingers'    => 'Idle Fingers',
+        'ace-kr-theme'        => 'KR Theme',
+        'ace-merbivore'       => 'Merbivore',
+        'ace-merbivore-soft'  => 'Merbivore Soft',
         'ace-mono-industrial' => 'Mono Industrial',
-        'ace-monokai' => 'Monokai',
-        'ace-pastel-on-dark' => 'Pastel On Dark',
-        'ace-tm' => 'Textmate',
-        'ace-twilight' => 'Twilight',
+        'ace-monokai'         => 'Monokai',
+        'ace-pastel_on_dark'  => 'Pastel On Dark',
+        'ace-twilight'        => 'Twilight',
+        'ace-vibrant-ink'     => 'Vibrant Ink',
     ),
 
 
     'defaults' => array(
-        'syntax' => 'c_cpp',
-        'colour_scheme' => 'ace-tm',
-        'line_numbers' => 1,
+        'syntax'        => 'c_cpp',
+        'colour_scheme' => 'ace-dawn',
+        'line_numbers'  => 1,
     ),
 
 );

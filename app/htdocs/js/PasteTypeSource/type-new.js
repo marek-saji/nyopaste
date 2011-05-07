@@ -20,7 +20,7 @@ $(function(){
                 'theme',
                 $(this).val()
                     .replace(/ace-/, '')
-                    .replace('-', '_')
+                    .replace(/-/g, '_')
             );
         })
         .trigger('change.ace')

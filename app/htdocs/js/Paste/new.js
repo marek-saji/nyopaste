@@ -118,7 +118,7 @@ $(function(){
      */
     function load(path, module, callback)
     {
-        path = "http://ajaxorg.github.com/ace/build/textarea/src/" + path;
+        path = hg.include_path + "ace/build/textarea/src/" + path;
         if (!load.scripts[path])
         {
             load.scripts[path] = {
