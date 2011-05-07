@@ -3,6 +3,11 @@
  * New paste form
  * @author m.augustynowicz
  *
+ * @param array $static_fields
+ * @param bool $new_version
+ * @param int $max_upload_size_mb
+ * @param string $recaptcha_publickey
+ * @param bool $use_captcha
  */
 
 $title = $this->trans('add new paste');
@@ -322,6 +327,27 @@ $form = g('Forms', array('paste', $this));
                 <?php endif; /* g()->auth->loggedIn( */ ?>
             </ul>
         </fieldset>
+
+
+        <?php if ($use_captcha) : ?>
+            <fieldset class="verbose">
+                <legend><?=$this->trans('prove that you are human')?></legend>
+                <ul>
+                    <!-- CAPTCHA -->
+                    <li class="captcha field">
+                        <?=recaptcha_get_html($recaptcha_publickey);?>
+                        <div class="help">
+                            <p>
+                                <?=$this->trans('To prove you are not an evil robot, complete this chalange.')?>
+                            </p>
+                            <p>
+                                <?=$this->trans('After signing-in, this will not appear.')?>
+                            </p>
+                        </div>
+                    </li>
+                </ul>
+            </fieldset>
+        <?php endif; ?>
 
 
         <?php if (!g()->auth->loggedIn()) : ?>

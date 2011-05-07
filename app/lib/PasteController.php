@@ -425,6 +425,20 @@ class PasteController extends PagesController
         }
 
 
+        // assign reCAPTCHA settings
+
+        $use_captcha = !g()->auth->loggedIn() && !g()->debug->on('disable', 'captcha');
+        if ($use_captcha)
+        {
+            g()->load('recaptcha-php-1.10/recaptchalib', null);
+            $this->assign(
+                'recaptcha_publickey',
+                g()->conf['keys']['recaptcha']['public']
+            );
+        }
+        $this->assign('use_captcha', $use_captcha);
+
+
         /** @todo handle editing? */
         if ($post_data_is_empty)
         {
@@ -433,6 +447,31 @@ class PasteController extends PagesController
         }
         else
         {
+            // verify captcha
+            if ($use_captcha)
+            {
+                $recaptcha_response = recaptcha_check_answer(
+                    g()->conf['keys']['recaptcha']['private'],
+                    $_SERVER['REMOTE_ADDR'],
+                    $_POST['recaptcha_challenge_field'],
+                    $_POST['recaptcha_response_field']
+                );
+                if (!$recaptcha_response->is_valid)
+                {
+                    g()->addInfo(
+                        'wrong captcha, paste adding',
+                        'error',
+                        $this->trans('Entered CAPTCHA code is incorrect, try again.')
+                    );
+                    $this->_validated = false;
+                }
+            }
+
+            if (null === @$post_data['publicly_versionable'])
+            {
+                $post_data['publicly_versionable'] = true;
+            }
+
             if (@$this->_validated[$form_id])
             {
                 $insert_data = $static_fields + $this->data[$form_id];

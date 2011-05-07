@@ -87,12 +87,12 @@ $v->setTitle($title);
 
         <?php if ($use_captcha) : ?>
             <fieldset>
-                <dl>
+                <ul>
                     <!-- CAPTCHA -->
-                    <dd class="captcha">
+                    <li class="captcha field">
                         <?=recaptcha_get_html($recaptcha_publickey);?>
-                    </dd>
-                </dl>
+                    </li>
+                </ul>
             </fieldset>
         <?php endif; ?>
 
