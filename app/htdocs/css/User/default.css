@@ -1,0 +1,4 @@
+#content dt.website, #content dt.about_me {
+  display: none;
+}
+/* vim: set ft=css: */

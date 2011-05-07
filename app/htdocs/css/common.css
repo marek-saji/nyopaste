@@ -118,6 +118,9 @@ section {
 #whole-content a.share.action.addthis, #nyroModalContent a.share.action.addthis {
   background-image: url(../gfx/share-addthis.png);
 }
+#whole-content .user-content, #nyroModalContent .user-content {
+  overflow: hidden;
+}
 #whole-content .tags,
 #nyroModalContent .tags,
 #whole-content .tags li,

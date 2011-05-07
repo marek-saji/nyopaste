@@ -9,11 +9,36 @@
 $title = $row['DisplayName'];
 $v->setTitle($title);
 
+$v->addLess($this->file('default', 'less'));
 ?>
 
-<section>
+<section class="vcard">
     <header>
-        <h2><?=$title?></h2>
+        <h2 class="fn">
+            <?php
+            $gravatar_size  = 128;
+            $gravatar_url = sprintf(
+                'http://gravatar.com/avatar/%s?%s',
+                md5($row['email']),
+                http_build_query(array(
+                    's' => $gravatar_size,
+                    'd' => 'identicon'
+                ))
+            );
+            ?>
+            <?php
+            echo $f->tag(
+                'img',
+                array(
+                    'src'    => $gravatar_url,
+                    'class'  => 'photo',
+                    'width'  => $gravatar_size,
+                    'height' => $gravatar_size
+                )
+            );
+            ?>
+            <?=$title?>
+        </h2>
         <?php
         $t->inc('row_actions', array(
             'actions' => & $row['Actions']
@@ -21,26 +46,39 @@ $v->setTitle($title);
         ?>
     </header>
 
-    <dl id="content">
-        <?php if ($row['website']) : ?>
-            <!-- website -->
-            <dt class="website text url">
-                <?=$t->trans('website')?>
-            </dt>
-            <dd class="website text url">
-                <a href="<?=$row['website']?>"
-                   target="_blank"><?=$row['website']?></a>
-            </dd>
-        <?php endif; ?>
-        <?php if ($row['AboutMe']) : ?>
-            <!-- about me -->
-            <dt class="about_me text big">
-                <?=$t->trans('something about you')?>
-            </dt>
-            <dd class="about_me text big">
-                <?=$row['AboutMe']?>
-            </dd>
-        <?php endif; ?>
-    </dl>
+    <div id="content">
+        <dl>
+            <?php if (trim($row['website'])) : ?>
+                <!-- website -->
+                <dt class="website text url">
+                    <?=$t->trans('website')?>
+                </dt>
+                <dd class="website text url">
+                    <?php
+                    echo $f->tag(
+                        'a',
+                        array(
+                            'href'   => $row['website'],
+                            'target' => '_blank',
+                            'class'  => 'url',
+                            'rel'    => 'me'
+                        ),
+                        $row['website']
+                    );
+                    ?>
+                </dd>
+            <?php endif; ?>
+            <?php if (trim($row['AboutMe'])) : ?>
+                <!-- about me -->
+                <dt class="about_me text">
+                    <?=$t->trans('something about you')?>
+                </dt>
+                <dd class="about_me text user-content">
+                    <?=$row['AboutMe']?>
+                </dd>
+            <?php endif; ?>
+        </dl>
+    </div>
+
 </section>
 
