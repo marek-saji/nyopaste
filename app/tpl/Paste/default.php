@@ -118,6 +118,14 @@ $meta_data_toggler = json_encode(array(
                             ?>
                             <a class="action share identica addthis_button_identica" href="http://identi.ca/index.php?<?=$identica_q?>">post to identi.ca</a>
                         </li>
+                        <li class="addthis facebook action">
+                            <?php
+                            $facebook_q = http_build_query(array(
+                                'u' => $permalink
+                            ));
+                            ?>
+                            <a href="https://www.facebook.com/sharer/sharer.php?<?=$facebook_q?>" class="action share facebook addthis_button_facebook"><?=$this->trans('post to facebook')?></a>
+                        </li>
                         <li class="addthis email action">
                             <?php
                             $mail_q = http_build_query(array(
@@ -125,7 +133,7 @@ $meta_data_toggler = json_encode(array(
                                 'body'    => $this->trans("Take a look at this:\n\n%2\$s", $row['title'], $permalink)
                             ));
                             ?>
-                            <a class="action share mail addthis_button_email" href="mailto:?<?=$mail_q?>">mail</a>
+                            <a class="action share mail addthis_button_email" href="mailto:?<?=$mail_q?>"><?=$this->trans('e-mail')?></a>
                         </li>
                         <li class="addthis compact action">
                             <?php
