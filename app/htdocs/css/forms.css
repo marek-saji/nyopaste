@@ -144,6 +144,18 @@
   margin: .75em 0;
 }
 /* .holoform form */
+.confirmation {
+  margin: 0 auto;
+  width: 40em;
+  max-width: 100%;
+}
+.confirmation .holoform form {
+  width: auto;
+  max-width: none;
+}
+#nyroModalContent .confirmation {
+  width: auto;
+}
 body.js .holoform form .field_error, body.js .holoform form .help {
   position: absolute;
   top: 0;

@@ -23,8 +23,8 @@
 
 .holoform form
 {
-    width: @formwidth;
-    max-width: @formwidthpr;
+    width     : @formwidth;
+    max-width : @formwidthpr;
 
     .field_error,
     .help
@@ -208,6 +208,24 @@
     } /* fieldset */
 
 } /* .holoform form */
+
+.confirmation
+{
+    margin    : 0 auto;
+    width     : 40em;
+    max-width : 100%;
+
+    .holoform form
+    {
+        width     : auto;
+        max-width : none;
+    }
+}
+
+#nyroModalContent .confirmation
+{
+    width : auto;
+}
 
 body.js .holoform form
 {

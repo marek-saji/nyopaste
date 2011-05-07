@@ -475,7 +475,7 @@ class UserController extends PagesController implements IUserController
         if (g()->auth->id() == $db_data['id'])
         {
             $this->assign('question',
-                'Are you sure you want to remove your account?' );
+                'Are you sure you want to <strong>remove your account</strong>? This <em>cannot be undone</em>.' );
         }
         else
         {
