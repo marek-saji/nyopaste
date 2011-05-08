@@ -25,9 +25,9 @@ $conf['js-libs'] = array(
      * @url http://github.com/ajaxorg/ace/
      */
     'ace' => array(
-        'cdn_path' => 'http://ajaxorg.github.com/ace/build/textarea/src/ace-uncompressed.js',
-        'min_cdn_path' => 'http://ajaxorg.github.com/ace/build/textarea/src/ace.js',
-        'autoload' => false
+        'filename'     => 'ace/build/textarea/src/ace-uncompressed',
+        'min_filename' => 'ace/build/textarea/src/ace',
+        'autoload'     => false
     ),
 
 
