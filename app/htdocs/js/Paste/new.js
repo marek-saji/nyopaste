@@ -151,8 +151,9 @@ $(function(){
 
     var ace = window.__ace_shadowed__,
         $textarea = $('.editor');
-    $textarea.data('ace_editor', ace.transformTextarea($textarea[0]));
-
+    $('.editor').each(function(){
+        $(this).data('ace_editor', ace.transformTextarea(this));
+    });
 
 });
 
