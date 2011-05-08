@@ -27,6 +27,7 @@ $(function(){
                     $label.hide();
                 });
 
+        console.info('radio-optiongroups with ', $select);
         $select
             .appendTo($list.closest('fieldset').find('legend:first').html(''))
             .change(function(){
@@ -152,6 +153,7 @@ $(function(){
     var ace = window.__ace_shadowed__,
         $textarea = $('.editor');
     $('.editor').each(function(){
+        console.info('init ACE on ', this);
         $(this).data('ace_editor', ace.transformTextarea(this));
     });
 
