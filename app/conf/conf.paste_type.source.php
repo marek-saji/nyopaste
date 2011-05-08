@@ -10,6 +10,12 @@ $conf['paste_types']['source'] = array(
             'name'      => 'CoffeeScript',
             'extension' => 'coffee'
         ),
+        /*
+        'csharp' => array(
+            'name'      => 'C#',
+            'extension' => 'cs'
+        ),
+         */
         'xml' => array(
             'name'      => 'XML',
             'extension' => 'xml'
