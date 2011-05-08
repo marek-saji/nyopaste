@@ -16,6 +16,10 @@ $conf['paste_types']['source'] = array(
             'extension' => 'cs'
         ),
          */
+        'css' => array(
+            'name'      => 'CSS',
+            'extension' => 'css'
+        ),
         'xml' => array(
             'name'      => 'XML',
             'extension' => 'xml'
