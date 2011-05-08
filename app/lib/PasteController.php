@@ -74,7 +74,7 @@ class PasteController extends PagesController
 
                 'store_settings' => array(
                     'fields' => null,
-                    '_tpl'   => 'empty' // dummpy, input added as button
+                    '_tpl'   => 'Forms/FBool'
                 )
             ), // forms[paste][inputs]
         ), // forms[paste]

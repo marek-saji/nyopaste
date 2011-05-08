@@ -350,7 +350,28 @@ $form = g('Forms', array('paste', $this));
         <?php endif; ?>
 
 
-        <?php if (!g()->auth->loggedIn()) : ?>
+        <?php if (g()->auth->loggedIn()) : ?>
+            <fieldset>
+                <ul>
+                    <li class="field">
+                        <?php
+                        $form->input(
+                            'store_settings',
+                            array(
+                                'class' => 'store-settings',
+                                'label' => $this->trans('<span class="nojs"><em>do not</em> create a paste, </span>just store settings for future pastes')
+                            )
+                        );
+                        ?>
+                        <div class="help">
+                            <p>
+                                <?=$this->trans('<em>Instead</em> of creating a new paste, save values as default for future pastes.')?>
+                            </p>
+                        </div>
+                    </li>
+                </ul>
+            </fieldset>
+        <?php else : ?>
             <p>
                 <?=$t->trans('Don\'t forget to read <a href="%s" target="_blank" class="ext">terms of use</a>.', $t->url2c('Paste', '', array('TOS'))); ?>
             </p>
@@ -374,14 +395,17 @@ $form = g('Forms', array('paste', $this));
         {
             $submit = 'accept terms of use and ' . $submit;
         }
+        $data_values = json_encode(array(
+            false => $submit,
+            true  => $this->trans('store settings')
+        ));
         $this->inc('Forms/buttons', array(
             'form'    => & $form,
-            'submit'  => $submit,
+            'submit'  => false,
             'buttons' => array(
                 array(
-                    'name'  => 'store_settings',
-                    'value' => $this->trans('save settings as default'),
-                    'class' => 'store-settings',
+                    'value'       => $submit,
+                    'data-values' => $data_values
                 )
             ),
             'cancel'  => g()->req->getReferer() ? 'cancel' : false,

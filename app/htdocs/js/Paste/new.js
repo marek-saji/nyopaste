@@ -113,6 +113,16 @@ $(function(){
     ;
 
 
+    $('.store-settings')
+        .change(function(){
+            var $this = $(this),
+                $submit = $this.closest('form').find('input[type=submit]')
+            ;
+            $submit.attr('value', $submit.data('values')[~~$this.is(':checked')]);
+        })
+    ;
+
+
     /**
      * ACE companion
      * @url http://ajaxorg.github.com/ace/build/textarea/editor.html
