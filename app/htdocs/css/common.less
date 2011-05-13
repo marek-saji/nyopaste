@@ -89,38 +89,32 @@ menu, nav, section { display: block; }
 
     #head
     {
-        margin: 0 1em 0 0;
+        margin      : 0 1em 0 0;
+        line-height : 1em;
 
-        hgroup
+        h1
         {
-            h1,
-            h2
-            {
-                line-height: 1em;
-            }
+            line-height : 1em;
+            font-size   : 2.5em;
+            font-weight : normal;
+            font-family : TheanoOldStyleRegular, serif;
 
-            h1
+            a
             {
-                font-size: 2.5em;
-                font-weight: normal;
-                font-family: TheanoOldStyleRegular, serif;
-
-                a
+                color: #555;
+                i
                 {
-                    color: #555;
-                    i
-                    {
-                        color: #aaa;
-                    }
+                    color: #aaa;
                 }
             }
 
-            h2
-            {
-                font-size: .7em;
-                font-weight: normal;
-                color: #777;
-            }
+        }
+
+        small
+        {
+            font-size   : .7em;
+            font-weight : normal;
+            color       : #777;
         }
 
     } /* #head */

@@ -23,12 +23,10 @@ $t->inc('main_common');
     </nav>
 
     <header id="head">
-        <hgroup>
-            <h1>
-                <?= $t->l2c('n<i>y</i>opaste', ''); ?>
-            </h1>
-            <h2><?=$this->trans('a little more social pastebin')?></h2>
-        </hgroup>
+        <h1>
+            <?= $t->l2c('n<i>y</i>opaste', ''); ?>
+        </h1>
+        <small><?=$this->trans('a little more social pastebin')?></small>
     </header> <!-- #head -->
 
     <nav id="menu">

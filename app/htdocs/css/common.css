@@ -65,22 +65,21 @@ section {
 }
 #top #head {
   margin: 0 1em 0 0;
-}
-#top #head hgroup h1, #top #head hgroup h2 {
   line-height: 1em;
 }
-#top #head hgroup h1 {
+#top #head h1 {
+  line-height: 1em;
   font-size: 2.5em;
   font-weight: normal;
   font-family: TheanoOldStyleRegular, serif;
 }
-#top #head hgroup h1 a {
+#top #head h1 a {
   color: #555;
 }
-#top #head hgroup h1 a i {
+#top #head h1 a i {
   color: #aaa;
 }
-#top #head hgroup h2 {
+#top #head small {
   font-size: .7em;
   font-weight: normal;
   color: #777;
@@ -111,6 +110,9 @@ section {
 }
 #whole-content a.share.action.identica, #nyroModalContent a.share.action.identica {
   background-image: url(../gfx/share-identica.png);
+}
+#whole-content a.share.action.facebook, #nyroModalContent a.share.action.facebook {
+  background-image: url(../gfx/share-facebook.png);
 }
 #whole-content a.share.action.mail, #nyroModalContent a.share.action.mail {
   background-image: url(../gfx/share-mail.png);
