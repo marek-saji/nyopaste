@@ -3,6 +3,21 @@
  * Rules for highlighting in XML mode.
  * @author m.augustynowicz ported from javascript
  * @url https://github.com/ajaxorg/ace/blob/master/lib/ace/mode/xml_highlight_rules.js
+ *
+ * The contents of this file are subject to the GNU Lesser General Public
+ * License 2.1 (the "License"); you may not use this file except in
+ * compliance with the License. You may obtain a copy of the License at
+ * http://www.opensource.org/licenses/lgpl-2.1.html
+ *
+ * The Original Code is Ajax.org Code Editor (ACE).
+ *
+ * The Initial Developer of the Original Code is
+ * Ajax.org B.V.
+ * Portions created by the Initial Developer are Copyright (C) 2010
+ * the Initial Developer. All Rights Reserved.
+ *
+ * Contributor(s):
+ *      Fabian Jakobs <fabian AT ajax DOT org>
  */
 $conf['source_code_highlighter']['modes'] = array(
 

@@ -2,7 +2,25 @@
 /**
  * Rules for highlighting in C/C++ mode.
  * @author m.augustynowicz ported from javascript
- * @url https://github.com/ajaxorg/ace/blob/master/lib/ace/mode/c_highlight_rules.js
+ * @url https://github.com/ajaxorg/ace/blob/master/lib/ace/mode/c_cpp_highlight_rules.js
+ *
+ * The contents of this file are subject to the GNU Lesser General Public
+ * License 2.1 (the "License"); you may not use this file except in
+ * compliance with the License. You may obtain a copy of the License at
+ * http://www.opensource.org/licenses/lgpl-2.1.html
+ *
+ * The Original Code is Ajax.org Code Editor (ACE).
+ *
+ * The Initial Developer of the Original Code is
+ * Ajax.org B.V.
+ * Portions created by the Initial Developer are Copyright (C) 2010
+ * the Initial Developer. All Rights Reserved.
+ *
+ * Contributor(s):
+ *      Fabian Jakobs <fabian AT ajax DOT org>
+ *      Gastón Kleiman <gaston.kleiman AT gmail DOT com>
+ *
+ * Based on Bespin's C/C++ Syntax Plugin by Marc McIntyre.
  */
 
 $doc_comment = require(dirname(__FILE__) . DIRECTORY_SEPARATOR . 'doc_comment.php');
