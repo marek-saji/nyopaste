@@ -28,6 +28,10 @@ $conf['paste_types']['source'] = array(
             'name'      => 'Perl',
             'extension' => 'pl'
         ),
+        'php' => array(
+            'name'      => 'PHP',
+            'extension' => 'php'
+        ),
         'xml' => array(
             'name'      => 'XML',
             'extension' => 'xml'
