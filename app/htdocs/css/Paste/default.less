@@ -27,13 +27,14 @@
 
         .meta-toggler
         {
-            font-size : .7em;
-            text-decoration: none;
-            color: #666;
+            font-size       : .7em;
+            text-decoration : none;
+            color           : #666;
+            outline         : none;
 
             .text
             {
-                padding-right: .25em;
+                padding-right : .25em;
             }
 
             @metatogglericonsize: 12px;
@@ -41,12 +42,12 @@
             .icon
             {
                 background : url(../../gfx/more-less.png) no-repeat scroll 0 center transparent; /* 12x12px */
-                padding: @metatogglericonsize/2 @metatogglericonsize @metatogglericonsize/2 0;
+                padding    : @metatogglericonsize/2 @metatogglericonsize @metatogglericonsize/2 0;
 
             }
             &.collapser .icon
             {
-                background-position: -1*@metatogglericonsize center;
+                background-position : -1*@metatogglericonsize center;
             }
         }
     }

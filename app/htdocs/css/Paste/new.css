@@ -12,6 +12,8 @@
 }
 .holoform#content form .less-important-options-toggler {
   color: #777;
+  text-decoration: none;
+  outline: none;
 }
 .holoform#content form .less-important-options-toggler strong {
   font-family: monospace;

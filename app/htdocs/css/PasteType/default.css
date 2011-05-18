@@ -35,7 +35,7 @@ body.Paste article#content .wrapper code.line {
   line-height: 1.5em;
   height: 1.5em;
 }
-body.Paste article#content .wrapper code.line::target {
-  background-color: yellow;
+body.Paste article#content .wrapper code.line:target {
+  outline: thin solid #fa3;
 }
 /* vim: set ft=css: */

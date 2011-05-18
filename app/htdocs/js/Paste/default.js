@@ -17,6 +17,7 @@ $(function(){
         .append($('<span />', {'class' : 'icon'}))
         .click(function(e){
             e.preventDefault();
+            e.stopPropagation();
             var way = !$meta.is(':visible');
             $meta.slideToggle(way);
             $toggler

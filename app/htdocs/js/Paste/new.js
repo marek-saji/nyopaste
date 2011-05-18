@@ -53,13 +53,15 @@ $(function(){
                 visible = $list.is(':visible'),
                 data = $list.data('less-important-options'),
                 $toggler = $('<a />', {
-                    'class': 'less-important-options-toggler '+(visible?'collapser':'expander'),
-                    'html': visible ? data.collapse : data.expand
+                    'href'  : '#more-options',
+                    'class' : 'less-important-options-toggler '+(visible?'collapser':'expander'),
+                    'html'  : visible ? data.collapse : data.expand
                 });
 
             $toggler
                 .bind('click.less-important-options', function(e){
                     e.preventDefault();
+                    e.stopPropagation();
                     var way = $list.is(':visible');
 
                     $list

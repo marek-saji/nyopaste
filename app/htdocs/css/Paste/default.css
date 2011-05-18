@@ -16,6 +16,7 @@
   font-size: .7em;
   text-decoration: none;
   color: #666;
+  outline: none;
 }
 .paste.hentry hgroup .meta-toggler .text {
   padding-right: .25em;
