@@ -526,3 +526,32 @@ $('.holoform .field_error')
     return true;
 })();
 
+
+
+/**
+ * Smoothly scroll to anchor links
+ * @author m.augustynowicz
+ */
+$('a[href^="#"]')
+    .live('click.smoothAnchorLink', function(e){
+        var hash = $(this).attr('href'),
+            $target = $(hash).eq(0)
+        ;
+        if ($target.length)
+        {
+            $('html')
+                .animate(
+                    {
+                        scrollTop : $target.offset().top
+                    },
+                    'swing',
+                    function(){
+                        window.location.hash = hash;
+                    }
+                )
+            ;
+            e.preventDefault();
+        }
+    })
+;
+
