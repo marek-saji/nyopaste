@@ -32,6 +32,10 @@ $conf['paste_types']['source'] = array(
             'name'      => 'PHP',
             'extension' => 'php'
         ),
+        'python' => array(
+            'name'      => 'Python',
+            'extension' => 'py'
+        ),
         'xml' => array(
             'name'      => 'XML',
             'extension' => 'xml'
