@@ -56,6 +56,7 @@
 }
 .paste.hentry .actions.wrapper .actions .action {
   display: inline;
+  padding: 0.25em;
 }
 .paste.hentry article.entry-content {
   border-color: #ddd;
