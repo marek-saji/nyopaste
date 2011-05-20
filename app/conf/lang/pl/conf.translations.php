@@ -66,7 +66,8 @@ $conf['translations']['_global'] = array(
     'This is <abbr title="version">v</abbr>%s of %s.' => 'Jest to wersja %s serwisu %s.',
     'Created and maintained by <span class="vcard"><a class="fn url" href="https://github.com/marek-saji">Marek Augustynowicz</a></span>.'
         => 'Twórcą jest <span class="vcard"><a class="fn url" href="https://github.com/marek-saji">Marek Augustynowicz</a></span>.',
-    'Kob objęty jest licencją <a rel="license" href="http://www.opensource.org/licenses/mit-license.php">MIT</a> i jest dostępny w serwisie <a href="https://github.com/marek-saji/nyopaste">github</a>.'
+    'The code is licensed under <a rel="license" href="http://www.opensource.org/licenses/mit-license.php">MIT License</a> and is available at <a href="https://github.com/marek-saji/nyopaste">GitHub</a>.'
+        => 'Kod objęty jest licencją <a rel="license" href="http://www.opensource.org/licenses/mit-license.php">MIT</a> i jest dostępny w serwisie <a href="https://github.com/marek-saji/nyopaste">GitHub</a>.'
 
     // generic error messages
 

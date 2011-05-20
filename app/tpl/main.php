@@ -72,7 +72,7 @@ $t->inc('infos');
             <?= $this->trans('Created and maintained by <span class="vcard"><a class="fn url" href="https://github.com/marek-saji">Marek Augustynowicz</a></span>.') ?>
         </p>
         <p>
-            <?= $this->trans('Licensed under <a rel="license" href="http://www.opensource.org/licenses/mit-license.php">MIT License</a>. Source is available at <a href="https://github.com/marek-saji/nyopaste">GitHub</a>.') ?>
+            <?= $this->trans('The code is licensed under <a rel="license" href="http://www.opensource.org/licenses/mit-license.php">MIT License</a> and is available at <a href="https://github.com/marek-saji/nyopaste">GitHub</a>.') ?>
         </p>
         <p>
             <?=$this->trans('If you have an idea how we can improve the site, please <a class="uservoice" href="https://nyopaste.uservoice.com">let us know</a>.')?>
