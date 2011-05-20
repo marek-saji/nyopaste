@@ -1,3 +1,12 @@
+requirements
+------------
+
+1. Postgres SQL 8.3+
+1. PHP 5.2+
+1. `mail()` working in PHP
+
+
+
 setup
 -----
 
@@ -39,21 +48,21 @@ setup
    - make sure [mod_rewrite][] is on
    - set HG_ENVIRONMENT to one of LOCAL, DEV, TEST or PROD
 
-1. http://host.name/, enable favourite debugs
+1. open your site in the browsers, enable favourite debugs
 
-1. head to /DataSet/list and create all models
+1. head to `/DataSet/list` and create all models
 
-1. head to /Dev and launch these actions:
-   - addDefaults, updated 2010-06-17
+1. head to `/Dev` and launch these actions:
+   - addDefaults (updated 2010-06-17)
 
-on production
--------------
+### on production
 
 1. switch to production `robots.txt`
 
         mv src/app/htdocs/robots{.prod,}.txt
 
---------
+
 
 [.htaccess]:             http://httpd.apache.org/docs/current/howto/htaccess.html
 [mod_rewrite]:           http://httpd.apache.org/docs/current/mod/mod_rewrite.html
+
