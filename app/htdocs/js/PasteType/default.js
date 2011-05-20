@@ -1,4 +1,13 @@
+/**
+ * Paste page
+ * ==========
+ */
 $(function(){
+
+    /**
+     * Render line numbers
+     * -------------------
+     */
     $('.wrapper.line_no > .content').each(function(){
         var $pre     = $(this),
             data     = $pre.data('paste') || {},
@@ -19,5 +28,6 @@ $(function(){
             }).appendTo($numbers);
         });
     });
+
 });
 

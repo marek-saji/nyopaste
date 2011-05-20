@@ -1,5 +1,14 @@
+/**
+ * Paste page
+ * ==========
+ */
+
 $(function(){
 
+    /**
+     * the "more info" toggler
+     * -----------------------
+     */
     var $hgroup  = $('#paste hgroup'),
         $meta    = $('#meta'),
         data     = $meta.data('toggler'),

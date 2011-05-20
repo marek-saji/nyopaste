@@ -1,11 +1,18 @@
-hg.init = {};
+/**
+ * HoloGram live events
+ * ====================
+ */
+
+ hg.init = {};
 
 /**
  * Help values (displayed when form input is empty)
+ * ------------------------------------------------
  * @author m.augustynowicz
  *
- * USAGE:
- * <textarea class="helpval" title="Describe it here"></textarea>
+ * #### USAGE
+ *
+ *     <textarea class="helpval" title="Describe it here"></textarea>
  */
 $(function(){
     try
@@ -21,15 +28,19 @@ $(function(){
 
 
 /**
- * hg-specific nyromodal stuff
+ * nyroModal
+ * ---------
  * @author m.augustynowicz
  *
- * USAGE:
- * <a href="hg link" class="modal">foo</a>
- * // will open modal window, but also execute javascript, add stuff
- * // to head, change page title etc.
- * // NOTE: things added to <head /> stay there after closing modal window
- * //       (except value of title)
+ * #### USAGE
+ *
+ *     <a href="hg link" class="modal">foo</a>
+ *
+ * Will open modal window, but also execute javascript, add stuff
+ * to head, change page title etc.
+ *
+ * Things added to `<head />` stay there after closing modal window
+ * (except value of title)
  */
 $(function(){
     try
@@ -48,22 +59,26 @@ $(function(){
 
 
 /**
- * Displaying calendar pickers in date fields
+ * jQuery UI datepicker
+ * --------------------
  * @author m.augustynowicz
  *
- * USAGE:
- * <input type="text" class="date" />
- * for customizing:
- * hg_datepickers['.foo'] = {
- *   dateFormat : 'dd-mm-yy',
- *   cleanLabel : 'remove',
- *   showClean : true,
- *   onClean : function(){alert("I'm clean!")},
- *   cleanLabel : 'remove'
- * };
+ * #### USAGE
  *
- * user settings beats default_hg_opts,
- * default_hg_opts beats regional settings
+ *     <input type="text" class="date" />
+ *
+ * customization:
+ *
+ *     hg_datepickers['.foo'] = {
+ *       dateFormat : 'dd-mm-yy',
+ *       cleanLabel : 'remove',
+ *       showClean : true,
+ *       onClean : function(){alert("I'm clean!")},
+ *       cleanLabel : 'remove'
+ *     };
+ *
+ * these settings beats `default_hg_opts`,
+ * `default_hg_opts` beats `$.datepicker.regional[lang]`
  */
 $(function(){
     try
@@ -83,7 +98,7 @@ $(function(){
             $.datepicker.regional[lang],
             default_hg_opts
         );
-        
+
         $('input.date').each(function(){
             var me = $(this);
             var opts = $.extend({}, default_opts); // clone
@@ -92,7 +107,7 @@ $(function(){
                 if (me.is(selector))
                     $.extend(opts, this);
             });
-            
+
             me.datepicker(opts);
 
             if (opts.showClean)
@@ -115,26 +130,28 @@ $(function(){
 
 
 /**
- * Tabbed interface.
- *
- * Not tested on nested tabs
+ * Tabbed interface
+ * ----------------
  * @author m.augustynowicz
  *
- * USAGE:
- * <div class="tabbed">
- *   <ol class="tabs">
- *     <li><a href="#foo">foo</a>
- *   </ol>
- *   <div class="contents">
- *      <div class="tab" id="foo">
- *          FOO!
- *      </div>
- *   </div>
- * </div>
+ * Not tested on nested tabs
  *
- * selected li tab gets class active
+ * #### USAGE
  *
- * (using visibility:hidden, because of xinha)
+ *     <div class="tabbed">
+ *       <ol class="tabs">
+ *         <li><a href="#foo">foo</a>
+ *       </ol>
+ *       <div class="contents">
+ *          <div class="tab" id="foo">
+ *              FOO!
+ *          </div>
+ *       </div>
+ *     </div>
+ *
+ * selected `li` tab gets class active
+ *
+ * (using `visibility:hidden`, because `display:none` breaks xinha)
  */
 (function(){
     try
@@ -187,16 +204,16 @@ $(function(){
 
 /**
  * Cloneable fields
+ * ----------------
  * @author m.augustynowicz
  *
- * EXAMPLE:
- * <code>
- * <ol class="clonable" hg__clone_label="+">
- *  <li>clone me!</li>
- *  <li>some row</li>
- *  <!-- cloned row will be placed here -->
- * </ol>
- * </code>
+ * #### USAGE
+ *
+ *     <ol class="clonable" hg__clone_label="+">
+ *         <li>clone me!</li>
+ *         <li>some row</li>
+ *         <!-- cloned row will be placed here -->
+ *     </ol>
  */
 $(function(){
     try
@@ -210,18 +227,20 @@ $(function(){
                 {
                     var context = $(this).prev();
                     /**
-                     * changed 27.03.2010. by b.matuszewski
-                     * - removing 'value' from all inputs in <li></li>
-                     * - seting 'name' so that new field will be accessible in controller
-                     *   throuh $this->data['form_name']['field_name']['cloned'][some int id]
+                     * ### changed 2010-03-27 by b.matuszewski
+                     *
+                     * - removing `value` from all inputs in `<li></li>`
+                     * - seting `name` so that new field will be accessible in controller
+                     *   throuh `$this->data['form_name']['field_name']['cloned'][some int id]`
                      * - giving "unique" id for a new field
                      *
                      * old version
-                     * context.children(':first').clone().appendTo(context);
+                     *
+                     *     context.children(':first').clone().appendTo(context);
                      */
 
-                    //i take :last insted of :first couse im enhencing "id" with ending '_'
-                    //and want to provide unique one
+                    // I take `:last` insted of `:first` couse im enhencing "id" with ending '_'
+                    // and want to provide unique one
                     var tmpObj = context.children(':last').clone();
                     tmpObj.find('ul.data_record :input').each(function()
                     {
@@ -230,7 +249,9 @@ $(function(){
                         $(this).attr("id",$(this).attr("id")+"_");
                     });
                     tmpObj.appendTo(context);
-                    /** changes end here */
+                    /**
+                     * changes end here
+                     */
                 }
                 return false;
             }).insertAfter(me);
@@ -247,27 +268,31 @@ $(function(){
 
 /**
  * Collapsable
+ * -----------
  * @author m.augustynowicz
  *
- * USAGE:
- * <section id="foo" class="collapsable"
- *          hg_collapsable_expand_label="więcej"
- *          hg_collapsable_collapse_label="mniej"
- *          hg_collapsable_expand_title="kliknij, aby zobaczyć całość"
- *          hg_collapsable_collapse_title="kliknij, aby ukryć"
- *          hg_collapsable_height="3"
- * >
- *     Lorem ipsum..
- * </section>
- * becomes:
- * <div class="collapsable_wrapper">
+ * #### USAGE
+ *
  *     <section id="foo" class="collapsable"
- *              style="height: {rzy linijki}"
+ *              hg_collapsable_expand_label="więcej"
+ *              hg_collapsable_collapse_label="mniej"
+ *              hg_collapsable_expand_title="kliknij, aby zobaczyć całość"
+ *              hg_collapsable_collapse_title="kliknij, aby ukryć"
+ *              hg_collapsable_height="3"
  *     >
  *         Lorem ipsum..
  *     </section>
- *     <a>more</a>
- * </div>
+ *
+ * becomes:
+ *
+ *     <div class="collapsable_wrapper">
+ *         <section id="foo" class="collapsable"
+ *                  style="height: {rzy linijki}"
+ *         >
+ *             Lorem ipsum..
+ *         </section>
+ *         <a>more</a>
+ *     </div>
  */
 $(function(){
     try
@@ -378,11 +403,13 @@ $(function(){
 
 /**
  * Autoexpandable textareas
+ * ------------------------
  * @author m.augustynowicz
- * USAGE:
- * <code>
- * <textarea class="autoexpandable"></textarea>
- * </code>
+ *
+ * #### USAGE
+ *
+ *     <textarea class="autoexpandable"></textarea>
+ *
  * will use current size as minimum
  */
 $(function(){
@@ -424,7 +451,8 @@ $(function(){
 
 
 /**
- * Emulate :focus
+ * Emulate `:focus`
+ * ----------------
  * @author m.augustynowicz
  */
 $(':input')
@@ -447,7 +475,7 @@ $(':input')
 
 
 /**
- * Move "recently focus" to form field of a clicked message
+ * ### Move "recently focus" to form field of a clicked message
  * @author m.augustynowicz
  */
 $('.holoform .field_error')
@@ -465,6 +493,8 @@ $('.holoform .field_error')
 
 /**
  * Inputs just to be copied to a clipboard
+ * ---------------------------------------
+ * @author m.augustynowicz
  */
 (hg.init.copyToClipboard = function(){
     if (typeof ZeroClipboard != 'object')
@@ -530,6 +560,7 @@ $('.holoform .field_error')
 
 /**
  * Smoothly scroll to anchor links
+ * -------------------------------
  * @author m.augustynowicz
  */
 $('a[href^="#"]')

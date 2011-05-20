@@ -1,5 +1,15 @@
+/**
+ * New paste page
+ * ==============
+ */
 $(function(){
 
+    /**
+     * Radio option groups
+     * -------------------
+     * Change mutually exclusive option groups (gruped by radio inputs)
+     * into dynamically shown and hidden with a select box.
+     */
     $('ul.radio-optiongroups').each(function(){
         var $list = $(this),
             $select = $('<select />', {'class': 'hg'});
@@ -47,6 +57,13 @@ $(function(){
     });
 
 
+
+    /**
+     * Less important options
+     * ----------------------
+     * Make less important options toggable.
+     * With a fancy label describing what's inside.
+     */
     $('ul.less-important-options')
         .each(function(){
             var $list = $(this),
@@ -115,6 +132,10 @@ $(function(){
     ;
 
 
+    /**
+     * Change submit label, when "store settigns" checked
+     * --------------------------------------------------
+     */
     $('.store-settings')
         .change(function(){
             var $this = $(this),
@@ -127,7 +148,12 @@ $(function(){
 
     /**
      * ACE companion
+     * -------------
      * @url http://ajaxorg.github.com/ace/build/textarea/editor.html
+     */
+
+    /**
+     * ### lazy loading of javascript
      */
     function load(path, module, callback)
     {
@@ -162,6 +188,9 @@ $(function(){
     load.scripts = {};
     window.__ace_shadowed_load__ = load;
 
+    /**
+     * ### initialize ACE editor
+     */
     var ace = window.__ace_shadowed__,
         $textarea = $('.editor');
     $('.editor').each(function(){
