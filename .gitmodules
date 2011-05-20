@@ -7,3 +7,6 @@
 [submodule "app/htdocs/js/ace"]
 	path = app/htdocs/js/ace
 	url = https://github.com/ajaxorg/ace.git
+[submodule "app/htdocs/js/code-illuminated"]
+	path = app/htdocs/js/code-illuminated
+	url = https://github.com/justmoon/code-illuminated.git
