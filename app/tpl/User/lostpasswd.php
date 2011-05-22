@@ -15,8 +15,12 @@ $v->setTitle($title);
     <div class="holoform" id="content">
 
         <?php
-        $form->create();
+        $form->create($this->url2a($this->getLaunchedAction()));
         ?>
+
+        <p>
+            <?=$this->trans('Enter your e-mail address and you will receive a link allowing you to reset your password.')?>
+        </p>
 
         <fieldset>
             <ul>
@@ -36,7 +40,7 @@ $v->setTitle($title);
             'Forms/buttons',
             array(
                 'form' => $form,
-                'submit' => 'send',
+                'submit' => 'send me the reset link',
                 'cancel' => 'cancel'
             )
         );

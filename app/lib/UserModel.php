@@ -39,8 +39,11 @@ class UserModel extends Model
         $this->_addField(new FHTTP('website', false, null, null, 1024));
         $this->_addField(new FMultilineString('about_me', false, null, 0, 1048576));
 
-        $this->_addField(new FTimestamp('last_correct_login', true, '0'));
+        $this->_addField(new FTimestamp('last_correct_login', true, '1970-01-01 00:00:00'));
         $this->_addField(new FInt('incorrect_login_count'));
+
+        $this->_addField(new FMD5String('passwd_reset_hash'));
+        $this->_addField(new FTimestamp('passwd_reset_hash_creation'));
 
         $this->_pk('id');
         $this->whiteListAll();

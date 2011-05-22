@@ -62,6 +62,16 @@ $conf['translations']['User'] = array(
     ),
 
 
+    // lost password
+    'Enter your e-mail address and you will receive a link allowing you to reset your password.'
+        => 'Podaj swój adres e-mail, a prześlemy Ci link umożliwiający zresetowanie hasła.',
+    'send me the reset link'     => 'wyślij mi link resetujący',
+    'Error while sending e-mail' => 'Błąd przy wysyłaniu e-mail-a',
+    '%s password reset request'  => 'Prośba o zresetowanie hasła na stronie %s',
+    'E-mail with a link allowing you to reset the password has been sent. You should receive it in matter of minutes.'
+        => 'E-mail zawierający link pozwalający na zresetowanie hasła został wysłany. Powinieneś otrzymać go w przeciągu kilku minut.',
+
+
     // verify these:
 
     'You have to log in for getting access.' => 'You have to log in for getting access.',

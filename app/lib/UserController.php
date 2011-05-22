@@ -55,6 +55,7 @@ class UserController extends PagesController implements IUserController
                     '_tpl' => 'Forms/FImageFile',
                     'fields' => null,
                 ),
+                'passwd'
             ),
         ),
         'lostpasswd' => array(
@@ -64,9 +65,9 @@ class UserController extends PagesController implements IUserController
                 'email',
             ),
         ),
-        'lostpasswd_reset' => array(
-            'ajax' => true,
-            'model' => 'User',
+        'passwd_reset' => array(
+            'ajax'   => true,
+            'model'  => 'User',
             'inputs' => array(
                 'passwd',
             ),
@@ -551,6 +552,169 @@ class UserController extends PagesController implements IUserController
      */
     public function actionLostPasswd(array $params)
     {
+        $form = 'lostpasswd';
+
+        if ($this->_validated[$form])
+        {
+            $post_data = @$this->data[$form];
+            $model = g('User', 'model');
+            $user = $model->getRow(array('email'=>$post_data['email']));
+            switch (true)
+            {
+                // no user
+                case !$user :
+                    g()->addInfo(
+                        'user does not exist',
+                        'error',
+                        $this->trans(
+                            'No user with such e-mail exist in our database. If it was not a typo, feel free to <a href="%s">sign up</a>!',
+                            $this->url2a('new')
+                        )
+                    );
+                    break;
+                // user not active
+                case $user['status'] != STATUS_ACTIVE :
+                    g()->addInfo(
+                        'user not active',
+                        'error',
+                        $this->trans('Account associated with this e-mail is not active.')
+                    );
+                    break;
+                // ok, carry on..
+                default :
+
+                    $reset_hash = g('Functions')->generateSimpleKey(32);
+
+                    $update = array(
+                        'passwd_reset_hash'          => $reset_hash,
+                        'passwd_reset_hash_creation' => 'NOW()'
+                    );
+                    $result = $model
+                        ->filter(array('id' => $user['id']))
+                        ->update($update, true)
+                    ;
+                    if (!$result)
+                    {
+                        g()->addInfo(
+                            'db error',
+                            'error',
+                            $this->trans('((error:DS:%s))', false)
+                        );
+                    }
+                    else
+                    {
+                        $mailer = g('Mail', array($this));
+                        $mail_vars = array(
+                            'reset_hash' => $reset_hash,
+                            'user'       => & $user
+                        );
+
+                        if (!$mailer->send($user['email'], 'lostPasswd', $mail_vars))
+                        {
+                            g()->addInfo(
+                                'db error',
+                                'error',
+                                $this->trans('((error:DS:%s))', $this->trans('Error while sending e-mail'))
+                            );
+                        }
+                        else
+                        {
+                            g()->addInfo(
+                                'passwd reset mail sent',
+                                'info',
+                                $this->trans('E-mail with a link allowing you to reset the password has been sent. You should receive it in matter of minutes.')
+                            );
+                            $this->redirect($post_data['_backlink']);
+                        }
+                    }
+            }
+        }
+    }
+
+
+    /**
+     * Set new password
+     * @author m.augustynowicz
+     *
+     * @param array $params request params:
+     *        - [0] user id
+     *        - [0] reset_passwd_hash
+     * @return void
+     */
+    public function actionResetPasswd(array $params)
+    {
+        $user_id    = g('Functions')->isInt($params[0]) ? $params[0] : null;
+        $reset_hash = $params[1];
+
+        if (empty($user_id) || empty($reset_hash))
+        {
+            g()->addInfo(
+                'invalid action params',
+                'error',
+                $this->trans('Invalid action parameters')
+            );
+            $this->redirect();
+        }
+
+
+        $model = g('User', 'model');
+
+        $user = $model
+            ->getRow(array(
+                'id'                                 =>  $user_id,
+                'passwd_reset_hash'                  =>  $reset_hash,
+                array('passwd_reset_hash_creation', '>', strtotime('yesterday'))
+            ))
+        ;
+
+        if (!$user)
+        {
+            g()->addInfo(
+                'invalid action params',
+                'error',
+                $this->trans('Invalid action parameters')
+            );
+            $this->redirect();
+        }
+
+        $this->assignByRef('user', $user);
+
+
+        if ($this->_validated['passwd_reset'])
+        {
+            $update = array(
+                'passwd_reset_hash' => null,
+                'passwd_reset_hash_creation' => null,
+                'passwd' => $this->data['passwd_reset']['passwd']
+            );
+
+            $result = $model
+                ->filter(array('id' => $user_id))
+                ->update($update, true)
+            ;
+
+            if (!$result)
+            {
+                g()->addInfo(
+                    'db error',
+                    'error',
+                    $this->trans(
+                        '((error:DS:%s))',
+                        $this->trans('Setting password failed')
+                    )
+                );
+                $this->redirect();
+            }
+            else
+            {
+                g()->addInfo(
+                    'passwd changed',
+                    'info',
+                    $this->trans('Password changed, you may sign-in now.')
+                );
+                $this->redirect(array($this->url(), 'login'));
+            }
+        }
     }
 
 
@@ -615,8 +779,6 @@ class UserController extends PagesController implements IUserController
     }
 
 
-
-
     /**
      * Validate user's e-mail in [add] form
      *
@@ -649,8 +811,8 @@ class UserController extends PagesController implements IUserController
     {
         return $this->validateNewPasswd($value);
     }
-    
-    public function validateLostPasswdResetPasswd(&$value)
+
+    public function validatePasswdResetPasswd(&$value)
     {
         return $this->validateNewPasswd($value);
     }

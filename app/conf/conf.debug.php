@@ -5,5 +5,5 @@
  */
 
 // debugs to turn on when enabling "fav"
-$conf['debug']['favorite'] = 'db, js, mails, view, debug, user, paste';
+$conf['debug']['favorite'] = 'db, js, mail, view, debug, user, paste';
 
