@@ -21,6 +21,7 @@ $conf['acl'] = array(
 
     '/Paste/new'         => false, // grand with callback
     '/Paste/default'     => true,
+    '/Paste/newVerCheck' => true,
     '/Paste/search'      => true,
     '/Paste/error404'    => true,
 

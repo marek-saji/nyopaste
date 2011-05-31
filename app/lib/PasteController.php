@@ -107,6 +107,9 @@ class PasteController extends PagesController
         $ver = @$params['v'];
         $display_type = @$params[1];
 
+        $timestamp = $_SERVER['REQUEST_TIME'] or $timestamp = time();
+        $this->assign('timestamp', $timestamp);
+
         if (!$url)
         {
             $this->redirect($this->url2a('new'));
@@ -182,6 +185,48 @@ class PasteController extends PagesController
         $this->assign('type', $type);
         $type->assign('row', $db_data);
 
+
+        // how often to check for for new version?
+
+        // TODO latest paste in tree timestamp should be used
+        $timestamp_delta = $timestamp - strtotime($db_data['creation']);
+        if ($timestamp_delta < $diff = 60*60*24)
+        {
+            $ver_check_timeout = 5000;
+        }
+        else if ($timestamp_delta < $diff *= 7)
+        {
+            $ver_check_timeout = 60*5000;
+        }
+        $this->assign('ver_check_timeout', $ver_check_timeout);
+    }
+
+
+    /**
+     * Check if new version of a paste is available
+     * @author m.augustynowicz
+     *
+     * @param array request params:
+     *        - [0] paste id
+     *        - [timestamp] check for pastes newer than timestamp
+     */
+    public function actionNewVerCheck(array $params)
+    {
+        $this->_setTemplate('empty');
+        $url = @$params[0];
+        $timestamp = @$params['timestamp'];
+
+        $new_count = g('Paste', 'model')
+            ->filter(array(
+                'url' => $url,
+                array('creation', '>', $timestamp)
+            ))
+            ->getCount()
+        ;
+
+        $this->assign('json', array(
+            'count' => $new_count
+        ));
     }
 
 

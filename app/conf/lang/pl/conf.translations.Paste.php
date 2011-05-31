@@ -59,5 +59,8 @@ $conf['translations']['Paste'] = array(
         'raw' => 'pokaż jako tekst',
         'newVer' => 'stwórz nową wersję',
     ),
+
+    'New version(s) of this paste available. You may want to refresh the page, to see them.'
+        => 'Pojawiła się nowa wersja wpisu. Odśwież stronę, aby ją zobaczyć.',
 );
 

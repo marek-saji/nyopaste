@@ -195,3 +195,15 @@ $meta_data_toggler = json_encode(array(
 
 </section>
 
+<?php
+$url_json = json_encode($this->url2a('newVerCheck', array($row['url'], 'timestamp'=>$timestamp)));
+$msg_json = json_encode($this->trans('New version(s) of this paste available. You may want to refresh the page, to see them.'));
+$ver_check_timeout_json = (int) $ver_check_timeout;;
+
+$v->addOnLoad( <<< VER_CHECKER
+
+    newVerChecker({$url_json}, {$ver_check_timeout_json}, {$msg_json});
+
+VER_CHECKER
+);
+
