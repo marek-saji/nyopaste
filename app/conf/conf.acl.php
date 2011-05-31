@@ -7,38 +7,38 @@
 
 $conf['acl'] = array(
     // permanent controllers
-    'usernav' => true,
-    'menu' => true,
+    'usernav'            => true,
+    'menu'               => true,
 
     // common subcomponents
-    'p' => true,
+    'p'                  => true,
 
-    '/HttpErrors'           => true,
+    '/HttpErrors'        => true,
 
 
-    '/Main/default'         => true,
-    '/User/default'         => true,
+    '/Main/default'      => true,
+    '/User/default'      => true,
 
-    '/Paste/new'            => false, // grand with callback
-    '/Paste/default'        => true,
-    '/Paste/search'         => true,
-    '/Paste/error404'       => true,
+    '/Paste/new'         => false, // grand with callback
+    '/Paste/default'     => true,
+    '/Paste/search'      => true,
+    '/Paste/error404'    => true,
 
-    '/User/login'           => array('unauthorized'=>true),
-    '/User/new'             => array('unauthorized'=>true),
-    '/User/activate'        => array('unauthorized'=>true),
-    '/User/lostPasswd'      => array('unauthorized'=>true),
-    '/User/resetPasswd'     => array('unauthorized'=>true),
+    '/User/login'        => array('unauthorized' => true),
+    '/User/new'          => array('unauthorized' => true),
+    '/User/activate'     => array('unauthorized' => true),
+    '/User/lostPasswd'   => array('unauthorized' => true),
+    '/User/resetPasswd'  => array('unauthorized' => true),
 
-    '/User/logout'          => array('authorized'=>true),
+    '/User/logout'       => array('authorized' => true),
 
-    '/User/delete'          => array('admin'=>true, 'superadmin'=>true),
-    '/UserUser/edit'        => array('admin'=>true, 'superadmin'=>true),
+    '/User/delete'       => array('superadmin' => true, 'admin' => true),
+    '/UserUser/edit'     => array('superadmin' => true, 'admin' => true),
 
-    '/Log' => array('mod'=>true, 'admin'=>true, 'superadmin'=>true),
-    
+    '/Log'               => array('superadmin' => true, 'admin' => true, 'mod' => true),
+
 
     // if nothing matches, deny
-    '*' => false,
+    '*'                  => false,
 );
 
