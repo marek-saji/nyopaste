@@ -9,4 +9,4 @@
 	url = https://github.com/ajaxorg/ace.git
 [submodule "app/htdocs/js/code-illuminated"]
 	path = app/htdocs/js/code-illuminated
-	url = https://github.com/justmoon/code-illuminated.git
+	url = https://github.com/marek-saji/code-illuminated.git
