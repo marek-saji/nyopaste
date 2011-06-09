@@ -9,9 +9,21 @@ $conf['site_name'] = 'n<i>y</i>opaste';
 if(defined('ENVIRONMENT'))
 {
     if(defined('LOCAL_ENV') && ENVIRONMENT == LOCAL_ENV)
-        $conf['site_name'] .= '<small>@'.gethostname().'</small>';
+    {
+        if (function_exists('gethostname'))
+        {
+            $hostname = gethostname();
+        }
+        else
+        {
+            $hostname = php_uname('n');
+        }
+        $conf['site_name'] .= "<small>@{$hostname}</small>";
+    }
     else if(defined('DEV_ENV') && ENVIRONMENT == DEV_ENV)
+    {
         $conf['site_name'] .= ' (dev)';
+    }
 }
 
 $conf['alternative base URLs'] = array(

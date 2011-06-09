@@ -277,7 +277,8 @@ class PasteController extends PagesController
         $model->whiteListAll();
         foreach ($rows as &$row)
         {
-            $row = $model_class::getByUrl($row['url'], $row['version']);
+            // FIXME test server is php-5.2 and cannot do $model_class::getByUrl()
+            $row = call_user_func(array($model_class, 'getByUrl'), $row['url'], $row['version']);
             preg_match("/^(.*$\s*){7}/m", $row['content'], $matches);
             $row['content_excerpt'] = rtrim($matches[0]);
         }
@@ -680,7 +681,8 @@ class PasteController extends PagesController
         }
 
         $model_class = g()->load('Paste', 'model');
-        $result = $model_class::getByUrl($url, $ver);
+        // FIXME test server is php-5.2 and cannot do $model_class::getByUrl()
+        $result = call_user_func(array($model_class, 'getByUrl'), $url, $ver);
 
         if (!$result)
         {
