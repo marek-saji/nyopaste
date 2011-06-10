@@ -1,3 +1,13 @@
+.rotate(@rotate)
+{
+    -moz-transform    : rotate(@rotate);  /* FF3.5+ */
+    -o-transform      : rotate(@rotate);  /* Opera 10.5 */
+    -webkit-transform : rotate(@rotate);  /* Saf3.1+, Chrome */
+    -ms-transform     : rotate(@rotate);  /* IE9 */
+    transform         : rotate(@rotate);
+    zoom              : 1;
+}
+
 html,
 body
 {
@@ -135,6 +145,17 @@ menu, nav, section { display: block; }
 #whole-content,
 #nyroModalContent
 {
+    code.emoticon
+    {
+        .rotate(90deg);
+        font-size: 1.1em;
+    }
+
+    code.inverted.emoticon
+    {
+        .rotate(270deg);
+    }
+
     .copier
     {
         background : url(../gfx/clipboard.png) no-repeat scroll left center transparent; /* 16x16px */

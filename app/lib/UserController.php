@@ -34,9 +34,9 @@ class UserController extends PagesController implements IUserController
                 'login',
                 'passwd',
                 'email',
-        		'type' => array(
-            		'_tpl' => 'Forms/FSelect',
-            	),
+                'type' => array(
+                    '_tpl' => 'Forms/FSelect',
+                ),
             ),
         ),
         'edit' => array(
@@ -55,7 +55,15 @@ class UserController extends PagesController implements IUserController
                     '_tpl' => 'Forms/FImageFile',
                     'fields' => null,
                 ),
-                'passwd'
+
+                'old_passwd' => array(
+                    '_tpl'   => 'Forms/FPassword_single',
+                    'fields' => null,
+                ),
+                'new_passwd' => array(
+                    '_tpl'   => 'Forms/FPassword',
+                    'fields' => null,
+                ),
             ),
         ),
         'lostpasswd' => array(
@@ -360,6 +368,24 @@ class UserController extends PagesController implements IUserController
         }
         else
         {
+            // change password
+            if ('' !== $post_data['old_passwd'])
+            {
+                if (md5($post_data['old_passwd']) != $db_data['passwd'])
+                {
+                    $form_key  = $this->getFormsIdent($form_id);
+                    $input     = 'old_passwd';
+                    $error_id  = 'incorrect';
+                    $error_msg = $this->trans('Incorrect password');
+                    g()->addInfo("$form_key $input $error_id", 'forms', $error_msg);
+                    $this->_validated[$form_id] = false;
+                }
+                else // if passwords do not match
+                {
+                    $post_data['passwd'] = $post_data['new_passwd'];
+                }
+            }
+
             if ($this->_validated[$form_id])
             {
                 //g()->db->startTrans();
@@ -790,6 +816,11 @@ class UserController extends PagesController implements IUserController
      */
     public function validateNewEmail(&$value)
     {
+        if ('' === $value)
+        {
+            return array('stop_validation' => true);
+        }
+
         $errors = array();
 
         if ($value != NULL)
@@ -804,12 +835,24 @@ class UserController extends PagesController implements IUserController
         return $errors;
     }
 
+
     /**
      * Validate repeated password in [add] form
      */
-    public function validateEditPasswd(&$value)
+    public function validateEditNewPasswd(&$value)
     {
-        return $this->validateNewPasswd($value);
+        $errors = $this->validateNewPasswd($value);
+
+        if ('' === $value)
+        {
+            return array('stop_validation' => true);
+        }
+
+        if (!$errors)
+        {
+            $errors = g('User', 'model')->validateField('passwd', $value);
+        }
+        return $errors;
     }
 
     public function validatePasswdResetPasswd(&$value)

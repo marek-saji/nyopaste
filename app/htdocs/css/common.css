@@ -92,6 +92,39 @@ section {
 #infos, #whole-content {
   margin: 0 1em;
 }
+#whole-content code.emoticon, #nyroModalContent code.emoticon {
+  -moz-transform: rotate(90deg);
+  /* FF3.5+ */
+
+  -o-transform: rotate(90deg);
+  /* Opera 10.5 */
+
+  -webkit-transform: rotate(90deg);
+  /* Saf3.1+, Chrome */
+
+  -ms-transform: rotate(90deg);
+  /* IE9 */
+
+  transform: rotate(90deg);
+  zoom: 1;
+  font-size: 1.1em;
+}
+#whole-content code.inverted.emoticon, #nyroModalContent code.inverted.emoticon {
+  -moz-transform: rotate(270deg);
+  /* FF3.5+ */
+
+  -o-transform: rotate(270deg);
+  /* Opera 10.5 */
+
+  -webkit-transform: rotate(270deg);
+  /* Saf3.1+, Chrome */
+
+  -ms-transform: rotate(270deg);
+  /* IE9 */
+
+  transform: rotate(270deg);
+  zoom: 1;
+}
 #whole-content .copier, #nyroModalContent .copier {
   background: url(../gfx/clipboard.png) no-repeat scroll left center transparent;
   /* 16x16px */

@@ -43,6 +43,9 @@ $form = g('Forms', array('edit', $this));
                             <p>
                                 <?=$this->trans('Don\'t worry, your e-mail address will not be publicly available, nor used in any evil way.')?>
                             </p>
+                            <p>
+                                <?=$this->trans('But we will use it to display your <a href="http://gravatar.com/">Gravatar</a>. <code class="emoticon">:)</code>')?>
+                            </p>
                         </div>
                     </li>
                     <!-- website -->
@@ -80,10 +83,36 @@ $form = g('Forms', array('edit', $this));
                     </li>
                 </ul>
             </fieldset>
+
+            <fieldset class="verbose">
+                <legend><?=$this->trans('Change your password')?></legend>
+                <ul>
+                    <li class="field">
+                        <?php
+                        $form->label('old_passwd', 'current password <small>(leave empty not to change)</small>');
+                        ?>
+                        <?php
+                        $form->input('old_passwd', array('autocomplete'=>false));
+                        ?>
+                    </li>
+                    <li class="field">
+                        <?php
+                        $form->label('new_passwd', 'new password');
+                        ?>
+                        <?php
+                        $form->input('new_passwd', array('autocomplete'=>false));
+                        ?>
+                        <p class="help">
+                            <?=$this->trans('Enter your new password. Twice, just to be sure you didn\'t make a typo.')?>
+                        </p>
+                    </li>
+                </ul>
+            </fieldset>
+
             <?php
             $t->inc('Forms/buttons', array(
-                'form' => & $form,
-                'submit' => 'update profile info',
+                'form'   => & $form,
+                'submit' => 'save changes',
                 'cancel' => 'cancel'
             ));
             ?>
