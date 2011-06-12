@@ -125,10 +125,19 @@ class PasteController extends PagesController
         switch ($display_type)
         {
             case 'get' :
-                $this->assign(
-                    'filename',
-                    (trim($db_data['title'])) . '.' . g()->conf['paste_types']['source']['modes'][$db_data['syntax']]['extension']
-                );
+                $filename = trim($db_data['title']);
+
+                // add extension, if it's not already there
+
+                $conf_modes = & g()->conf['paste_types']['source']['modes'];
+                $extension  = $conf_modes[$db_data['syntax']]['extension'];
+                if (!preg_match('/\.'.preg_quote($extension).'$/', $filename))
+                {
+                    $filename .= ".{$extension}";
+                }
+
+                $this->assign('filename', $filename);
+                // no break here
             case 'raw' :
                 $this->assign('content', $db_data['content']);
                 g()->view = g('TextView');
