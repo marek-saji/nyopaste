@@ -115,6 +115,25 @@ class PasteController extends PagesController
             $this->redirect($this->url2a('new'));
         }
 
+        // if no version given, redirect to newest one
+        if (!$ver)
+        {
+            $model = g('Paste', 'model');
+            $model->order('creation', 'DESC');
+            $newest = $model
+                ->whiteList(array('version'))
+                ->getRow(array(
+                    'url' => $url
+                ))
+            ;
+            $params['v'] = $newest['version'];
+            $this->redirect(array(
+                $this->url(),
+                $this->getLaunchedAction(),
+                $params
+            ));
+        }
+
 
         // fetch main and paste type data
         if (!$this->getOne($url, $ver, true, $db_data))
