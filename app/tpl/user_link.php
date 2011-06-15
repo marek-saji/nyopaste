@@ -3,7 +3,8 @@
  * Renders link to user's profile.
  * @author m.augustynowicz
  * 
- * @param string $text text to display, default: user's display name
+ * @param string|null $text text to display,
+ *        default (when null): user's display name
  * @param array $user
  *        1. none: authorized user's data used
  *        2. array:
@@ -29,7 +30,7 @@ extract(
                 'email' => g()->auth->get('email'),
             ),
             'class' => '',
-            'text' => '',
+            'text' => null,
             'avatar' => 22,
         ),
         (array) $____local_variables
@@ -48,7 +49,7 @@ if (!is_array($user))
 
 $login = $user[$login_field];
 
-$label = empty($text) ? $user['DisplayName'] : $text;
+$label = ($text === null) ? $user['DisplayName'] : $text;
 
 ob_start();
 ?>
