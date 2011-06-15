@@ -22,6 +22,17 @@ $conf['users'] = array(
         //'website'  => 'http://nyopaste.1cm.pl',
         //'about_me' => 'If you have any questions or suggestion, we are always happy to read your [feedback](https://nyopaste.uservoice.com/).',
     ),
+
+    'reserved logins' => array(
+        'admin',
+        'administrator',
+        'mod',
+        'moderator',
+        'authorized',
+        'root',
+        'superuser',
+        'su'
+    ),
 );
 
 // enumerate for [type] field

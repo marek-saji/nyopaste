@@ -762,18 +762,26 @@ class UserController extends PagesController implements IUserController
     public function validateNewLogin(&$value)
     {
         $errors = array();
-        $matches = array();
 
-        if (preg_match('/[^a-zA-Z0-9-]/', $value, $matches))
+        if (in_array(strtolower($value), g()->conf['users']['reserved logins']))
         {
-            $errors['forbidden_signs'] = $this->trans('Only letters, digits and dashes (<q>-</q>) are allowed');
+            $errors['special_login'] = 'This login name is reserved, sorry. Try different one';
         }
         else
         {
-            if ($this->_getOne($value, $db_data, false))
+            $matches = array();
+
+            if (preg_match('/[^a-zA-Z0-9-]/', $value, $matches))
             {
-                $errors['not_unique'] = $this->trans('This login is already taken. If the account belongs to you, you can <a href="%s">retrieve your password</a>',
-                        $this->url2a('lostPasswd') );
+                $errors['forbidden_signs'] = $this->trans('Only letters, digits and dashes (<q>-</q>) are allowed');
+            }
+            else
+            {
+                if ($this->_getOne($value, $db_data, false))
+                {
+                    $errors['not_unique'] = $this->trans('This login is already taken. If the account belongs to you, you can <a href="%s">retrieve your password</a>',
+                            $this->url2a('lostPasswd') );
+                }
             }
         }
 
