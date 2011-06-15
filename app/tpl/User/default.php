@@ -12,7 +12,7 @@ $v->setTitle($title);
 $v->addLess($this->file('default', 'less'));
 ?>
 
-<section class="vcard">
+<section class="vcard <?=$row['Type']?>">
     <header>
         <h2 class="fn">
             <?php
@@ -38,6 +38,11 @@ $v->addLess($this->file('default', 'less'));
             );
             ?>
             <?=$title?>
+            <?php if ($row['Type']) : ?>
+                <small class="user_type">
+                    (<?=$this->trans($row['Type'])?>)
+                </small>
+            <?php endif; /* $row['Type' */ ?>
         </h2>
         <?php
         $t->inc('row_actions', array(

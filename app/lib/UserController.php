@@ -950,6 +950,13 @@ class UserController extends PagesController implements IUserController
 
         $result['AboutMe'] = g('TextParser')->parse('markdown', $result['about_me']);
 
+        static $user_type_mapping = array(
+            USER_TYPE_ADMIN => 'admin',
+            USER_TYPE_MOD   => 'moderator'
+        );
+
+        $result['Type'] = $user_type_mapping[ $result['type'] ];
+
         return true;
     }
 
