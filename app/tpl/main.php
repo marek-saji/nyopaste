@@ -69,7 +69,11 @@ $t->inc('infos');
             ?>
         </p>
         <p>
-            <?= $this->trans('Created and maintained by <span class="vcard"><a class="fn url" href="https://github.com/marek-saji">Marek Augustynowicz</a></span>.') ?>
+            <?php
+            $admin_login   = g()->conf['users']['admin']['login'];
+            $admin_profile = $this->url2c('User', '', array($admin_login));
+            ?>
+            <?= $this->trans('Created and maintained by <span class="vcard"><a class="fn url" href="%s">Marek Augustynowicz</a></span>.', $admin_profile) ?>
         </p>
         <p>
             <?= $this->trans('The code is licensed under <a rel="license" href="http://www.opensource.org/licenses/mit-license.php">MIT License</a> and is available at <a href="https://github.com/marek-saji/nyopaste">GitHub</a>.') ?>

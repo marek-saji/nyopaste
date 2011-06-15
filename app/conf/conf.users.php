@@ -16,7 +16,7 @@ $conf['users'] = array(
 
     // admin account created in Dev/addDefaults
     'admin' => array(
-        'login'    => 'admin',
+        'login'    => '((set me locally))',
         'email'    => '((set me locally))',
         'passwd'   => '((set me locally))',
         //'website'  => 'http://nyopaste.1cm.pl',

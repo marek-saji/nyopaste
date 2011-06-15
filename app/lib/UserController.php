@@ -101,16 +101,21 @@ class UserController extends PagesController implements IUserController
      * Display user's profile
      *
      * @param array URL params
-     *        [0] user's login, required
+     *        [0] user's ident (login), required
      */
     public function actionDefault(array $params)
     {
         $conf = & g()->conf['users'];
         $id = @$params[0];
-        
+
         if (!$id)
         {
             $this->redirect(array('HttpErrors', '', array(404)));
+        }
+        else if ('admin' === $id)
+        {
+            $params[0] = $conf['admin']['login'];
+            $this->redirect(array($this->url(), '', $params));
         }
 
 
