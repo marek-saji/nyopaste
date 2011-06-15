@@ -6,7 +6,9 @@
  * @param array $row one row data
  */
 
-if (g()->auth->id() == $row['id'])
+$own_profile = g()->auth->id() == $row['id'];
+
+if ($own_profile)
     $title = $t->trans('edit your profile');
 else
     $title = $t->trans('edit <em>%s\'s</em> profile', $row['DisplayName'] );
@@ -31,6 +33,28 @@ $form = g('Forms', array('edit', $this));
         ?>
             <fieldset>
                 <ul>
+                    <li class="field">
+                        <?php
+                        echo $this->inc('user_link', array(
+                            'user'   => & $row,
+                            'text'   => false,
+                            'avatar' => 128
+                        ));
+                        ?>
+                        <p>
+                            <?php
+                            if ($own_profile)
+                            {
+                                $text = 'To change avatar, register your e-mail (%s) at <a href="http://%s.gravatar.com">Gravatar.com</a>.';
+                            }
+                            else
+                            {
+                                $text = 'Avatars powered by <a href="http://%2$s.gravatar.com">Gravatar.com</a>.';
+                            }
+                            echo $this->trans($text, $row['email'], g()->lang->get());
+                            ?>
+                        </p>
+                    </li>
                     <!-- e-mail -->
                     <li class="email field">
                         <?php
