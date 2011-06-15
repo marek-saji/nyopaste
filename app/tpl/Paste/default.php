@@ -142,7 +142,7 @@ $meta_data_toggler = json_encode(array(
                                 'url'   => $permalink
                             ));
                             ?>
-                            <a class="action share addthis addthis_button_compact" href="http://addthis.com/bookmark.php?<?=$addthis_q?>"><?=$this->trans('share via addthis <small class="nojs">(requires JavaScript)</small>')?></a>
+                            <a class="action share addthis addthis_button_compact" href="http://addthis.com/bookmark.php?<?=$addthis_q?>"><?=$this->trans('choose from over 100 other services <small class="nojs">(requires JavaScript)</small>')?></a>
                         </li>
                         <li class="copy-to-clipboard action">
                             <?php
