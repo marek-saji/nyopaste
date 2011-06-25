@@ -90,89 +90,19 @@ $meta_data_toggler = json_encode(array(
             ));
             ?>
             <div id="share" class="modaled">
-                <nav class="share actions">
-                    <?php /*
-                    <script type="text/javascript">var addthis_config = {"data_track_clickback":true};</script>
-                    <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid=ra-4d9267601252e98f"></script>
-                    */ ?>
-                    <?php
-                    $permalink  = $this->url2a($this->getLaunchedAction(), array($this->getParam(0), 'v' => $this->getParam('v')), true);
-                    $share_text = $this->trans('%s', $row['title']);
-                    ?>
-                    <ul>
-                        <li class="addthis twitter action">
-                            <?php
-                            $twitter_q = http_build_query(array(
-                                'text' => $share_text,
-                                'url'  => $permalink // will get shortened by t.co
-                            ));
-                            ?>
-                            <a class="action share twitter addthis_button_twitter" href="https://twitter.com/intent/tweet?<?=$twitter_q?>">tweet</a>
-                        </li>
-                        <li class="addthis identica action">
-                            <?php
-                            $identica_q = http_build_query(array(
-                                'action'          => 'newnotice',
-                                'status_textarea' => sprintf("%s\n%s", $share_text, $permalink)
-                            ));
-                            ?>
-                            <a class="action share identica addthis_button_identica" href="http://identi.ca/index.php?<?=$identica_q?>">post to identi.ca</a>
-                        </li>
-                        <li class="addthis facebook action">
-                            <?php
-                            $facebook_q = http_build_query(array(
-                                'u' => $permalink
-                            ));
-                            ?>
-                            <a href="https://www.facebook.com/sharer/sharer.php?<?=$facebook_q?>" class="action share facebook addthis_button_facebook"><?=$this->trans('post to facebook')?></a>
-                        </li>
-                        <li class="addthis email action">
-                            <?php
-                            $mail_q = http_build_query(array(
-                                'subject' => $this->trans('%s at %s', $row['title'], strip_tags(g()->conf['site_name'])),
-                                'body'    => $this->trans("Take a look at this:\n\n%2\$s", $row['title'], $permalink)
-                            ));
-                            ?>
-                            <a class="action share mail addthis_button_email" href="mailto:?<?=$mail_q?>"><?=$this->trans('e-mail')?></a>
-                        </li>
-                        <li class="addthis compact action">
-                            <?php
-                            $addthis_q = http_build_query(array(
-                                'title' => $row['title'],
-                                'url'   => $permalink
-                            ));
-                            ?>
-                            <a class="action share addthis addthis_button_compact" href="http://addthis.com/bookmark.php?<?=$addthis_q?>"><?=$this->trans('choose from over 100 other services <small class="nojs">(requires JavaScript)</small>')?></a>
-                        </li>
-                        <li class="copy-to-clipboard action">
-                            <?php
-                            //$v->loadJsLib('zeroclipboard');
-                            ?>
-                            <p>
-                                <?=$this->trans('&hellip; or copy link to this paste and do whatever you want')?>
-                            </p>
-                            <label class="copyable">
-                                <?php
-                                echo $f->tag(
-                                    'input',
-                                    array(
-                                        'type'          => 'text',
-                                        'class'         => 'copyable',
-                                        'value'         => $permalink,
-                                        'id'            => $f->uniqueId(),
-                                        'readonly'      => 'readonly',
-                                        'data-copyable' => json_encode(array(
-                                            'text'      => $this->trans('copy'),
-                                            'title'     => $this->trans('click to copy this paste URL to clipboard'),
-                                            'afterText' => $this->trans('copied!'),
-                                        ))
-                                    )
-                                );
-                                ?>
-                            </label>
-                        </li>
-                    </ul>
-                </nav>
+                <?php
+            $permalink    = $this->url2a($this->getLaunchedAction(), array($this->getParam(0), 'v' => $this->getParam('v')), true);
+                $share_text   = $this->trans('%s', $row['title']);
+                $mail_subject = $this->trans('%s at %s', $row['title'], strip_tags(g()->conf['site_name']));
+                $mail_body    = $this->trans("Take a look at this:\n\n%2\$s", $row['title'], $permalink);
+
+                $this->inc('share', array(
+                    'link'         => $permalink,
+                    'title'        => $share_text,
+                    'mail_subject' => $mail_subject,
+                    'mail_body'    => $mail_body
+                ));
+                ?>
             </div>
         </div> <!-- .actions.wrapper -->
     </header>
