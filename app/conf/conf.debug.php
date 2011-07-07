@@ -16,6 +16,7 @@ $conf['debug'] = array(
     'shortcuts' => array(
         'issues'      => 'https://github.com/marek-saji/nyopaste/issues',
         'source code' => 'https://github.com/marek-saji/nyopaste/',
+        'js doc'      => 'js/',
         'uservoice'   => 'http://nyopaste.uservoice.com/'
     )
 
