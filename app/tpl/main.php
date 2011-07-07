@@ -24,7 +24,7 @@ $t->inc('main_common');
 
     <header id="head">
         <h1>
-            <?= $t->l2c('n<i>y</i>opaste', '', '', array(), array('class'=>'nyopaste')); ?>
+            <?= $t->l2c('<span class="kern_n">n</span><i class="kern_ny">y</i><span class="kern_yo">o</span><span class="kern_op">p</span><span class="kern_pa">a</span><span class="kern_as">s</span><span class="kern_st">t</span><span class="kern_te">e</span>', '', '', array(), array('class'=>'nyopaste')); ?>
         </h1>
         <small><?=$this->trans('a little more social pastebin')?></small>
     </header> <!-- #head -->

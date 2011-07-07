@@ -72,11 +72,14 @@ section {
   font-weight: normal;
   font-family: 'Quattrocento', Times, 'Times New Roman', serif;
 }
-#top #head h1 a {
-  color: #555;
+#top #head h1 .kern_ny {
+  margin-left: -0.2em;
+  position: relative;
+  top: -0.01em;
+  z-index: -1;
 }
-#top #head h1 a i {
-  color: #aaa;
+#top #head h1 .kern_yo {
+  margin-left: -0.3em;
 }
 #top #head small {
   font-size: .7em;
