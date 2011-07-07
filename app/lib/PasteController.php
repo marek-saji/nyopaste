@@ -220,11 +220,15 @@ class PasteController extends PagesController
         $timestamp_delta = $timestamp - strtotime($db_data['creation']);
         if ($timestamp_delta < $diff = 60*60*24)
         {
-            $ver_check_timeout = 5000;
+            $ver_check_timeout = 5000; // 5s
         }
         else if ($timestamp_delta < $diff *= 7)
         {
-            $ver_check_timeout = 60*5000;
+            $ver_check_timeout = 60000; // 1min
+        }
+        else
+        {
+            $ver_check_timeout = 5*60000; // 5min
         }
         $this->assign('ver_check_timeout', $ver_check_timeout);
     }
