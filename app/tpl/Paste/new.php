@@ -393,7 +393,7 @@ $form = g('Forms', array('paste', $this));
         }
         if (!g()->auth->loggedIn())
         {
-            $submit = 'accept terms of use and ' . $submit;
+            $submit = 'accept terms of service and ' . $submit;
         }
         $data_values = json_encode(array(
             false => $submit,
