@@ -44,7 +44,7 @@ class UserController extends PagesController implements IUserController
             'upload' => true,
             'model' => 'User',
             'inputs' => array(
-                'email',
+                //'email', TODO changing e-mail without e-mail confirmation it was not a good idea
                 'website',
                 'about_me',
                 'del_photo' => array(

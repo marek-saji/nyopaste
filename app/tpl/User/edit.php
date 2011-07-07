@@ -55,6 +55,7 @@ $form = g('Forms', array('edit', $this));
                             ?>
                         </p>
                     </li>
+                    <?php /* TODO changing e-mail without e-mail confirmation it was not a good idea
                     <!-- e-mail -->
                     <li class="email field">
                         <?php
@@ -72,6 +73,7 @@ $form = g('Forms', array('edit', $this));
                             </p>
                         </div>
                     </li>
+                    */ ?>
                     <!-- website -->
                     <li class="website field">
                         <?php
