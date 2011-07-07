@@ -62,9 +62,10 @@ class DevController extends DeveloperController
             array(
                 array(
                     'id'                   => -1,
+                    'root_id'              => -1,
                     'paster_id'            => -1, // admin
                     'url'                  => 'TOS',
-                    'title'                => 'Terms of Use',
+                    'title'                => 'Terms of Service',
                     'content'              => file_get_contents(APP_DIR.'/conf/default_pastes/TOS.markdown'),
                     'type'                 => 'markup',
                     'publicly_versionable' => false

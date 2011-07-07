@@ -24,7 +24,7 @@ $t->inc('main_common');
 
     <header id="head">
         <h1>
-            <?= $t->l2c('n<i>y</i>opaste', ''); ?>
+            <?= $t->l2c('n<i>y</i>opaste', '', '', array(), array('class'=>'nyopaste')); ?>
         </h1>
         <small><?=$this->trans('a little more social pastebin')?></small>
     </header> <!-- #head -->
@@ -53,18 +53,13 @@ $t->inc('infos');
 </div> <!-- #content -->
 
 <footer id="foot">
-    <nav>
-        <?php
-        //$this->inc('menu', array('name'=>'footer', 'menu' => g()->conf['menu']['foot']));
-        ?>
-    </nav>
-    <section class="tech">
+    <section class="copyright">
         <p>
             <?=
             $this->trans(
                 'This is <abbr title="version">v</abbr>%s of %s.',
                 g()->conf['version'],
-                $t->l2c('nyopaste', '')
+                g()->conf['site_name']
             )
             ?>
         </p>
@@ -76,10 +71,20 @@ $t->inc('infos');
             <?= $this->trans('Created and maintained by <span class="vcard"><a class="fn url" href="%s">Marek Augustynowicz</a></span>.', $admin_profile) ?>
         </p>
         <p>
-            <?= $this->trans('The code is licensed under <a rel="license" href="http://www.opensource.org/licenses/mit-license.php">MIT License</a> and is available at <a href="https://github.com/marek-saji/nyopaste">GitHub</a>.') ?>
+            <?= $this->trans('The code is licensed under <a rel="license" href="http://www.opensource.org/licenses/mit-license.php">MIT License</a> and available at <a href="https://github.com/marek-saji/nyopaste">GitHub</a>.') ?>
         </p>
+    </section>
+    <section class="more">
         <p>
             <?=$this->trans('If you have an idea how we can improve the site, please <a class="uservoice" href="https://nyopaste.uservoice.com">let us know</a>.')?>
+        </p>
+        <p>
+            <?php
+            echo $this->trans('Before using %s, read %s.',
+                g()->conf['site_name'],
+                $this->l2c($this->trans('Terms of Service'), 'Paste', '', array('TOS'))
+            );
+            ?>
         </p>
     </section> <!-- .powered -->
 </footer> <!-- #foot -->

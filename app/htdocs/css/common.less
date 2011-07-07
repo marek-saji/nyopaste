@@ -109,11 +109,6 @@ menu, nav, section { display: block; }
 
             a
             {
-                color: #555;
-                i
-                {
-                    color: #aaa;
-                }
             }
 
         }
@@ -149,11 +144,11 @@ menu, nav, section { display: block; }
     {
         .rotate(90deg);
         font-size: 1.1em;
-    }
 
-    code.inverted.emoticon
-    {
-        .rotate(270deg);
+        &.inverted
+        {
+            .rotate(270deg);
+        }
     }
 
     .copier
@@ -191,6 +186,17 @@ menu, nav, section { display: block; }
     }
 }
 
+.nyopaste
+{
+    color: #555;
+
+    i
+    {
+        color: #bbb;
+    }
+}
+
+
 body.js
 {
     label.copyable .inside
@@ -209,14 +215,25 @@ body.js
 
 #foot
 {
-    margin-top: 2em;
+    margin-top : 2em;
+    overflow   : hidden;
+
+    section
+    {
+        width : 50%;
+        float : left;
+
+        &.copyright
+        {
+            text-align: right;
+        }
+    }
 
     p
     {
-        text-align: left;
         font-size: .7em;
         padding: 0;
-        margin: .5em 0;
+        margin: .5em 1em;
         color: #666;
 
         a

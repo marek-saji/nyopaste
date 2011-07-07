@@ -109,7 +109,7 @@ section {
   zoom: 1;
   font-size: 1.1em;
 }
-#whole-content code.inverted.emoticon, #nyroModalContent code.inverted.emoticon {
+#whole-content code.emoticon.inverted, #nyroModalContent code.emoticon.inverted {
   -moz-transform: rotate(270deg);
   /* FF3.5+ */
 
@@ -164,6 +164,12 @@ section {
   padding: 0;
   display: inline;
 }
+.nyopaste {
+  color: #555;
+}
+.nyopaste i {
+  color: #bbb;
+}
 body.js label.copyable .inside {
   display: none;
 }
@@ -175,12 +181,19 @@ body.js label.copyable .inside {
 }
 #foot {
   margin-top: 2em;
+  overflow: hidden;
+}
+#foot section {
+  width: 50%;
+  float: left;
+}
+#foot section.copyright {
+  text-align: right;
 }
 #foot p {
-  text-align: left;
   font-size: .7em;
   padding: 0;
-  margin: .5em 0;
+  margin: .5em 1em;
   color: #666;
 }
 #foot p a {

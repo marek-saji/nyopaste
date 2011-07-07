@@ -373,7 +373,7 @@ $form = g('Forms', array('paste', $this));
             </fieldset>
         <?php else : ?>
             <p>
-                <?=$t->trans('Don\'t forget to read <a href="%s" target="_blank" class="ext">terms of use</a>.', $t->url2c('Paste', '', array('TOS'))); ?>
+                <?=$t->trans('Don\'t forget to read <a href="%s" target="_blank" class="ext">terms of service</a>.', $t->url2c('Paste', '', array('TOS'))); ?>
             </p>
         <?php endif; ?>
 
