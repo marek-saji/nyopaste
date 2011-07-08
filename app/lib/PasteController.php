@@ -484,6 +484,7 @@ class PasteController extends PagesController
             if ($post_data_is_empty)
             {
                 $post_data = $db_data;
+                unset($post_data['paster']);
                 $post_data['content_text'] = & $post_data['content'];
             }
             $post_data['parent_id'] = $db_data['id'];
