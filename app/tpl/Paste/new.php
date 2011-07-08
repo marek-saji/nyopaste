@@ -58,7 +58,7 @@ $form = g('Forms', array('paste', $this));
                                 <?=$t->trans('Pasting anonymously.')?>
                             </p>
                             <p>
-                                <?=$t->trans('You can <a href="%s">sign-in</a> or <a href="%s">create an account</a> to be able to easily find your paste later and delete it, if you have to.',
+                                <?=$t->trans('You can <a href="%s">sign in</a> or <a href="%s">create an account</a> to be able to easily find your paste later and delete it, if you have to.',
                                     $this->url2c('User','login'), $this->url2c('User','new')
                                 )?>
                             </p>
@@ -132,9 +132,9 @@ $form = g('Forms', array('paste', $this));
                     <div class="help">
                         <p>
                             <?php if (g()->auth->loggedIn()) : ?>
-                                <?=$t->trans('List of tags that will be helpful in searching this paste. You can also use them to group pastes at <a href="%s">your profile page</a>.', $this->url2c('User', '', array(g()->auth->ident())))?>
+                                <?=$t->trans('List of comma-separated tags that will be helpful in searching this paste. You can also use them to group pastes at <a href="%s">your profile page</a>.', $this->url2c('User', '', array(g()->auth->ident())))?>
                             <?php else : ?>
-                                <?=$t->trans('List of tags that will be helpful in searching this paste. After you <a href="%s">sign in</a>, you will be able to use them to group pastes at your profile page.', $this->url2c('User', 'login'))?>
+                                <?=$t->trans('List of comma-separated tags that will be helpful in searching this paste. After you <a href="%s">sign in</a>, you will be able to use them to group pastes at your profile page.', $this->url2c('User', 'login'))?>
                             <?php endif; ?>
                         </p>
                     </div>
