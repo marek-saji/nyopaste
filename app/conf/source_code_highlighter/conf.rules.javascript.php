@@ -146,3 +146,5 @@ $conf['source_code_highlighter']['modes'] = array(
 
 ); // modes
 
+$conf['source_code_highlighter']['modes']['javascript']['rules'] += $doc_comment['rules'];
+
