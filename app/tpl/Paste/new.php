@@ -41,9 +41,10 @@ $form = g('Forms', array('paste', $this));
                 <li class="paster field">
                     <?php if (@$static_fields['paster']) : ?>
                         <?php
-                        $form->label('paster', $this->trans('paster <small>(not you? %s)</small>', $this->l2c('sign out', 'User', 'logout')));
+                        $form->label('paster', $this->trans('paster '));
                         ?>
                         <strong><?=$static_fields['paster']?></strong>
+                        <?=$this->trans('<small>(not you? %s)</small>', $this->l2c('sign out', 'User', 'logout'))?>
                     <?php else : ?>
                         <?php
                         $form->label('paster', 'paster (you)');
