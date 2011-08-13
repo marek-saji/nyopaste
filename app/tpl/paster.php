@@ -3,13 +3,26 @@
  * Paster (link to profile or plain text)
  *
  * hCard classes
+ *
+ * only one of [row], [paster], [Paster] is required
  * @author m.augustynowicz
  *
- * @param array $row paste row (with [paster] and [paster_id]),
- *        enchanced with [Paster]
- * @param array $Paster_data user data
- * @param string $paster paster name
+ * @param array $row row data including [paster] or [Paster] keys
+ * @param string $Paster [Paster] enchancement (including [DisplayName])
+ * @param string $paster paster name (used as display name and identifier)
  */
+extract(
+    array_merge(
+        array(
+            'paster' => null,
+            'Paster' => null,
+            'row'    => null
+        ),
+        (array) $____local_variables
+    ),
+    EXTR_REFS|EXTR_PREFIX_INVALID, 'param'
+);
+
 if (@$row)
 {
     $Paster = @$row['Paster'];
@@ -39,3 +52,4 @@ else
 }
 
 return $paster_html;
+

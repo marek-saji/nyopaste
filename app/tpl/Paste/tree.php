@@ -4,7 +4,17 @@
             <li>
                 <?=$this->l2a($this->trans('v%s', $paste['version']), '', array($paste['url'], 'v'=>$paste['version']))?>
                 <?=$this->trans('by')?>
-                <?=$this->inc('user_link', array('user'=>&$paste['paster']))?>
+                <?php if ($paste['paster_id']) : ?>
+                    <?php
+                    $paster = array(
+                        'DisplayName' => $paste['paster'],
+                        'login'       => $paste['paster']
+                    );
+                    ?>
+                    <?=$this->inc('paster', array('Paster' => $paster))?>
+                <?php else : ?>
+                    <?=$this->inc('paster', array('paster' => $paste['paster']))?>
+                <?php endif; ?>
                 <time class="published" datetime="<?=$paste['creation']?>">
                     <?=$f->formatDate($paste['creation'])?>
                 </time>
