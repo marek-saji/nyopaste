@@ -7,17 +7,6 @@
   min-height: 20em;
   max-height: 50em;
 }
-.holoform#content form .radio-optiongroups {
-  margin-bottom: 1em;
-}
-.holoform#content form .less-important-options-toggler {
-  color: #777;
-  text-decoration: none;
-  outline: none;
-}
-.holoform#content form .less-important-options-toggler strong {
-  font-family: monospace;
-}
 .holoform#content form .ace_editor div {
   display: none;
 }

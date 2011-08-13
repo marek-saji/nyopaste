@@ -54,6 +54,9 @@
 .holoform form fieldset button.disabled {
   color: gray;
 }
+.holoform form fieldset .radio-optiongroups {
+  margin-bottom: 1em;
+}
 .holoform form fieldset .less-important-options-toggler {
   display: block;
   padding-left: 20px;
@@ -62,6 +65,7 @@
   min-height: 20px;
   margin-top: 1em;
   cursor: pointer;
+  color: #777;
   background: transparent url(../gfx/expand-collapse.png) scroll no-repeat -16px -16px;
 }
 .holoform form fieldset .less-important-options-toggler.expander {
