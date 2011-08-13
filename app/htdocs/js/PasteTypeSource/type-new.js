@@ -15,7 +15,7 @@ $(function(){
      * ### Switching source syntax in ACE
      */
     $('.type-specific.source :input[name$="[syntax]"]')
-        .bind('change.ace', function(){
+        .bind('change.ace keydown.ace', function () {
             ace_editor.setOption('mode', $(this).val());
         })
         .trigger('change.ace')
@@ -26,7 +26,7 @@ $(function(){
      * ### Switching colour scheme in ACE
      */
     $('.type-specific.source :input[name$="[colour_scheme]"]')
-        .bind('change.ace', function(){
+        .bind('change.ace keydown.ace', function () {
             ace_editor.setOption(
                 'theme',
                 $(this).val()
