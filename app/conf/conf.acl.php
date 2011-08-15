@@ -14,6 +14,7 @@ $conf['acl'] = array(
     'p'                  => true,
 
     '/HttpErrors'        => true,
+    '/UnderConstruction' => true,
 
 
     '/Main/default'      => true,
