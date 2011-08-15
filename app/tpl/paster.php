@@ -27,6 +27,10 @@ if (@$row)
 {
     $Paster = @$row['Paster'];
     $paster = @$row['paster'];
+    if (!$Paster && $row['paster_id'])
+    {
+        $Paster['DisplayName'] = $Paster['login'] = $row['paster'];
+    }
 }
 
 if (@$Paster['DisplayName'])
