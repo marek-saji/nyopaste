@@ -97,6 +97,35 @@ class UserController extends PagesController implements IUserController
     );
 
 
+    protected $_user = null;
+
+
+    /**
+     * Get user fetched with _getUser().
+     *
+     * For use by subcontrollers
+     * @author m.augustynowicz
+     *
+     * @return array|null
+     */
+    public function getUser()
+    {
+        return $this->_user;
+    }
+
+
+    /**
+     * Prepare "default" action.
+     *
+     * Add boxes subcontrollers
+     * @author m.augustynowicz
+     */
+    protected function _prepareActionDefault(array & $params)
+    {
+        $this->_getUser();
+    }
+
+
     /**
      * Display user's profile
      *
@@ -105,31 +134,15 @@ class UserController extends PagesController implements IUserController
      */
     public function actionDefault(array $params)
     {
-        $conf = & g()->conf['users'];
-        $id = @$params[0];
-
-        if (!$id)
-        {
-            $this->redirect(array('HttpErrors', '', array(404)));
-        }
-        else if ('admin' === $id)
-        {
-            $params[0] = $conf['admin']['login'];
-            $this->redirect(array($this->url(), '', $params));
-        }
-
-
-        // fetch user data
-        $this->_getOne($id, $db_data);
-
-
         // determine which action links we should display
+
+        $db_data = $this->_user;
 
         $db_data['Actions'] = array(
             'edit'    => true,
-            'remove'  => !($db_data['status'] & STATUS_DELETED)
-                         && $db_data['id'] > 0,
-            'restore' => (bool) ($db_data['status'] & STATUS_DELETED)
+            'remove'  => !($this->_user['status'] & STATUS_DELETED)
+                         && $this->_user['id'] > 0,
+            'restore' => (bool) ($this->_user['status'] & STATUS_DELETED)
         );
         foreach ($db_data['Actions'] as $action => & $permitted)
         {
@@ -337,17 +350,8 @@ class UserController extends PagesController implements IUserController
         //$inputs = & $this->forms[$form_id]['inputs'];
         $post_data = & $this->data[$form_id];
 
-        $conf = & g()->conf['users'];
-        $id = @$params[0];
-
-        if (!$id)
-        {
-            $this->redirect(array('HttpErrors', '', array(404)));
-        }
-
-        // fetch user data
-        $this->_getOne($id, $db_data);
-
+        $this->_getUser();
+        $db_data = $this->_user;
 
         // determine which action links we should display
 
@@ -453,16 +457,8 @@ class UserController extends PagesController implements IUserController
         //$inputs = & $this->forms[$form_id]['inputs'];
         $post_data = & $this->data[$form_id];
 
-        $conf = & g()->conf['users'];
-        $id = @$params[0];
-
-        if (!$id)
-        {
-            $this->redirect(array('HttpErrors', '', array(404)));
-        }
-
-        // fetch user data
-        $this->_getOne($id, $db_data);
+        $this->_getUser();
+        $db_data = $this->_user;
 
         if (@$this->_validated[$form_id])
         {
@@ -537,16 +533,8 @@ class UserController extends PagesController implements IUserController
         //$inputs = & $this->forms[$form_id]['inputs'];
         $post_data = & $this->data[$form_id];
 
-        $conf = & g()->conf['users'];
-        $id = @$params[0];
-
-        if (!$id)
-        {
-            $this->redirect(array('HttpErrors', '', array(404)));
-        }
-
-        // fetch user data
-        $this->_getOne($id, $db_data);
+        $this->_getUser();
+        $db_data = $this->_user;
 
         if (@$this->_validated[$form_id])
         {
@@ -777,7 +765,7 @@ class UserController extends PagesController implements IUserController
             }
             else
             {
-                if ($this->_getOne($value, $db_data, false))
+                if ($this->_getUser(false, $value))
                 {
                     $errors['not_unique'] = $this->trans('This login is already taken. If the account belongs to you, you can <a href="%s">retrieve your password</a>',
                             $this->url2a('lostPasswd') );
@@ -838,11 +826,11 @@ class UserController extends PagesController implements IUserController
 
         if ($value != NULL)
         {
-            $this->_getOne($value, $db_data, false);
-
-            if (!empty($db_data))
+            if ($this->_getUser(false, $value))
+            {
                 $errors['not_unique'] = $this->trans('Account with this e-mail address already exists. If the account belongs to you, you can use <a href="%s">retrieve your password</a>.',
                         $this->url2a('lostPasswd') );
+            }
         }
 
         return $errors;
@@ -882,12 +870,8 @@ class UserController extends PagesController implements IUserController
      */
     public function hasAccessToEdit(array &$params)
     {
-        if (!$id = @$params[0])
-            $this->redirect(array('HttpErrors', '', array(404)));
-
-        $this->_getOne($id, $db_data);
-
-        return g()->auth->id() == $db_data['id'];
+        $user = $this->_getUser(false, $params);
+        return g()->auth->id() == @$user['id'];
     }
 
 
@@ -907,15 +891,15 @@ class UserController extends PagesController implements IUserController
         }
         else
         {
-            $this->_getOne(@$params[0], $db_data);
+            $this->_getUser(false, $params);
 
-            if (empty($db_data))
+            if (empty($user))
                 return false;
 
-            if ($db_data['id'] < 0)
+            if ($user['id'] < 0)
                 return false;
             
-            return !($db_data['status'] & STATUS_DELETED);
+            return !($user['status'] & STATUS_DELETED);
         }
     }
 
@@ -924,14 +908,23 @@ class UserController extends PagesController implements IUserController
      * Common code for fetching one user
      * @author m.augustynowicz
      *
-     * @param mixed $id value of field defined in conf[users][ident_field]
-     * @param array $result rerence result will be stored to
      * @param bool $redirect if set to true, will redirect to error page,
      *        when no user fetched
-     * @return bool success on fetching data
+     * @param array|string|null $params one of these:
+     *        - null (`getParam(0)` will be used as ident),
+     *          in this case result is stored in `$this->_user`
+     *        - array with action params (`[0]` will be used as ident)
+     *        - any other will be used as ident
+     *
+     * @return array|bool array with user data or false on failure
      */
-    protected function _getOne($id, & $result, $redirect=true)
+    protected function _getUser($redirect = true, $params = null)
     {
+        if ($params === null && $this->_user !== null)
+        {
+            return $this->_user;
+        }
+
         static $can_restore = null;
         if (null === $can_restore)
         {
@@ -941,11 +934,48 @@ class UserController extends PagesController implements IUserController
 
         $conf = & g()->conf['users'];
 
-        $filters = array($conf['ident_field'] => $id);
-        if (!$can_restore)
-            $filters['status'] = STATUS_ACTIVE;
 
-        $result = g('User','model')->getRow($filters);
+        if ($params === null)
+        {
+            $id = $this->getParam(0);
+        }
+        else if (is_array($params))
+        {
+            $id = $params[0];
+        }
+        else
+        {
+            $id = $params;
+        }
+
+
+        if ($id === 'admin')
+        {
+            $new_id = @$conf['admin']['login'];
+            if ($new_id)
+            {
+                $params = $this->getParams();
+                $params[0] = $new_id;
+                $this->redirect(array(
+                    $this->url(),
+                    '', // action included in url()
+                    $params
+                ));
+            }
+        }
+
+        if (!$id)
+        {
+            $result = false;
+        }
+        else
+        {
+            $filters = array($conf['ident_field'] => $id);
+            if (!$can_restore)
+                $filters['status'] = STATUS_ACTIVE;
+
+            $result = g('User','model')->getRow($filters);
+        }
 
         if (!$result)
         {
@@ -955,37 +985,31 @@ class UserController extends PagesController implements IUserController
             }
             else
             {
-                return false;
+                $result = false;
             }
         }
 
-        $result['DisplayName'] = $result[$conf['display_name_field']];
+        if ($result)
+        {
+            $result['DisplayName'] = $result[$conf['display_name_field']];
 
-        $result['AboutMe'] = g('TextParser')->parse('markdown', $result['about_me']);
+            $result['AboutMe'] = g('TextParser')->parse('markdown', $result['about_me']);
 
-        static $user_type_mapping = array(
-            USER_TYPE_ADMIN => 'admin',
-            USER_TYPE_MOD   => 'moderator'
-        );
+            static $user_type_mapping = array(
+                USER_TYPE_ADMIN => 'admin',
+                USER_TYPE_MOD   => 'moderator'
+            );
 
-        $result['Type'] = $user_type_mapping[ $result['type'] ];
+            $result['Type'] = $user_type_mapping[ $result['type'] ];
+        }
 
-        return true;
+        if ($params === null)
+        {
+            $this->_user =& $result;
+        }
+
+        return $result;
     }
 
-
-
-    protected function _prepareActionDefault(array &$params)
-    {
-        $this->addChild('Foo');
-    }
-
-    protected function _onRoutingToFoo($in_request)
-    {
-        echo 'JEST';
-        if ($in_request)
-            $this->_passRenderingTo('foo');
-        return $in_request;
-    }
 }
 
