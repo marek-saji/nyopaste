@@ -1,6 +1,7 @@
 <?php
 /**
  * Links to actions that can be performed on a row
+ * @author m.augustynowicz
  *
  * @param array $actions usually assigned to $row[Actions]
  *        it is expected to look like this:
@@ -9,15 +10,31 @@
  *        (will get passed to url2c), or boolean. false does not render
  *        the action, whereas true renders link to action with the same
  *        parameters as current action
+ * @param string $name actions' name (used as css class)
+ * @param bool $inside_link whether to use `l2cInside` instead of `l2c`
+ *
+ * Rest of params used as HTML attributes.
  */
+$defaults = array(
+    'actions'     => array(),
+    'name'        => $t->getName(),
+    'inside_link' => false
+);
+extract(
+    array_merge(
+        $defaults,
+        (array) $____local_variables
+    ),
+    EXTR_REFS|EXTR_PREFIX_INVALID, 'param'
+);
+
 $actions = (array) $actions;
-$name = $t->getName();
-@$____local_variables['class'] .= ' ' . $name . ' actions';
-unset($____local_variables['actions']);
-$attrs = $f->xmlAttr($____local_variables);
+
+$attrs = array_diff_key($____local_variables, $defaults);
+@$attrs['class'] .= " {$name} actions";
 ?>
 
-<nav <?=$attrs?>>
+<nav <?=$f->xmlAttr($attrs)?>>
     <ul>
         <?php foreach ($actions as $action => & $value) : ?>
             <?php
@@ -54,6 +71,10 @@ $attrs = $f->xmlAttr($____local_variables);
                     $value['href'] = $value[1];
                     unset($value[0], $value[1], $value[2], $value[3]);
                     echo $f->tag('a', $value, $label);
+                }
+                else if ($inside_link)
+                {
+                    echo $t->l2cInside($label, $value);
                 }
                 else
                 {
