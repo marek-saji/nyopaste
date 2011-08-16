@@ -123,6 +123,8 @@ class UserController extends PagesController implements IUserController
     protected function _prepareActionDefault(array & $params)
     {
         $this->_getUser();
+
+        $this->addChild('ProfileBoxes', 'boxes');
     }
 
 

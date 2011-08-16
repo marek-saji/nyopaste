@@ -20,6 +20,8 @@ $conf['acl'] = array(
     '/Main/default'      => true,
     '/User/default'      => true,
 
+    '/User/boxes/default' => true,
+
     '/Paste/new'         => false, // grand with callback
     '/Paste/default'     => true,
     '/Paste/newVerCheck' => true,

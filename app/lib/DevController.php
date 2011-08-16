@@ -63,7 +63,8 @@ class DevController extends DeveloperController
                 array(
                     'id'        => -1,
                     'root_id'   => -1,
-                    'paster_id' => -1, // admin
+                    'paster_id' => -1,
+                    'paster'    => g()->conf['users']['admin']['login'],
                     'url'       => 'TOS',
                     'title'     => 'Terms of Service',
                     'content'   => file_get_contents(APP_DIR.'/conf/default_pastes/TOS.markdown'),

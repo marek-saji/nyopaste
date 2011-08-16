@@ -1,9 +1,91 @@
-#content
+@panel-width: 15em;
+
+.column-width(@w)
 {
-    dt.website,
-    dt.about_me
+    column-width         : @w;
+    -moz-column-width    : @w;
+    -webkit-column-width : @w;
+}
+.column-gap(@g)
+{
+    column-gap           : @g;
+    -moz-column-gap      : @g;
+    -webkit-column-gap   : @g;
+}
+
+#whole-content
+{
+    h2
     {
-        display : none;
+        font-size : 1em;
+    }
+
+    .avatar,
+    .paster-meta
+    {
+        clear     : left;
+        float     : left;
+        display   : block;
+        width     : @panel-width;
+        overflow  : hidden;
+    }
+
+    .avatar
+    {
+        text-align : center;
+
+        img
+        {
+            max-width : 100%;
+        }
+    }
+
+    .paster-meta
+    {
+        .actions
+        {
+            font-size    : .8em;
+        }
+
+        .actions ul,
+        .actions ul li,
+        dl dd
+        {
+            list-style   : none;
+            margin-left  : 0;
+            padding-left : 0;
+        }
+
+        dt.website,
+        dt.about_me
+        {
+            display      : none;
+        }
+    }
+}
+
+section.boxes
+{
+    margin-left: @panel-width;
+
+    ul.boxes
+    {
+        list-style    : none;
+        margin        : 0;
+        padding       : 0;
+        .column-width (20em);
+        .column-gap   (1em);
+
+        .actions
+        {
+            text-align : right;
+            list-style : none;
+
+            li
+            {
+                display : inline;
+            }
+        }
     }
 }
 
