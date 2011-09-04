@@ -17,6 +17,16 @@ class PasteController extends PagesController
     protected $_getOne_cache = null;
 
     public $forms = array(
+        'search' => array(
+            'model' => 'Paste',
+            'upload' => false,
+            'inputs' => array(
+                'query' => array(
+                    'fields' => null,
+                    '_tpl'   => 'Forms/FString'
+                )
+            )
+        ),
         'paste' => array(
             'model' => 'Paste',
             'upload' => true,
@@ -277,41 +287,186 @@ class PasteController extends PagesController
     /**
      * Search pastes.
      * @todo make it more "search", than "list"
-     * @todo document params
      * @author m.augustynowicz
+     *
+     * @param array $param request params:
+     *        - [0] search query
      */
     public function actionSearch(array $params)
     {
-        $model_class = g()->load('Paste', 'model');
-        $model = g('Paste', 'model')
-            ->whiteList(array('url', 'version'))
-            ->distinct(array('root_id'))
-        ;
+        $form_id = 'search';
 
-        $or_chain = new FoBinaryChain(
-            new FoBinary($model['privacy'], '=', $model['privacy']->dbString('public')),
-            'OR'
-        );
+        if (@$this->_validated[$form_id])
+        {
+            $this->redirect($this->url2a(
+                $this->getLaunchedAction(),
+                array(
+                    $this->data[$form_id]['query']
+                )
+            ));
+        }
+
+        $query = $params[0];
+        $this->data[$form_id]['query'] = $query;
+
+        $this->assign('query', $query);
+
+        $this->_assignSearchResults($query);
+    }
+
+
+    /**
+     * Fetch and assign search results
+     * @author m.augustynowicz
+     *
+     * @param string $query search query
+     *
+     * @return void Assigns results as $rows
+     */
+    protected function _assignSearchResults($query)
+    {
+        $model = g('Paste', 'model');
+
+        list(
+            $margin_from,
+            $margin_to
+        ) = $this->getChild('p')->getMargins();
+        $sql_offset = (int) $margin_from;
+        $sql_limit  = (int) ($margin_to - $margin_from);
+
         if (g()->auth->loggedIn())
         {
-            $or_chain->also(new FoBinary($model['paster_id'], '=', $model['paster_id']->dbString(g()->auth->id())));
-            /** @todo OR is allowed to see */
+            $sql_val_user_id = $model['paster_id']->dbString(g()->auth->id());
+            $sql_query_or_mine = "OR {$model['paster_id']} = {$sql_val_user_id}";
         }
-        $model->filter($or_chain);
 
-        $model->order('root_id', 'DESC');
-        $model->order('creation', 'DESC');
 
-        // let paginator set margins
-        $this->getChild('p')->setMargins($model);
+        $sql_val_public  = $model['privacy']->dbString('public');
 
-        $rows = $model->exec();
+        if ($query)
+        {
+            $replacements = array(
+                '/\bOR\b/'  => '|',
+                '/\bAND\b/' => '&',
+                '/(?<=[^|()&])\s+(?=[^|()&])/' => ' & '
+            );
+            $query = preg_replace(
+                array_keys($replacements),
+                $replacements,
+                $query
+            );
 
-        $model->whiteListAll();
+            $sql_ts_query = FRich::dbString($query);
+
+            $sql_query_select_rank = <<< SQL_SELECT_RANK
+                        --ts_rank_cd(title_tsv, _query)   AS title_rank,
+                        --ts_rank_cd(paster_tsv, _query)  AS paster_rank,
+                        --ts_rank_cd(tags_tsv, _query)    AS tags_rank,
+                        --ts_rank_cd(content_tsv, _query) AS content_rank,
+                        (
+                            3 * ts_rank_cd(title_tsv, _query)
+                            +
+                            2.75 * ts_rank_cd(paster_tsv, _query)
+                            +
+                            2 * ts_rank_cd(tags_tsv, _query)
+                            +
+                            1 * ts_rank_cd(content_tsv, _query)
+                        ) AS _rank
+SQL_SELECT_RANK
+            ;
+            $sql_query_select_hl = <<< SQL_SELECT_HIGHLIGHTS
+                        ts_headline(title,   _query, 'StartSel=''<strong class=query-keyword>'', StopSel=</strong>') AS hl_title,
+                        ts_headline(paster,  _query, 'StartSel=''<strong class=query-keyword>'', StopSel=</strong>') AS hl_paster,
+                        ts_headline(content, _query, 'StartSel=''<strong class=query-keyword>'', StopSel=</strong>') AS hl_content
+SQL_SELECT_HIGHLIGHTS
+            ;
+            $sql_query_plus_from_query = ", to_tsquery({$sql_ts_query}) AS _query";
+
+            $sql_query_where_matches = <<< SQL_WHERE_MATCHES
+                            _query @@ title_tsv
+                            OR
+                            _query @@ paster_tsv
+                            OR
+                            _query @@ tags_tsv
+                            OR
+                            _query @@ content_tsv
+SQL_WHERE_MATCHES
+            ;
+
+        }
+        else // if $query else
+        {
+            $sql_query_select_rank = "{$model['creation']} AS _rank";
+            $sql_query_select_hl = <<< SQL_SELECT_HIGHLIGHTS
+                        {$model['title']}   AS hl_title,
+                        {$model['paster']}  AS hl_paster,
+                        {$model['content']} AS hl_content
+SQL_SELECT_HIGHLIGHTS
+            ;
+            $sql_query_plus_from_query = '';
+            $sql_query_where_matches = '1=1';
+        }
+
+        $sql_subquery = <<< QUERY_SQL
+            (
+                SELECT
+                DISTINCT ON ({$model['root_id']})
+                    -- basic data
+                    {$model['url']},
+                    {$model['version']},
+                    -- result rank
+                    {$sql_query_select_rank},
+                    -- hightlighted data
+                    {$sql_query_select_hl}
+                FROM
+                    {$model}
+                    {$sql_query_plus_from_query}
+                WHERE
+                    -- visible
+                    (
+                        {$model['privacy']} = {$sql_val_public}
+                        {$sql_query_or_mine}
+                    )
+                    AND
+                    -- matches query
+                    (
+                        {$sql_query_where_matches}
+                    )
+                ORDER BY
+                    {$model['root_id']},
+                    _rank DESC
+            ) pastes
+QUERY_SQL
+        ;
+
+        $sql_count_query = "SELECT COUNT(1) FROM {$sql_subquery}";
+        $count = g()->db->getOne($sql_count_query);
+        $this->getChild('p')->config($count);
+
+        $sql_query = "SELECT * FROM {$sql_subquery} ORDER BY _rank DESC LIMIT {$sql_limit} OFFSET {$sql_offset}";
+        $rows = g()->db->getAll($sql_query);
+
+        if (!$rows)
+        {
+            $rows = array();
+        }
+
+
+        // fetch details
+
+        $model_class = g()->load('Paste', 'model');
         foreach ($rows as &$row)
         {
-            // FIXME test server is php-5.2 and cannot do $model_class::getByUrl()
-            $row = call_user_func(array($model_class, 'getByUrl'), $row['url'], $row['version']);
+            $row += $model_class::getByUrl($row['url'], $row['version']);
+
+            $row['title']   = $row['hl_title'];
+            $row['content'] = $row['hl_content'];
+            $row['paster']  = $row['hl_paster'];
+            if (isset($row['Paster']['DisplayName']))
+            {
+                $row['Paster']['DisplayName'] = $row['hl_paster'];
+            }
+
             preg_match("/^(.*$\s*){7}/m", $row['content'], $matches);
             $row['content_excerpt'] = rtrim($matches[0]);
         }
@@ -589,6 +744,15 @@ class PasteController extends PagesController
 
                     $tags = preg_split('/[\n\r,]+/', trim($insert_data['tags']));
 
+                    if (g()->auth->loggedIn())
+                    {
+                        $paster_nick = g()->auth->displayName();
+                    }
+                    else
+                    {
+                        $paster_nick = $insert_data['paster'];
+                    }
+
                     if (true !== $err = $paste->sync($insert_data, true, 'insert'))
                     {
                         g()->addInfo('ds fail, inserting paste', 'error',
@@ -605,12 +769,10 @@ class PasteController extends PagesController
                     $update_data = array(
                         'id'          => $paste_id,
                         'title_tsv'   => $paste_update->getField('title'),
-                        'content_tsv' => $paste_update->getField('content')
+                        'paster_tsv'  => $paster_nick,
+                        'content_tsv' => $paste_update->getField('content'),
+                        'tags_tsv'    => join(', ', $tags)
                     );
-                    if (!empty($tags))
-                    {
-                        $update_data['tags_tsv'] = join(', ', $tags);
-                    }
                     if (!$post_data['root_id'])
                     {
                         $update_data['root_id'] = $paste_id;

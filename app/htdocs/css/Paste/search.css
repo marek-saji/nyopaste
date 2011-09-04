@@ -1,4 +1,22 @@
+body.Paste__search #whole-content .search.holoform form {
+  width: auto;
+  max-width: none;
+  text-align: center;
+}
+body.Paste__search #whole-content .search.holoform form label {
+  display: none;
+}
+body.Paste__search #whole-content .search.holoform form input.text {
+  width: 70%;
+  font-size: 1.1em;
+}
+body.Paste__search .pastes.hfeed .hentry h4 {
+  font-weight: normal;
+}
 body.Paste__search .pastes.hfeed .hentry .entry-content {
   overflow: auto;
+}
+body.Paste__search .pastes.hfeed .hentry .query-keyword {
+  background-color: yellow;
 }
 /* vim: set ft=css: */
