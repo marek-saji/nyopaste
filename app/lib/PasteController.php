@@ -337,24 +337,27 @@ class PasteController extends PagesController
                 'class'   => 'paste',
                 'name'    => 'defaults for paste form'
             ));
-            $setting_value = (array) json_decode($setting['value'], true);
-            $post_data_was_empty = @empty($this->data['paste']);
-            $this->data['paste'] = array_merge(
-                (array) $setting_value[''],
-                (array) @$this->data['paste']
-            );
-            if ($post_data_was_empty)
+            if ($setting)
             {
-                $this->data['paste']['_empty'] = true;
-            }
-            foreach ($this->_types as $type_name => &$type)
-            {
-                $type->data['paste'] = array_merge(
-                    (array) @$setting_value[$type_name],
-                    (array) @$type->data['paste']
+                $setting_value = (array) json_decode($setting['value'], true);
+                $post_data_was_empty = @empty($this->data['paste']);
+                $this->data['paste'] = array_merge(
+                    (array) $setting_value[''],
+                    (array) @$this->data['paste']
                 );
+                if ($post_data_was_empty)
+                {
+                    $this->data['paste']['_empty'] = true;
+                }
+                foreach ($this->_types as $type_name => &$type)
+                {
+                    $type->data['paste'] = array_merge(
+                        (array) @$setting_value[$type_name],
+                        (array) @$type->data['paste']
+                    );
+                }
+                unset($type_name, $type);
             }
-            unset($type_name, $type);
         }
     }
 
