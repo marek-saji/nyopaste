@@ -48,6 +48,14 @@ class PasteModel extends Model
 
         $this->_addField(new FString('type', true));
 
+
+        // text search vector fields
+
+        $this->_addField(new FTextSearchVectorPSQL('title_tsv'));
+        $this->_addField(new FTextSearchVectorPSQL('tags_tsv'));
+        $this->_addField(new FTextSearchVectorPSQL('content_tsv'));
+
+
         // privacy
         $this->_addField(new FEnum('privacy', 'paste_privacy', true, 'public'));
         $this->_addField(new FMD5String('enc_passwd', false));

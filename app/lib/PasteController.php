@@ -141,6 +141,7 @@ class PasteController extends PagesController
             return false;
         }
 
+
         switch ($display_type)
         {
             case 'get' :
@@ -583,6 +584,8 @@ class PasteController extends PagesController
 
                     $insert_data = $paste->getNewTreeData(@$db_data) + $insert_data;
 
+                    $tags = preg_split('/[\n\r,]+/', trim($insert_data['tags']));
+
                     if (true !== $err = $paste->sync($insert_data, true, 'insert'))
                     {
                         g()->addInfo('ds fail, inserting paste', 'error',
@@ -593,26 +596,34 @@ class PasteController extends PagesController
 
                     $paste_id = $paste->getData('id');
 
+                    // UPDATE text search vectors and root_id
+
+                    $paste_update = g('Paste', 'model');
+                    $update_data = array(
+                        'id'          => $paste_id,
+                        'title_tsv'   => $paste_update->getField('title'),
+                        'content_tsv' => $paste_update->getField('content')
+                    );
+                    if (!empty($tags))
+                    {
+                        $update_data['tags_tsv'] = join(', ', $tags);
+                    }
                     if (!$post_data['root_id'])
                     {
-                        $update_data = array(
-                            'id' => $paste_id,
-                            'root_id' => $paste_id
-                        );
-                        if (true !== $err = g('Paste','model')->sync($update_data, true, 'update'))
-                        {
+                        $update_data['root_id'] = $paste_id;
+                    }
+                    if (true !== $err = $paste_update->sync($update_data, true, 'update'))
+                    {
                         g()->addInfo('ds fail, inserting paste, updating root_id', 'error',
                             $this->trans('((error:DS:%s))', false) );
                         g()->debug->dump($err);
                         break;
-                        }
                     }
 
 
                     if ($insert_data['tags'])
                     {
                         $paste_tag = g('PasteTag', 'model');
-                        $tags = preg_split('/[\n\r,]+/', trim($insert_data['tags']));
                         $tags_insert = array();
                         foreach ($tags as $tag)
                         {
