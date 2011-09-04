@@ -586,3 +586,22 @@ $('a[href^="#"]')
     })
 ;
 
+
+
+/**
+ * Scroll to first error
+ * ---------------------
+ *  @author m.augustynowicz
+ */
+$(function () {
+    var $error = $('.error:first');
+    if ($error.length !== 0) {
+        var err_top = $error.offset().top,
+            html = $('html')[0]
+        ;
+        if (html.scrollTop > err_top || err_top - html.scrollTop > window.innerHeight) {
+            html.scrollTop = err_top;
+        }
+    }
+});
+
