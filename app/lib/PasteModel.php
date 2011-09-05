@@ -116,38 +116,47 @@ class PasteModel extends Model
     public function getNewTreeData(array $base=null)
     {
         $data = array(
-            'version' => 1,
-            'parent_id' => null,
-            'root_id' => @$base['root_id']
+            'version'   => 1,
+            'parent_id' => $base['id'],
+            'root_id'   => @$base['root_id']
         );
 
         if (!$base)
         {
-            return $data;
+            return array('parent_id' => null) + $data;
         }
 
         $model = g('Paste', 'model');
 
-        $model->order('id', 'DESC');
-        $oldest_child = $model
+        $model->order('id', 'ASC');
+        $children = $model
+            ->whiteList(array(
+                'version'
+            ))
             ->filter(array(
-                'url' => $base['url'],
                 'parent_id' => $base['id']
             ))
-            ->getRow();
+            ->exec();
+        $children_count = sizeof($children);
 
-        $data['parent_id'] = $base['id'];
-
-        if (!$oldest_child)
+        if ($children_count === 0)
         {
-            $data['version'] = 
+            $data['version'] =
                     $this->_incrementVersion($base['version']);
         }
         else
         {
+            if ($children_count === 1)
+            {
+                $base_version = $base['version'];
+            }
+            else
+            {
+                $last_child = end($children);
+                $base_version = $last_child['version'];
+            }
             $separator = g()->conf['paste']['version_separator'];
-            $data['version'] = $oldest_child['version'] . $separator
-                               . $data['version'];
+            $data['version'] = $base_version . $separator . '1';
         }
 
         return $data;
