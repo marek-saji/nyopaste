@@ -1,8 +1,8 @@
 requirements
 ------------
 
-1. Postgres SQL 8.3+
-1. PHP 5.2+
+1. Postgres SQL 8.3+ with Text Search
+1. PHP 5.3+ with Postgres SQL module
 1. `mail()` working in PHP
 
 
@@ -14,7 +14,7 @@ setup
 
         git clone git://github.com/marek-saji/nyopaste.git src/
 
-1. checkout hologram:
+1. checkout submodules:
 
         git submodule init
         git submodule update
@@ -43,7 +43,7 @@ setup
 
 1. configure apache
    - create vhost pointing to `src/app/htdocs/`
-   - create alias `hg/` poining to `src/hg/htdocs/`
+   - create alias `hg/` pointing to `src/hg/htdocs/`
    - allow [.htaccess][] magic tricks
    - make sure [mod_rewrite][] is on
    - set HG_ENVIRONMENT to one of LOCAL, DEV, TEST or PROD
