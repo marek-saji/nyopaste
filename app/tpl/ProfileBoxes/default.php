@@ -14,7 +14,7 @@ $this->inc('row_actions', array(
 <?php else /* if empty($boxes) */ : ?>
     <ul class="boxes">
         <?php foreach ($boxes as & $box) : ?>
-            <li>
+            <li class="box">
                 <fieldset>
                     <?php if ($box['title']) : ?>
                         <legend><?=$box['title']?></legend>

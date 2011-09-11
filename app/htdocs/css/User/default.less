@@ -66,14 +66,19 @@ section.boxes
         .column-width (20em);
         .column-gap   (1em);
 
-        .actions
+        li.box
         {
-            text-align : right;
-            list-style : none;
+            .break-inside(avoid);
 
-            li
+            .actions
             {
-                display : inline;
+                text-align : right;
+                list-style : none;
+
+                li
+                {
+                    display : inline;
+                }
             }
         }
     }
