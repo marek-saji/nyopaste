@@ -15,7 +15,7 @@ switch (getenv('HG_ENVIRONMENT'))
         $conf['allow_debug'] = false;
 }
 
-$conf['controllers']['lib']['default'] = 'Paste';
+$conf['controllers']['lib']['default'] = 'Main';
 $conf['controllers']['debug']['sub'] = array (
     'name' => 'lib',
     'type' => 'Library',

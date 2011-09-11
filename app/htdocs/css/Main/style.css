@@ -1,0 +1,68 @@
+/* vim: set ft=css: */
+.definition, .sign-up-and-nyo-tweets {
+  max-width: 40em;
+  margin: 1em auto 0 auto;
+  padding: .07em 2em;
+}
+.definition {
+  border: #ccc solid;
+  border-width: 0 thin;
+  box-shadow: 5px 0px 5px #cccccc, -5px 0px 5px #cccccc;
+  -mox-box-shadow: 5px 0px 5px #cccccc, -5px 0px 5px #cccccc;
+  -webkit-box-shadow: 5px 0px 5px #cccccc, -5px 0px 5px #cccccc;
+}
+.definition dl {
+  font: 1.1em Cambria, Georgia, Times, “Times New Roman”, serif;
+  line-height: 1.4em;
+  text-align: justify;
+}
+.definition dl dt {
+  float: left;
+  margin: 0;
+}
+.definition dl dd {
+  margin: 0 0 1.25em 0;
+}
+.definition dl dd p {
+  margin: 0 0 .25em 0;
+}
+.definition dl dfn {
+  font-weight: bold;
+}
+.sign-up, .nyo-tweets {
+  float: left;
+  width: 19.3em;
+  margin: 0 0 5em 0;
+  padding: 0;
+}
+.sign-up {
+  margin-right: .7em;
+}
+.sign-up p {
+  font-size: 1.1em;
+  font-weight: bold;
+}
+.sign-up ul {
+  list-style: disc outside;
+  padding: 0;
+  margin: 0;
+}
+.sign-up ul li {
+  padding: 0;
+  margin: 1em 0 0 0;
+}
+.sign-up ul li p {
+  font-size: 1em;
+  font-weight: normal;
+}
+.nyo-tweets {
+  margin-left: .7em;
+  /* hide twitter widget header */
+
+}
+.nyo-tweets .twtr-hd {
+  height: 1px;
+  padding: 0;
+  margin: 0;
+}
+/* vim: set ft=css: */
