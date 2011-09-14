@@ -59,9 +59,12 @@ section {
 #top #head, #top #menu {
   float: left;
 }
-#top #head a, #top #menu a {
+#top #head li a, #top #menu li a {
   text-decoration: none;
   color: #555;
+}
+#top #head li.active a, #top #menu li.active a {
+  color: black;
 }
 #top #head {
   margin: 0 1em 0 0;
