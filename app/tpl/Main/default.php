@@ -14,19 +14,19 @@ $v->addLess($this->file('style','less'));
     <dl>
         <dt>
             <dfn>pastebin</dfn>
-            (<i class="ipa">pestbɪn</i>),
+            /<i class="ipa">peɪstbɪn</i>/,
             also: <dfn>nopaste</dfn>
-            (<i class="ipa">nopest</i>)
+            /<i class="ipa">nəʊpeɪst</i>/
             &#8212;&nbsp;
         </dt>
         <dd>
             <p>
-                <?=$this->trans('<i><abbr title="noun">n.</abbr></i> a site, one can use to share snippets (<i lang="la"><abbr title="id est">i.e.</abbr></i> pastes) of text, without pasting the whole thing into conversation window, thus making it hard to read.')?>
+                <?=$this->trans('<i><abbr title="noun">n.</abbr></i> a site, one can use to share snippets of text (<i lang="la"><abbr title="id est">i.e.</abbr></i> pastes), without pasting the whole thing into conversation window, thus making it hard to read.')?>
             </p>
         </dd>
         <dt>
             <dfn class="nyopaste">n<i class="kern_ny">y</i>opaste</dfn>
-            (<i class="ipa">njopest</i>)
+            /<i class="ipa">njopeɪst</i>/
             &#8212;&nbsp;
         </dt>
         <dd>
@@ -41,7 +41,7 @@ $v->addLess($this->file('style','less'));
 
 </section>
 
-<?php if (ENVIRONMENT === LOCAL_ENV) : ?>
+<?php if (g()->debug->allowed()) : ?>
     @todo if (loggedin) "sign up for"
 <?php endif; /* local environment */ ?>
 

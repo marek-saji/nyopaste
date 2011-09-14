@@ -25,6 +25,19 @@ section {
   padding: 0 1em;
 }
 #top {
+  overflow: hidden;
+  padding: 0 1em .5em;
+  margin: 0 0 1.5em;
+  background: #eee;
+  box-shadow: 0 0 1em 0.5em #eeeeee;
+  -mox-box-shadow: 0 0 1em 0.5em #eeeeee;
+  -webkit-box-shadow: 0 0 1em 0.5em #eeeeee;
+  /*
+    padding: 0 1em 1em;
+    border: #ccc solid;
+    border-width: 0 0 thin;
+    */
+
   /* .skip-to-content */
 
   /* #head */
@@ -45,7 +58,7 @@ section {
   font-size: .8em;
 }
 #top .skip-to-content a {
-  color: white;
+  color: #eee;
 }
 #top .skip-to-content a:hover, #top .skip-to-content a:active, #top .skip-to-content a:focus {
   color: black;
@@ -75,6 +88,8 @@ section {
   font-size: 2.5em;
   font-weight: normal;
   font-family: 'Quattrocento', Times, 'Times New Roman', serif;
+  position: relative;
+  z-index: 0;
 }
 #top #head h1 .kern_ny {
   margin-left: -0.2em;
@@ -190,13 +205,6 @@ body.js label.copyable .inside {
   margin-top: 2em;
   overflow: hidden;
 }
-#foot section {
-  width: 50%;
-  float: left;
-}
-#foot section.copyright {
-  text-align: right;
-}
 #foot p {
   font-size: .7em;
   padding: 0;
@@ -208,5 +216,14 @@ body.js label.copyable .inside {
 }
 #foot .nyopaste i {
   opacity: .8;
+}
+@media (min-width: 60em) {
+  #foot section {
+    width: 50%;
+    float: left;
+  }
+  #foot section.copyright {
+    text-align: right;
+  }
 }
 /* vim: set ft=css: */

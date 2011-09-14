@@ -27,6 +27,16 @@ menu, nav, section { display: block; }
 
 #top
 {
+    overflow: hidden;
+    padding: 0 1em .5em;
+    margin: 0 0 1.5em;
+    background: #eee;
+    .shadow(0 0 1em .5em #eee);
+    /*
+    padding: 0 1em 1em;
+    border: #ccc solid;
+    border-width: 0 0 thin;
+    */
 
     *
     {
@@ -49,7 +59,7 @@ menu, nav, section { display: block; }
 
         a
         {
-            color: white;
+            color: #eee;
 
             &:hover,
             &:active,
@@ -105,6 +115,8 @@ menu, nav, section { display: block; }
             font-size   : 2.5em;
             font-weight : normal;
             font-family : 'Quattrocento', Times, 'Times New Roman', serif;
+            position : relative;
+            z-index: 0;
 
             .kern_ny
             {
@@ -225,17 +237,6 @@ body.js
     margin-top : 2em;
     overflow   : hidden;
 
-    section
-    {
-        width : 50%;
-        float : left;
-
-        &.copyright
-        {
-            text-align: right;
-        }
-    }
-
     p
     {
         font-size: .7em;
@@ -254,6 +255,23 @@ body.js
         i
         {
             opacity: .8;
+        }
+    }
+}
+
+@media (min-width: 60em)
+{
+    #foot
+    {
+        section
+        {
+            width : 50%;
+            float : left;
+
+            &.copyright
+            {
+                text-align: right;
+            }
         }
     }
 }
