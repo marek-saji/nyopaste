@@ -148,6 +148,25 @@ menu, nav, section { display: block; }
         line-height: 1.666em;
     }
 
+    .search
+    {
+        margin-top: 1em;
+        clear: right;
+        float: right;
+
+        input.query
+        {
+            width: 10em;
+            .transition(width .2s ease-in);
+
+            &.focus
+            {
+                width: 20em;
+                .transition(width .2s ease-in);
+            }
+        }
+    }
+
 } /* #top */
 
 #infos,

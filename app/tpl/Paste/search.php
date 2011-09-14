@@ -34,7 +34,14 @@ $v->addLess($this->file('search', 'less'));
             $form->label('query', 'search');
             ?>
             <?php
-            $form->input('query');
+            $form->input('query', array(
+                'ajax' => false, // do not validate
+                'attrs' => array(
+                    'placeholder' => 'search for a paste',
+                    'type'        => 'search',
+                    'autosave'    => 'search'
+                )
+            ));
             ?>
         </fieldset>
 

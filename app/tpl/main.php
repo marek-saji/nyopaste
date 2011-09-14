@@ -41,6 +41,49 @@ $t->inc('main_common');
     $this->getPermaCtrl('usernav')->render();
     ?>
 
+    <?php if ($this->getLaunchedAction() !== 'search') : ?>
+        <div class="search">
+            <?php
+            // render without using Form class to save memory
+            ?>
+            <?php
+            echo $f->tag(
+                'form',
+                array(
+                    'action' => $this->url2c('Paste', 'search'),
+                    'method' => 'post'
+                ),
+                null,
+                'open'
+            );
+            ?>
+                <?php
+                echo $f->tag(
+                    'input',
+                    array(
+                        'type' => 'search',
+                        'class' => 'query',
+                        'name' => 'Paste_search[query]',
+                        'placeholder' => $this->trans('search for a paste'),
+                        'autosave' => 'search'
+                    )
+                );
+                ?>
+                <?php
+                echo $f->tag(
+                    'input',
+                    array(
+                        'type' => 'submit',
+                        'value' => $this->trans('search')
+                    )
+                );
+                ?>
+            <?php
+            echo $f->tag('form', array(), null, 'close');
+            ?>
+        </div>
+    <?php endif; /* launched action !== search */ ?>
+
 </div>
 
 <?php

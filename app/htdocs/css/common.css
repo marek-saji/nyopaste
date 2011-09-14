@@ -110,6 +110,23 @@ section {
   margin-top: .3em;
   line-height: 1.666em;
 }
+#top .search {
+  margin-top: 1em;
+  clear: right;
+  float: right;
+}
+#top .search input.query {
+  width: 10em;
+  transition: width 0.2s ease-in;
+  -moz-transition: width 0.2s ease-in;
+  -webkit-transition: width 0.2s ease-in;
+}
+#top .search input.query.focus {
+  width: 20em;
+  transition: width 0.2s ease-in;
+  -moz-transition: width 0.2s ease-in;
+  -webkit-transition: width 0.2s ease-in;
+}
 /* #top */
 #infos, #whole-content {
   margin: 0 1em;
