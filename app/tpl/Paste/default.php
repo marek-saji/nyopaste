@@ -89,21 +89,6 @@ $meta_data_toggler = json_encode(array(
                 'class' => 'basic'
             ));
             ?>
-            <div id="share" class="modaled">
-                <?php
-            $permalink    = $this->url2a($this->getLaunchedAction(), array($this->getParam(0), 'v' => $this->getParam('v')), true);
-                $share_text   = $this->trans('%s', $row['title']);
-                $mail_subject = $this->trans('%s at %s', $row['title'], strip_tags(g()->conf['site_name']));
-                $mail_body    = $this->trans("Take a look at this:\n\n%2\$s", $row['title'], $permalink);
-
-                $this->inc('share', array(
-                    'link'         => $permalink,
-                    'title'        => $share_text,
-                    'mail_subject' => $mail_subject,
-                    'mail_body'    => $mail_body
-                ));
-                ?>
-            </div>
         </div> <!-- .actions.wrapper -->
     </header>
 
@@ -112,6 +97,25 @@ $meta_data_toggler = json_encode(array(
         $type->render();
         ?>
     </article>
+
+    <div id="share" class="modaled">
+        <h3>
+            <?=$this->trans('share this paste')?>
+        </h3>
+        <?php
+        $permalink    = $this->url2a($this->getLaunchedAction(), array($this->getParam(0), 'v' => $this->getParam('v')), true);
+        $share_text   = $this->trans('%s', $row['title']);
+        $mail_subject = $this->trans('%s at %s', $row['title'], strip_tags(g()->conf['site_name']));
+        $mail_body    = $this->trans("Take a look at this:\n\n%2\$s", $row['title'], $permalink);
+
+        $this->inc('share', array(
+            'link'         => $permalink,
+            'title'        => $share_text,
+            'mail_subject' => $mail_subject,
+            'mail_body'    => $mail_body
+        ));
+        ?>
+    </div>
 
     <?php if (@$row['Tree'][$row['root_id']]['Children']) : ?>
         <section class="tree">
