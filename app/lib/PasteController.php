@@ -346,9 +346,18 @@ class PasteController extends PagesController
         if ($query)
         {
             $replacements = array(
+                // map human readable operators
                 '/\bOR\b/'  => '|',
                 '/\bAND\b/' => '&',
-                '/(?<=[^|()&])\s+(?=[^|()&])/' => ' & '
+                '/\bNOT\b/' => '!',
+                '/\s+-(?=[^\s])/' => ' !',
+                '/"/' => "'",
+                // insert AND operator between words
+                '/(?<=[^!|()&])\s+(?=[^|()&])/' => ' & ',
+                // map human readable weights
+                '/\bpaster:([^!|()&\s]+)\b/'  => '$1:B',
+                '/\btag:([^!|()&\s]+)\b/'     => '$1:A',
+                '/\bgroup:([^!|()&\s]+)\b/'   => '$1:D',
             );
             $query = preg_replace(
                 array_keys($replacements),
@@ -358,40 +367,39 @@ class PasteController extends PagesController
 
             $sql_ts_query = FRich::dbString($query);
 
+            $sql_ts_vector = <<< SQL_TSV
+                (
+                    setweight({$model['title_tsv']},   'C')
+                    ||
+                    setweight({$model['paster_tsv']},  'B')
+                    ||
+                    setweight({$model['tags_tsv']},    'A')
+                    ||
+                    setweight({$model['content_tsv']}, 'C')
+                    ||
+                    setweight({$model['groups_tsv']},  'D')
+                )
+SQL_TSV
+            ;
+
             $sql_query_select_rank = <<< SQL_SELECT_RANK
-                        --ts_rank_cd(title_tsv, _query)   AS title_rank,
-                        --ts_rank_cd(paster_tsv, _query)  AS paster_rank,
-                        --ts_rank_cd(tags_tsv, _query)    AS tags_rank,
-                        --ts_rank_cd(content_tsv, _query) AS content_rank,
-                        (
-                            3 * ts_rank_cd(title_tsv, _query)
-                            +
-                            2.75 * ts_rank_cd(paster_tsv, _query)
-                            +
-                            2 * ts_rank_cd(tags_tsv, _query)
-                            +
-                            1 * ts_rank_cd(content_tsv, _query)
-                        ) AS _rank
+                ts_rank(
+                    '{0.1, 0.5, 0.7, 1.0}', -- D, C, B, A weights
+                    {$sql_ts_vector},
+                    _query
+                ) AS _rank
 SQL_SELECT_RANK
             ;
+            $headline_cfg = "'StartSel=''<strong class=query-keyword>'', StopSel=</strong>'";
             $sql_query_select_hl = <<< SQL_SELECT_HIGHLIGHTS
-                        ts_headline(title,   _query, 'StartSel=''<strong class=query-keyword>'', StopSel=</strong>') AS hl_title,
-                        ts_headline(paster,  _query, 'StartSel=''<strong class=query-keyword>'', StopSel=</strong>') AS hl_paster,
-                        ts_headline(content, _query, 'StartSel=''<strong class=query-keyword>'', StopSel=</strong>') AS hl_content
+                ts_headline({$model['title']},   _query, $headline_cfg) AS hl_title,
+                ts_headline({$model['paster']},  _query, $headline_cfg) AS hl_paster,
+                ts_headline({$model['content']}, _query, $headline_cfg) AS hl_content
 SQL_SELECT_HIGHLIGHTS
             ;
             $sql_query_plus_from_query = ", to_tsquery({$sql_ts_query}) AS _query";
 
-            $sql_query_where_matches = <<< SQL_WHERE_MATCHES
-                            _query @@ title_tsv
-                            OR
-                            _query @@ paster_tsv
-                            OR
-                            _query @@ tags_tsv
-                            OR
-                            _query @@ content_tsv
-SQL_WHERE_MATCHES
-            ;
+            $sql_query_where_matches = "_query @@ {$sql_ts_vector}";
 
         }
         else // if $query else
@@ -748,9 +756,13 @@ QUERY_SQL
                     {
                         $paster_nick = g()->auth->displayName();
                     }
-                    else
+                    else if ($insert_data['paster'])
                     {
                         $paster_nick = $insert_data['paster'];
+                    }
+                    else
+                    {
+                        $paster_nick = 'anonymous';
                     }
 
                     if (true !== $err = $paste->sync($insert_data, true, 'insert'))
@@ -771,7 +783,8 @@ QUERY_SQL
                         'title_tsv'   => $paste_update->getField('title'),
                         'paster_tsv'  => $paster_nick,
                         'content_tsv' => $paste_update->getField('content'),
-                        'tags_tsv'    => join(', ', $tags)
+                        'tags_tsv'    => join(', ', $tags),
+                        'groups_tsv'  => '' // TODO
                     );
                     if (!$post_data['root_id'])
                     {

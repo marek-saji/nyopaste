@@ -55,6 +55,7 @@ class PasteModel extends Model
         $this->_addField(new FTextSearchVectorPSQL('paster_tsv'));
         $this->_addField(new FTextSearchVectorPSQL('tags_tsv'));
         $this->_addField(new FTextSearchVectorPSQL('content_tsv'));
+        $this->_addField(new FTextSearchVectorPSQL('groups_tsv'));
 
 
         // privacy
