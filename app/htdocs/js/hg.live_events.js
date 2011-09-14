@@ -45,10 +45,23 @@ $(function(){
 $(function(){
     try
     {
-        if ($.nyroModalManual)
-            hg("nyroModalInit")();
+        var screen = window.screen;
+        if (screen.height > 500 && screen.width > 500)
+        {
+            if ($.nyroModalManual)
+            {
+                hg("nyroModalInit")();
+                $('body').addClass('modal-enabled');
+            }
+            else
+            {
+                throw("nyroModalManual not found");
+            }
+        }
         else
-            throw("nyroModalManual not found");
+        {
+            console.log('Screen smaller than 500x500, not enabling modal windows');
+        }
     }
     catch (e)
     {
