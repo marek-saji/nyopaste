@@ -119,7 +119,7 @@ class PasteModel extends Model
     {
         $data = array(
             'version'   => 1,
-            'parent_id' => $base['id'],
+            'parent_id' => @$base['id'],
             'root_id'   => @$base['root_id']
         );
 

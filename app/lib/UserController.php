@@ -893,7 +893,7 @@ class UserController extends PagesController implements IUserController
         }
         else
         {
-            $this->_getUser(false, $params);
+            $user = $this->_getUser(false, $params);
 
             if (empty($user))
                 return false;
@@ -1002,7 +1002,7 @@ class UserController extends PagesController implements IUserController
                 USER_TYPE_MOD   => 'moderator'
             );
 
-            $result['Type'] = $user_type_mapping[ $result['type'] ];
+            $result['Type'] = @$user_type_mapping[ $result['type'] ];
         }
 
         if ($params === null)

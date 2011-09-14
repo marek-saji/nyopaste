@@ -880,7 +880,7 @@ QUERY_SQL
      */
     public function actionError404(array $params)
     {
-        $this->assign('url', $params[0]);
+        $this->assign('url', @$params[0]);
     }
 
 
