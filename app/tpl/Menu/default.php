@@ -20,7 +20,7 @@ $url      = "$ctrl_url/$act";
     $class = ($url === 'Paste/search') ? 'active' : '';
     ?>
     <li class="<?=$class?>">
-        <?=$this->l2c('list pastes', 'Paste','search')?>
+        <?=$this->l2c('pastes', 'Paste','search')?>
     </li>
 
     <?php

@@ -1,5 +1,7 @@
 @import "less.less";
 
+@headerbg: #eee;
+
 html,
 body
 {
@@ -30,7 +32,7 @@ menu, nav, section { display: block; }
     overflow: hidden;
     padding: 0 1em .5em;
     margin: 0 0 1.5em;
-    background: #eee;
+    background: @headerbg;
     .shadow(0 0 1em .5em #eee);
     /*
     padding: 0 1em 1em;
@@ -89,18 +91,15 @@ menu, nav, section { display: block; }
     {
         float: left;
 
-        li
+        a
         {
-            a
-            {
-                text-decoration: none;
-                color: #555;
-            }
+            text-decoration: none;
+            color: #555;
+        }
 
-            &.active a
-            {
-                color: black;
-            }
+        &.active a
+        {
+            color: black;
         }
     }
 
@@ -247,14 +246,14 @@ body.js
 .vcard a .photo
 {
     vertical-align : middle;
-    border-right   : white solid .33em; /* warning, dirty hack */
+    border-right   : @headerbg solid .33em; /* warning, dirty hack */
 }
 
 
 #foot
 {
-    margin-top : 2em;
-    overflow   : hidden;
+    margin   : 2em 0 1em 0;
+    overflow : hidden;
 
     p
     {

@@ -28,7 +28,7 @@ section {
   overflow: hidden;
   padding: 0 1em .5em;
   margin: 0 0 1.5em;
-  background: #eee;
+  background: #eeeeee;
   box-shadow: 0 0 1em 0.5em #eeeeee;
   -mox-box-shadow: 0 0 1em 0.5em #eeeeee;
   -webkit-box-shadow: 0 0 1em 0.5em #eeeeee;
@@ -72,11 +72,11 @@ section {
 #top #head, #top #menu {
   float: left;
 }
-#top #head li a, #top #menu li a {
+#top #head a, #top #menu a {
   text-decoration: none;
   color: #555;
 }
-#top #head li.active a, #top #menu li.active a {
+#top #head.active a, #top #menu.active a {
   color: black;
 }
 #top #head {
@@ -214,12 +214,12 @@ body.js label.copyable .inside {
 }
 .vcard a .photo {
   vertical-align: middle;
-  border-right: white solid .33em;
+  border-right: #eeeeee solid 0.33em;
   /* warning, dirty hack */
 
 }
 #foot {
-  margin-top: 2em;
+  margin: 2em 0 1em 0;
   overflow: hidden;
 }
 #foot p {
