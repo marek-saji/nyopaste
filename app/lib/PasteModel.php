@@ -234,7 +234,7 @@ class PasteModel extends Model
             'version' => $ver
         );
 
-        $model = new PasteModel();
+        $model = g('Paste', 'model');
 
         $display_field = g()->conf['users']['display_name_field'];
         $ident_field   = g()->conf['users']['display_name_field'];
@@ -257,6 +257,23 @@ class PasteModel extends Model
         if (!$result)
         {
             return false;
+        }
+
+
+        // handle private pastes
+        if ($result['privacy'] === 'private')
+        {
+            $allowed = 0 < g('PasteAccessUser', 'model')
+                ->filter(array(
+                    'user_id'       => g()->auth->id(),
+                    'paste_root_id' => $result['root_id']
+                ))
+                ->getCount()
+            ;
+            if ($allowed === false)
+            {
+                return false;
+            }
         }
 
 

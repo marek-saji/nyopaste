@@ -269,7 +269,7 @@ $form = g('Forms', array('paste', $this));
                 'excerpts' => array(
                     'public'     => $this->trans('Your paste will be listed in "pastes" section and indexed by search engines.'),
                     'not listed' => $this->trans('Your paste will not be listed in "pastes" section nor indexed by search engines. It will be accessible only by knowing it\'s address.'),
-                    'private'    => $this->trans('Only users and groups of your selection will be able to access your paste.'),
+                    'private'    => $this->trans('Only users of your selection will be able to access your paste.'),
                 ),
             )), ENT_QUOTES);
             ?>
@@ -298,20 +298,26 @@ $form = g('Forms', array('paste', $this));
                             );
                             ?>
                         </li>
-                        <?php if (g()->debug->allowed()) : ?>
                         <li class="private privacy field">
-                            @todo
                             <?php
                             $form->input(
                                 'privacy',
                                 array(
                                     'value' => 'private',
-                                    'label' => 'allow only selected groups and users'
+                                    'label' => 'allow only selected users'
                                 )
                             );
                             ?>
+                            <fieldset>
+                                <ul>
+                                    <li class="users privacy field">
+                                        <?php
+                                        $form->input('users');
+                                        ?>
+                                    </li>
+                                </ul>
+                            </fieldset>
                         </li>
-                        <?php endif; /* g()->debug->allowed( */ ?>
                     </ul>
                 </li>
                 <?php if (g()->auth->loggedIn()) : ?>
@@ -360,7 +366,7 @@ $form = g('Forms', array('paste', $this));
                             'store_settings',
                             array(
                                 'class' => 'store-settings',
-                                'label' => $this->trans('<span class="nojs"><em>do not</em> create a paste, </span>just store settings for future pastes')
+                                'label' => $this->trans('<span class="nojs"><em>do not</em> create a paste, </span>just store settings as default for future pastes')
                             )
                         );
                         ?>

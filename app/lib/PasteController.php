@@ -77,6 +77,11 @@ class PasteController extends PagesController
                     '_tpl' => 'Forms/FRadio-single',
                 ),
 
+                'users' => array(
+                    'fields' => null,
+                    '_tpl'   => 'Forms/FString'
+                ),
+
                 'publicly_versionable',
 
                 // + captcha
@@ -336,8 +341,19 @@ class PasteController extends PagesController
 
         if (g()->auth->loggedIn())
         {
+            // mine
+
             $sql_val_user_id = $model['paster_id']->dbString(g()->auth->id());
-            $sql_query_or_mine = "OR {$model['paster_id']} = {$sql_val_user_id}";
+            $sql_query_or_visible_to_me = " OR {$model['paster_id']} = {$sql_val_user_id}";
+
+            // access has been given to me
+
+            $accessuser_model = g('PasteAccessUser', 'model');
+            $sql_query_or_visible_to_me .= " OR {$sql_val_user_id} IN (SELECT user_id FROM {$accessuser_model} WHERE {$accessuser_model['paste_root_id']} = {$model['root_id']})";
+        }
+        else
+        {
+            $sql_query_or_visible_to_me = '';
         }
 
 
@@ -433,7 +449,7 @@ SQL_SELECT_HIGHLIGHTS
                     -- visible
                     (
                         {$model['privacy']} = {$sql_val_public}
-                        {$sql_query_or_mine}
+                        {$sql_query_or_visible_to_me}
                     )
                     AND
                     -- matches query
@@ -740,6 +756,9 @@ QUERY_SQL
 
                     $paste = g('Paste', 'model');
 
+
+                    // insert main data
+
                     // url field must be not null and unique.
                     if (!@$static_fields['url'])
                     {
@@ -775,7 +794,7 @@ QUERY_SQL
 
                     $paste_id = $paste->getData('id');
 
-                    // UPDATE text search vectors and root_id
+                    // update text search vectors and root_id
 
                     $paste_update = g('Paste', 'model');
                     $update_data = array(
@@ -799,6 +818,8 @@ QUERY_SQL
                     }
 
 
+                    // insert tags
+
                     if ($insert_data['tags'])
                     {
                         $paste_tag = g('PasteTag', 'model');
@@ -812,13 +833,42 @@ QUERY_SQL
                         }
                         if (true !== $err = $paste_tag->sync($tag_insert, true, 'insert'))
                         {
-                            g()->addInfo('ds fail, inserting paste type', 'error',
+                            g()->addInfo('ds fail, inserting paste tag', 'error',
                                 $this->trans('((error:DS:%s))', false) );
                             g()->debug->dump($err);
                             break;
                         }
                     }
 
+
+                    // insert users that have access to the paste
+
+                    if ($insert_data['privacy'] === 'private' && $insert_data['users'])
+                    {
+                        $users_logins = preg_split('/[\s,]+/m', $insert_data['users']);
+                        $users = g('User', 'model')
+                            ->filter(array('login' => $users_logins))
+                            ->whiteList(array('id'))
+                            ->exec();
+                        $useraccess_insert =& $users;
+                        array_walk($users, function (& $row, $key, & $root_id) {
+                            $row = array(
+                                'user_id'       => $row['id'],
+                                'paste_root_id' => $root_id
+                            );
+                        }, $update_data['root_id']);
+                        $paste_useracceess = g('PasteAccessUser', 'model');
+                        if (true !== $err = $paste_useracceess->sync($useraccess_insert, true, 'insert'))
+                        {
+                            g()->addInfo('ds fail, inserting paste user access', 'error',
+                                $this->trans('((error:DS:%s))', false) );
+                            g()->debug->dump($err);
+                            break;
+                        }
+                    }
+
+
+                    // insert type-specific data
 
                     $type = $this->_types[$paste->getData('type')];
                     if (true !== $err = $type->sync($paste, 'insert'))
@@ -829,7 +879,9 @@ QUERY_SQL
                         break;
                     }
 
+
                     // if we got here, everything's must have gone fine
+
                     g()->addInfo(null, 'info',
                                  $this->trans('Paste created') );
                     g()->db->completeTrans();
@@ -903,8 +955,7 @@ QUERY_SQL
         }
 
         $model_class = g()->load('Paste', 'model');
-        // FIXME test server is php-5.2 and cannot do $model_class::getByUrl()
-        $result = call_user_func(array($model_class, 'getByUrl'), $url, $ver);
+        $result = $model_class::getByUrl($url, $ver);
 
         if (!$result)
         {
