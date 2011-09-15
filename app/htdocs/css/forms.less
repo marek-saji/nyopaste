@@ -169,12 +169,22 @@
                 z-index: 10;
                 list-style-position: inside;
                 list-style-type: disc;
+
+                &::after
+                {
+                    border-color: transparent #fbb;
+                }
             }
 
             .help
             {
                 background-color: #bfb;
                 z-index: 20;
+
+                &::after
+                {
+                    border-color: transparent #bfb;
+                }
 
                 p
                 {
@@ -236,13 +246,24 @@ body.js .holoform form
         position: absolute;
         top: 0;
         left: 100%;
-        margin: 0 0 0 2.5em;
+        margin: 0 0 0 3.5em;
         padding: 1em;
         width: @formwidth * @formtoasideratio;
         max-width: 100% * @formtoasideratio - 10;
         z-index: 30;
         border: white solid thin;
         .border-radius(.5em);
+
+        /* bubble arrow */
+        &::after
+        {
+            content      : '';
+            border       : transparent solid .5em;
+            border-left  : none;
+            position     : absolute;
+            top          : 1em;
+            left         : -.5em;
+        }
     }
 
     fieldset fieldset

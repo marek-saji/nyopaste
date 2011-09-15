@@ -67,7 +67,7 @@ section {
   float: right;
 }
 #top #menu li a, #top .usernav li a {
-  margin: 0 0 0 .75em;
+  margin: 0 0 0 1em;
 }
 #top #head, #top #menu {
   float: left;
