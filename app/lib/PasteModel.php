@@ -12,7 +12,7 @@ class PasteModel extends Model
     /**
      * Used as a base for url field suffixes.
      */
-    const URL_BASE = '-_ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    const URL_BASE = '-_.ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 
     public function __construct()
     {
