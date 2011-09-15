@@ -45,8 +45,8 @@ $(function(){
 $(function(){
     try
     {
-        var screen = window.screen;
-        if (screen.height > 500 && screen.width > 500)
+        if (window.innerHeight > hg('nyroModalInit').minHeight
+            && window.innerWidth > hg('nyroModalInit').minWidth)
         {
             if ($.nyroModalManual)
             {
