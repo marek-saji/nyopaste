@@ -147,33 +147,6 @@ $(function(){
 
 
     /**
-     * Autocompletion for selecting users
-     * ----------------------------------
-     */
-    var usersAutoCompleteCache = {'': []};
-    $('[name="Paste_paste[users]"]').autocomplete({
-        source : function (current, callback) {
-            var input = current.term || '';
-
-            if (typeof usersAutoCompleteCache[input] !== 'undefined') {
-                callback(usersAutoCompleteCache[input]);
-                return;
-            }
-
-            $.ajax({
-                type    : 'POST',
-                data    : { input : input },
-                url     : '/Ajaj/autoCompleteUser',
-                success : function (json) {
-                    usersAutoCompleteCache[input] = json.suggestions;
-                    callback(usersAutoCompleteCache[input]);
-                }
-            });
-        }
-    });
-
-
-    /**
      * ACE companion
      * -------------
      * @url http://ajaxorg.github.com/ace/build/textarea/editor.html

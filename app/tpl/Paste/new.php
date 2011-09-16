@@ -135,7 +135,7 @@ $form = g('Forms', array('paste', $this));
                             <?php if (g()->auth->loggedIn()) : ?>
                                 <?=$t->trans('List of comma-separated tags that will be helpful in searching this paste. You can also use them to group pastes at <a href="%s">your profile page</a>.', $this->url2c('User', '', array(g()->auth->ident())))?>
                             <?php else : ?>
-                                <?=$t->trans('List of comma-separated tags that will be helpful in searching this paste. After you <a href="%s">sign in</a>, you will be able to use them to group pastes at your profile page.', $this->url2c('User', 'login'))?>
+                                <?=$t->trans('Comma-separated tags that will be helpful in searching this paste. After you <a href="%s">sign in</a>, you will be able to use them to group pastes at your profile page.', $this->url2c('User', 'login'))?>
                             <?php endif; ?>
                         </p>
                     </div>
@@ -312,8 +312,13 @@ $form = g('Forms', array('paste', $this));
                                 <ul>
                                     <li class="users privacy field">
                                         <?php
-                                        $form->input('users');
+                                        $form->input('access_users');
                                         ?>
+                                        <div class="help">
+                                            <p>
+                                                <?=$this->trans('Comma-separated logins of users you want to be able to see your paste.')?>
+                                            </p>
+                                        </div>
                                     </li>
                                 </ul>
                             </fieldset>

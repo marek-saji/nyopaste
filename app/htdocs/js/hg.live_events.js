@@ -618,3 +618,56 @@ $(function () {
     }
 });
 
+
+/**
+ * Autocomplete fields
+ * -------------------
+ * @author m.augustynowicz
+ */
+$(window).load(function () {
+    $('.autocomplete').each(function () {
+        var $this       = $(this),
+            $dataSource = $this.data('impersonating') || $this
+            data        = $dataSource.data('hgAutocomplete') || {}
+        ;
+
+        if (!data.url) {
+            return;
+        }
+
+        if ($this.is(':not(:input)')) {
+            $this = $this.find(':input');
+        }
+
+        if ($this.length === 0) {
+            return;
+        }
+        else if ($this.length > 1) {
+            $this = $this.eq(0);
+        }
+
+        var cache = {'': []};
+
+        $this.autocomplete({
+            source : function (current, callback) {
+                var input = current.term || '';
+
+                if (typeof cache[input] !== 'undefined') {
+                    callback(cache[input]);
+                    return;
+                }
+
+                $.ajax({
+                    type    : 'POST',
+                    data    : { input : input },
+                    url     : data.url,
+                    success : function (json) {
+                        cache[input] = json.suggestions;
+                        callback(cache[input]);
+                    }
+                });
+            }
+        });
+    });
+});
+

@@ -60,6 +60,7 @@ class PasteModel extends Model
 
         // privacy
         $this->_addField(new FEnum('privacy', 'paste_privacy', true, 'public'));
+        $this->_addField(g('Users', 'field', array('access_users')));
         $this->_addField(new FMD5String('enc_passwd', false));
         $this->_addField(new FBool('publicly_versionable', false, true));
 

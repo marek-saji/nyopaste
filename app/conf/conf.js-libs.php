@@ -16,6 +16,14 @@ $conf['js-libs'] = array(
         )
     ),
 
+    // hack: change order, load live_enents after autocomplete plugin
+    'hg.live_events' => array(
+        'autoload' => false
+    ),
+    'app-hg.live_events' => array(
+        'filename' => 'hg.live_events'
+    ),
+
     /**
      * CSS2-3 selectors for IE
      * @url http://selectivizr.com/

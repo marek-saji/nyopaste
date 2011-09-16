@@ -77,10 +77,7 @@ class PasteController extends PagesController
                     '_tpl' => 'Forms/FRadio-single',
                 ),
 
-                'users' => array(
-                    'fields' => null,
-                    '_tpl'   => 'Forms/FString'
-                ),
+                'access_users',
 
                 'publicly_versionable',
 
@@ -843,22 +840,24 @@ QUERY_SQL
 
                     // insert users that have access to the paste
 
-                    if ($insert_data['privacy'] === 'private' && $insert_data['users'])
+                    if ($insert_data['privacy'] === 'private' && $insert_data['access_users'])
                     {
-                        $users_logins = preg_split('/[\s,]+/m', $insert_data['users']);
-                        $users = g('User', 'model')
-                            ->filter(array('login' => $users_logins))
-                            ->whiteList(array('id'))
-                            ->exec();
-                        $useraccess_insert =& $users;
-                        array_walk($users, function (& $row, $key, & $root_id) {
-                            $row = array(
-                                'user_id'       => $row['id'],
+                        // FIXME
+                        $useraccess_field = $paste->getField('access_users');
+                        $useraccess_field->invalid($insert_data['access_users']);
+
+                        $root_id = $update_data['root_id'];
+                        $useraccess = $useraccess_field->getLogins();
+                        $useraccess_insert = array();
+                        foreach ($useraccess as $id => $login)
+                        {
+                            $useraccess_insert[] = array(
+                                'user_id'       => $id,
                                 'paste_root_id' => $root_id
                             );
-                        }, $update_data['root_id']);
-                        $paste_useracceess = g('PasteAccessUser', 'model');
-                        if (true !== $err = $paste_useracceess->sync($useraccess_insert, true, 'insert'))
+                        }
+                        unset($id, $login, $root_id, $useraccess, $useraccess_field);
+                        if (true !== $err = g('PasteAccessUser', 'model')->sync($useraccess_insert, true, 'insert'))
                         {
                             g()->addInfo('ds fail, inserting paste user access', 'error',
                                 $this->trans('((error:DS:%s))', false) );
