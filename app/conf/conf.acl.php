@@ -20,6 +20,8 @@ $conf['acl'] = array(
     '/Main/default'      => true,
     '/User/default'      => true,
 
+    '/Ajaj/users'        => true,
+
     '/User/boxes/default' => true,
 
     '/Paste/new'         => false, // grand with callback

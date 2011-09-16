@@ -9,6 +9,13 @@ $conf['js-libs'] = array(
         'onload' => '$(".encapsulating").encapsulating()',
     ),
 
+    'jquery.ui.autocomplete' => array(
+        'filename' => 'jquery-ui-1.8.16.custom.autocomplete.min',
+        'css' => array(
+            'filename' => 'ui-lightness/jquery-ui-1.8.16.custom'
+        )
+    ),
+
     /**
      * CSS2-3 selectors for IE
      * @url http://selectivizr.com/
