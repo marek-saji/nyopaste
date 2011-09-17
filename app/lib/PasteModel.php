@@ -240,7 +240,7 @@ class PasteModel extends Model
         $display_field = g()->conf['users']['display_name_field'];
         $ident_field   = g()->conf['users']['display_name_field'];
         $whitelist =
-            array_keys($model->getFields()) // Paste.*
+            array_keys($model->whiteListAll()->whiteList()) // Paste.*
             +
             array(
                 "Paster+$ident_field" => "User.$ident_field",
