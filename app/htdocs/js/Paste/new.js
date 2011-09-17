@@ -12,7 +12,9 @@ $(function(){
      */
     $('ul.radio-optiongroups').each(function(){
         var $list = $(this),
-            $select = $('<select />', {'class': 'hg'});
+            $select = $('<select />', {'class': 'hg'})
+            $legend = $list.closest('fieldset').find('legend:first')
+        ;
 
         $list
             .children('li.field').children('label').find('input[type="radio"]')
@@ -39,7 +41,8 @@ $(function(){
 
         console.info('radio-optiongroups with ', $select);
         $select
-            .appendTo($list.closest('fieldset').find('legend:first').html(''))
+            .appendTo($legend)
+            .before('&nbsp;')
             .change(function(){
                 $(this).find(':selected').data('suboptions')
                     .siblings(':visible')
