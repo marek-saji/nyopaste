@@ -1,4 +1,4 @@
-/* vim: set ft=css: */
+/* vim: set ft=css fdm=indent: */
 .paste.hentry hgroup h2, .paste.hentry hgroup h3 {
   display: inline;
   margin: 0;
@@ -102,4 +102,4 @@ body.js #meta {
   /* toggable with js */
 
 }
-/* vim: set ft=css: */
+/* vim: set ft=css fdm=indent: */

@@ -1,4 +1,4 @@
-/* vim: set ft=css: */
+/* vim: set ft=css fdm=indent: */
 .definition, .sign-up-and-nyo-tweets {
   max-width: 40em;
   margin: 1em auto 0 auto;
@@ -7,9 +7,9 @@
 .definition {
   border: #ccc solid;
   border-width: 0 thin;
-  box-shadow: 5px 0px 5px #cccccc, -5px 0px 5px #cccccc;
-  -mox-box-shadow: 5px 0px 5px #cccccc, -5px 0px 5px #cccccc;
-  -webkit-box-shadow: 5px 0px 5px #cccccc, -5px 0px 5px #cccccc;
+  box-shadow: 0.3em 0 0.3em #cccccc, -0.3em 0 0.3em #cccccc;
+  -mox-box-shadow: 0.3em 0 0.3em #cccccc, -0.3em 0 0.3em #cccccc;
+  -webkit-box-shadow: 0.3em 0 0.3em #cccccc, -0.3em 0 0.3em #cccccc;
 }
 .definition dl {
   font: 1.1em Palatino, Palatino Linotype, Georgia, Times, Times New Roman, serif;
@@ -65,4 +65,4 @@
   padding: 0;
   margin: 0;
 }
-/* vim: set ft=css: */
+/* vim: set ft=css fdm=indent: */

@@ -1,4 +1,4 @@
-/* vim: set ft=css: */
+/* vim: set ft=css fdm=indent: */
 #whole-content h2 {
   font-size: 1em;
 }
@@ -53,4 +53,4 @@ section.boxes ul.boxes li.box .actions {
 section.boxes ul.boxes li.box .actions li {
   display: inline;
 }
-/* vim: set ft=css: */
+/* vim: set ft=css fdm=indent: */

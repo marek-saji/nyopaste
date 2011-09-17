@@ -38,4 +38,4 @@ body.Paste article#content .wrapper code.line {
 body.Paste article#content .wrapper code.line:target {
   outline: thin solid #fa3;
 }
-/* vim: set ft=css: */
+/* vim: set ft=css fdm=indent: */

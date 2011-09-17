@@ -1,4 +1,4 @@
-/* vim: set ft=css: */
+/* vim: set ft=css fdm=indent: */
 html, body {
   font-family: sans-serif;
   margin: 0;
@@ -76,8 +76,9 @@ section {
   text-decoration: none;
   color: #555;
 }
-#top #head.active a, #top #menu.active a {
+#top #head .active a, #top #menu .active a {
   color: black;
+  border-bottom: #666 solid 0.155em;
 }
 #top #head {
   margin: 0 1em 0 0;
@@ -203,6 +204,20 @@ section {
   padding: 0;
   display: inline;
 }
+#nyroModalWrapper {
+  padding: 0 1em;
+}
+.modal-wannabe {
+  width: 50em;
+  max-width: 100%;
+  margin: 0 auto;
+  border: #ccc solid thin;
+  border-width: 0 thin;
+  padding: 0.5em 1em;
+  box-shadow: 0.3em 0 0.3em #cccccc, -0.3em 0 0.3em #cccccc;
+  -mox-box-shadow: 0.3em 0 0.3em #cccccc, -0.3em 0 0.3em #cccccc;
+  -webkit-box-shadow: 0.3em 0 0.3em #cccccc, -0.3em 0 0.3em #cccccc;
+}
 .nyopaste {
   color: #555;
 }
@@ -243,4 +258,4 @@ body.js label.copyable .inside {
     text-align: right;
   }
 }
-/* vim: set ft=css: */
+/* vim: set ft=css fdm=indent: */

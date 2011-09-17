@@ -10,4 +10,4 @@ body.Paste article#content.markup li {
 body.Paste article#content.markup blockquote {
   margin: .75em 1.5em;
 }
-/* vim: set ft=css: */
+/* vim: set ft=css fdm=indent: */

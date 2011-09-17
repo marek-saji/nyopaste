@@ -97,9 +97,10 @@ menu, nav, section { display: block; }
             color: #555;
         }
 
-        &.active a
+        .active a
         {
             color: black;
+            border-bottom: #666 solid 0.155em;
         }
     }
 
@@ -223,6 +224,23 @@ menu, nav, section { display: block; }
     }
 }
 
+#nyroModalWrapper
+{
+    padding: 0 1em;
+}
+
+.modal-wannabe
+{
+    width     : 50em;
+    max-width : 100%;
+    margin    : 0 auto;
+    border    : #ccc solid thin;
+    border-width: 0 thin;
+    padding   : 0.5em 1em;
+    .two-shadows(0.3em 0 0.3em #ccc, -0.3em 0 0.3em #ccc);
+}
+
+
 .nyopaste
 {
     color: #555;
@@ -295,5 +313,5 @@ body.js
 }
 
 
-/* vim: set ft=css: */
+/* vim: set ft=css fdm=indent: */
 

@@ -10,7 +10,7 @@ $v->setTitle($title);
 $form = g('Forms', array('login', $this));
 ?>
 
-<section id="login">
+<section id="login" class="modal-wannabe">
 
     <header>
         <h2><?=$title?></h2>
