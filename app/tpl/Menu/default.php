@@ -17,7 +17,7 @@ $url      = "$ctrl_url/$act";
     </li>
 
     <?php
-    $class = ($url === 'Paste/search') ? 'active' : '';
+    $class = ($url !== 'Paste/new' && $ctrl_url === 'Paste') ? 'active' : '';
     ?>
     <li class="<?=$class?>">
         <?=$this->l2c('pastes', 'Paste','search')?>
