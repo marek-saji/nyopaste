@@ -45,8 +45,7 @@ $(function(){
 $(function(){
     try
     {
-        if (window.innerHeight > hg('nyroModalInit').minHeight
-            && window.innerWidth > hg('nyroModalInit').minWidth)
+        if (hg('nyroModalFit')())
         {
             if ($.nyroModalManual)
             {
