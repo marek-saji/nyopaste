@@ -2,6 +2,11 @@ RewriteEngine on
 
 # don't go anywhere.
 RewriteRule ^hg/ - [L]
+
+# short permalink
+RewriteRule ^\~(.*),(.*)$ /Paste:$1,v=$2 [R=302,L]
+RewriteRule ^\~(.*)$ /Paste:$1 [R=302,L]
+
 # to avoid unnecessary file existence checks
 RewriteRule ^(js|css|gfx)/ - [L]
 RewriteRule ^[a-z]+\.php - [L]

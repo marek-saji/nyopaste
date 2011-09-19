@@ -103,7 +103,12 @@ $meta_data_toggler = json_encode(array(
             <?=$this->trans('share this paste')?>
         </h3>
         <?php
-        $permalink    = $this->url2a($this->getLaunchedAction(), array($this->getParam(0), 'v' => $this->getParam('v')), true);
+        $permalink = g()->req->getBaseUri(true)
+            . sprintf(
+                g()->conf['paste']['permalink'],
+                $this->getParam(0), $this->getParam('v')
+            )
+        ;
         $share_text   = $this->trans('%s', $row['title']);
         $mail_subject = $this->trans('%s at %s', $row['title'], strip_tags(g()->conf['site_name']));
         $mail_body    = $this->trans("Take a look at this:\n\n%2\$s", $row['title'], $permalink);

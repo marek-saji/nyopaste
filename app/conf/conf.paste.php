@@ -10,6 +10,8 @@ $conf['paste'] = array(
         'publicly_versionable' => true,
     ),
 
+    'permalink' => '~%s,%s',
+
     'version_separator' => '.',
 
 );
