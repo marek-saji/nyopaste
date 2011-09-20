@@ -308,7 +308,7 @@ class PasteController extends PagesController
             ));
         }
 
-        $query = $params[0];
+        $query = $this->getParam(0, false);
         $this->data[$form_id]['query'] = $query;
 
         $this->assign('query', $query);
@@ -327,170 +327,11 @@ class PasteController extends PagesController
      */
     protected function _assignSearchResults($query)
     {
-        $model = g('Paste', 'model');
-
-        list(
-            $margin_from,
-            $margin_to
-        ) = $this->getChild('p')->getMargins();
-        $sql_offset = (int) $margin_from;
-        $sql_limit  = (int) ($margin_to - $margin_from);
-
-        if (g()->auth->loggedIn())
-        {
-            // mine
-
-            $sql_val_user_id = $model['paster_id']->dbString(g()->auth->id());
-            $sql_query_or_visible_to_me = " OR {$model['paster_id']} = {$sql_val_user_id}";
-
-            // access has been given to me
-
-            $accessuser_model = g('PasteAccessUser', 'model');
-            $sql_query_or_visible_to_me .= " OR {$sql_val_user_id} IN (SELECT user_id FROM {$accessuser_model} WHERE {$accessuser_model['paste_root_id']} = {$model['root_id']})";
-        }
-        else
-        {
-            $sql_query_or_visible_to_me = '';
-        }
-
-
-        $sql_val_public  = $model['privacy']->dbString('public');
-
-        if ($query)
-        {
-            $replacements = array(
-                // map human readable operators
-                '/\bOR\b/'  => '|',
-                '/\bAND\b/' => '&',
-                '/\bNOT\b/' => '!',
-                '/\s+-(?=[^\s])/' => ' !',
-                '/"/' => "'",
-                // insert AND operator between words
-                '/(?<=[^!|()&])\s+(?=[^|()&])/' => ' & ',
-                // map human readable weights
-                '/\bpaster:([^!|()&\s]+)\b/'  => '$1:B',
-                '/\btag:([^!|()&\s]+)\b/'     => '$1:A',
-                '/\bgroup:([^!|()&\s]+)\b/'   => '$1:D',
-            );
-            $query = preg_replace(
-                array_keys($replacements),
-                $replacements,
-                $query
-            );
-
-            $sql_ts_query = FRich::dbString($query);
-
-            $sql_ts_vector = <<< SQL_TSV
-                (
-                    setweight({$model['title_tsv']},   'C')
-                    ||
-                    setweight({$model['paster_tsv']},  'B')
-                    ||
-                    setweight({$model['tags_tsv']},    'A')
-                    ||
-                    setweight({$model['content_tsv']}, 'C')
-                    ||
-                    setweight({$model['groups_tsv']},  'D')
-                )
-SQL_TSV
-            ;
-
-            $sql_query_select_rank = <<< SQL_SELECT_RANK
-                ts_rank(
-                    '{0.1, 0.5, 0.7, 1.0}', -- D, C, B, A weights
-                    {$sql_ts_vector},
-                    _query
-                ) AS _rank
-SQL_SELECT_RANK
-            ;
-            $headline_cfg = "'StartSel=''<strong class=query-keyword>'', StopSel=</strong>'";
-            $sql_query_select_hl = <<< SQL_SELECT_HIGHLIGHTS
-                ts_headline({$model['title']},   _query, $headline_cfg) AS hl_title,
-                ts_headline({$model['paster']},  _query, $headline_cfg) AS hl_paster,
-                ts_headline({$model['content']}, _query, $headline_cfg) AS hl_content
-SQL_SELECT_HIGHLIGHTS
-            ;
-            $sql_query_plus_from_query = ", to_tsquery({$sql_ts_query}) AS _query";
-
-            $sql_query_where_matches = "_query @@ {$sql_ts_vector}";
-
-        }
-        else // if $query else
-        {
-            $sql_query_select_rank = "{$model['creation']} AS _rank";
-            $sql_query_select_hl = <<< SQL_SELECT_HIGHLIGHTS
-                        {$model['title']}   AS hl_title,
-                        {$model['paster']}  AS hl_paster,
-                        {$model['content']} AS hl_content
-SQL_SELECT_HIGHLIGHTS
-            ;
-            $sql_query_plus_from_query = '';
-            $sql_query_where_matches = '1=1';
-        }
-
-        $sql_subquery = <<< QUERY_SQL
-            (
-                SELECT
-                DISTINCT ON ({$model['root_id']})
-                    -- basic data
-                    {$model['url']},
-                    {$model['version']},
-                    -- result rank
-                    {$sql_query_select_rank},
-                    -- hightlighted data
-                    {$sql_query_select_hl}
-                FROM
-                    {$model}
-                    {$sql_query_plus_from_query}
-                WHERE
-                    -- visible
-                    (
-                        {$model['privacy']} = {$sql_val_public}
-                        {$sql_query_or_visible_to_me}
-                    )
-                    AND
-                    -- matches query
-                    (
-                        {$sql_query_where_matches}
-                    )
-                ORDER BY
-                    {$model['root_id']},
-                    _rank DESC
-            ) pastes
-QUERY_SQL
-        ;
-
-        $sql_count_query = "SELECT COUNT(1) FROM {$sql_subquery}";
-        $count = g()->db->getOne($sql_count_query);
-        $this->getChild('p')->config($count);
-
-        $sql_query = "SELECT * FROM {$sql_subquery} ORDER BY _rank DESC LIMIT {$sql_limit} OFFSET {$sql_offset}";
-        $rows = g()->db->getAll($sql_query);
-
-        if (!$rows)
-        {
-            $rows = array();
-        }
-
-
-        // fetch details
-
-        $model_class = g()->load('Paste', 'model');
-        foreach ($rows as &$row)
-        {
-            $row += $model_class::getByUrl($row['url'], $row['version']);
-
-            $row['title']   = $row['hl_title'];
-            $row['content'] = $row['hl_content'];
-            $row['paster']  = $row['hl_paster'];
-            if (isset($row['Paster']['DisplayName']))
-            {
-                $row['Paster']['DisplayName'] = $row['hl_paster'];
-            }
-
-            preg_match("/^(.*$\s*){7}/m", $row['content'], $matches);
-            $row['content_excerpt'] = rtrim($matches[0]);
-        }
+        $model_name = g()->load('Paste', 'model');
+        $rows = $model_name::getByQuery($query, array(
+            'full'      => true,
+            'paginator' => $this->getChild('p')
+        ));
 
         $this->assignByRef('rows', $rows);
     }

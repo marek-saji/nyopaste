@@ -129,7 +129,7 @@ class PasteModel extends Model
             return array('parent_id' => null) + $data;
         }
 
-        $model = g('Paste', 'model');
+        $model = new self;
 
         $model->order('id', 'ASC');
         $children = $model
@@ -235,7 +235,7 @@ class PasteModel extends Model
             'version' => $ver
         );
 
-        $model = g('Paste', 'model');
+        $model = new self;
 
         $display_field = g()->conf['users']['display_name_field'];
         $ident_field   = g()->conf['users']['display_name_field'];
@@ -336,6 +336,246 @@ class PasteModel extends Model
         }
 
         return $tree;
+    }
+
+
+    /**
+     * Get pastes by search query
+     * @author m.augustynowicz
+     *
+     * @param string $query
+     * @param array $options
+     *        - [full] get paste with content
+     *        - [paginator] PaginatorController instance
+     *        - [limit], [offset] used only when no paginator given
+     * @param bool $full get paste with content
+     *
+     * @return array
+     */
+    static public function getByQuery($query, array $options = array())
+    {
+        $model = new self;
+
+        $options += array(
+            'full'   => false,
+            'offset' => 0
+        );
+
+        if (!(@$options['paginator']) instanceof PaginatorController)
+        {
+            $options['paginator'] = false;
+        }
+
+
+        $full =& $options['full'];
+
+        // pagination
+
+        $sql_offset = false;
+        $sql_limit  = false;
+        // pagination from component
+        if ($options['paginator'])
+        {
+            list(
+                $margin_from,
+                ,
+                $margin_limit
+            ) = $options['paginator']->getMargins();
+            $sql_offset = (int) $margin_from;
+            $sql_limit  = (int) $margin_limit;
+        }
+        // pagination from method params
+        else
+        {
+            if ($options['offset'])
+            {
+                $sql_offset = (int) $options['offset'];
+            }
+            if ($options['limit'])
+            {
+                $sql_limit  = (int) $options['limit'];
+            }
+        }
+
+
+
+        if (g()->auth->loggedIn())
+        {
+            // mine
+
+            $sql_val_user_id = $model['paster_id']->dbString(g()->auth->id());
+            $sql_query_or_visible_to_me = " OR {$model['paster_id']} = {$sql_val_user_id}";
+
+            // access has been given to me
+
+            $accessuser_model = g('PasteAccessUser', 'model');
+            $sql_query_or_visible_to_me .= " OR {$sql_val_user_id} IN (SELECT user_id FROM {$accessuser_model} WHERE {$accessuser_model['paste_root_id']} = {$model['root_id']})";
+        }
+        else
+        {
+            $sql_query_or_visible_to_me = '';
+        }
+
+
+        $sql_val_public  = $model['privacy']->dbString('public');
+
+        if ($query)
+        {
+            $replacements = array(
+                // map human readable operators
+                '/\bOR\b/'  => '|',
+                '/\bAND\b/' => '&',
+                '/\bNOT\b/' => '!',
+                '/\s+-(?=[^\s])/' => ' !',
+                '/"/' => "'",
+                // insert AND operator between words
+                '/(?<=[^!|()&])\s+(?=[^|()&])/' => ' & ',
+                // map human readable weights
+                '/\bpaster:([^!|()&\s]+)\b/'  => '$1:B',
+                '/\btag:([^!|()&\s]+)\b/'     => '$1:A',
+                '/\bgroup:([^!|()&\s]+)\b/'   => '$1:D',
+            );
+            $query = preg_replace(
+                array_keys($replacements),
+                $replacements,
+                $query
+            );
+
+            $sql_ts_query = FRich::dbString($query);
+
+            $sql_ts_vector = <<< SQL_TSV
+                (
+                    setweight({$model['title_tsv']},   'C')
+                    ||
+                    setweight({$model['paster_tsv']},  'B')
+                    ||
+                    setweight({$model['tags_tsv']},    'A')
+                    ||
+                    setweight({$model['content_tsv']}, 'C')
+                    ||
+                    setweight({$model['groups_tsv']},  'D')
+                )
+SQL_TSV
+            ;
+
+            $sql_query_select_rank = <<< SQL_SELECT_RANK
+                ts_rank(
+                    '{0.1, 0.5, 0.7, 1.0}', -- D, C, B, A weights
+                    {$sql_ts_vector},
+                    _query
+                ) AS _rank
+SQL_SELECT_RANK
+            ;
+            $headline_cfg = "'StartSel=''<strong class=query-keyword>'', StopSel=</strong>'";
+            $sql_query_select_hl = <<< SQL_SELECT_HIGHLIGHTS
+                ts_headline({$model['title']},   _query, $headline_cfg) AS hl_title,
+                ts_headline({$model['paster']},  _query, $headline_cfg) AS hl_paster
+SQL_SELECT_HIGHLIGHTS
+            ;
+            if ($full)
+            {
+                $sql_query_select_hl .= ", ts_headline({$model['content']}, _query, $headline_cfg) AS hl_content";
+            }
+            $sql_query_plus_from_query = ", to_tsquery({$sql_ts_query}) AS _query";
+
+            $sql_query_where_matches = "_query @@ {$sql_ts_vector}";
+
+        }
+        else // if $query else
+        {
+            $sql_query_select_rank = "{$model['creation']} AS _rank";
+            $sql_query_select_hl = <<< SQL_SELECT_HIGHLIGHTS
+                        {$model['title']}   AS hl_title,
+                        {$model['paster']}  AS hl_paster
+SQL_SELECT_HIGHLIGHTS
+            ;
+            if ($full)
+            {
+                $sql_query_select_hl .= ", {$model['content']} AS hl_content";
+            }
+            $sql_query_plus_from_query = '';
+            $sql_query_where_matches = '1=1';
+        }
+
+        $sql_subquery = <<< QUERY_SQL
+            (
+                SELECT
+                DISTINCT ON ({$model['root_id']})
+                    -- basic data
+                    {$model['url']},
+                    {$model['version']},
+                    -- result rank
+                    {$sql_query_select_rank},
+                    -- hightlighted data
+                    {$sql_query_select_hl}
+                FROM
+                    {$model}
+                    {$sql_query_plus_from_query}
+                WHERE
+                    -- visible
+                    (
+                        {$model['privacy']} = {$sql_val_public}
+                        {$sql_query_or_visible_to_me}
+                    )
+                    AND
+                    -- matches query
+                    (
+                        {$sql_query_where_matches}
+                    )
+                ORDER BY
+                    {$model['root_id']},
+                    _rank DESC
+            ) pastes
+QUERY_SQL
+        ;
+
+        if ($options['paginator'])
+        {
+            $sql_count_query = "SELECT COUNT(1) FROM {$sql_subquery}";
+            $count = g()->db->getOne($sql_count_query);
+            $options['paginator']->config($count);
+        }
+
+        $sql_query = "SELECT * FROM {$sql_subquery} ORDER BY _rank DESC";
+        if ($sql_limit !== false)
+        {
+            $sql_query .= " LIMIT {$sql_limit}";
+        }
+        if ($sql_offset !== false)
+        {
+            $sql_query .= " OFFSET {$sql_offset}";
+        }
+        $rows = g()->db->getAll($sql_query);
+
+        if (!$rows)
+        {
+            $rows = array();
+        }
+
+
+        // fetch details
+
+        foreach ($rows as &$row)
+        {
+            $row += self::getByUrl($row['url'], $row['version']);
+
+            $row['title']   = $row['hl_title'];
+
+            $row['paster']  = $row['hl_paster'];
+            if (isset($row['Paster']['DisplayName']))
+            {
+                $row['Paster']['DisplayName'] = $row['hl_paster'];
+            }
+
+            if ($full)
+            {
+                $row['content'] = $row['hl_content'];
+                preg_match("/^(.*$\s*){7}/m", $row['content'], $matches);
+                $row['content_excerpt'] = rtrim($matches[0]);
+            }
+        }
+
+        return $rows;
     }
 
 }
