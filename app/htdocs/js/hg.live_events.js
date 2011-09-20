@@ -582,7 +582,7 @@ $('a[href^="#"]')
         ;
         if ($target.length)
         {
-            $('body')
+            $('html, body') // some browsers like html, some body
                 .animate(
                     {
                         scrollTop : $target.offset().top
