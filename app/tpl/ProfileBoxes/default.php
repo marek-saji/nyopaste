@@ -27,8 +27,10 @@ $this->inc('row_actions', array(
                             <?php foreach ($box['Pastes'] as & $paste) : ?>
                                 <li>
                                     <?=$this->l2c($this->trans('%s v%s', $paste['title'], $paste['version']), 'Paste', '', array($paste['url'], 'v'=>$paste['version']))?>
-                                    <?=$this->trans('by')?>
-                                    <?=$this->inc('paster', array('row' => $paste))?>
+                                    <?php if ($box['list_paster']) : ?>
+                                        <?=$this->trans('by')?>
+                                        <?=$this->inc('paster', array('row' => $paste))?>
+                                    <?php endif; /* $box['list_paster'] */ ?>
                                     <time class="published" datetime="<?=$paste['creation']?>">
                                         <?=$f->formatDate($paste['creation'])?>
                                     </time>

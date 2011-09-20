@@ -27,7 +27,7 @@ class ProfileBoxesController extends Component
         if ($parent->getName() === 'User')
         {
             $user = $parent->getUser();
-            $boxes = g('Boxes', 'model')
+            $boxes = g('Box', 'model')
                 ->orderBy('id')
                 ->filter(array(
                     'user_id' => $user['id']
@@ -109,32 +109,15 @@ class ProfileBoxesController extends Component
      */
     public function _fillBoxes(array & $boxes)
     {
-        $model = g('Paste', 'model')
-            ->whiteList(array(
-                'id',
-                'url',
-                'version',
-                'title',
-                'paster',
-                'paster_id',
-                'creation'
-            ))
-            ->distinct(array('root_id'))
-            ->orderBy('root_id',  'DESC')
-            ->orderBy('creation', 'DESC')
-            ->setMargins(0, 5)
-        ;
-
         $can_edit = $this->hasAccess('edit');
+
+        $model_class = g()->load('Paste', 'model');
 
         foreach ($boxes as & $box)
         {
-            $box['Pastes'] = $model
-                ->filter(array(
-                    'paster_id' => $box['user_id']
-                ))
-                ->exec()
-            ;
+            $box['Pastes'] = $model_class::getByQuery($box['query'], array(
+                'limit' => $box['limit']
+            ));
 
             $box['Actions'] = array();
 
