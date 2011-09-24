@@ -136,6 +136,13 @@ class UserController extends PagesController implements IUserController
      */
     public function actionDefault(array $params)
     {
+        $boxes = $this->getChild('boxes');
+        if ($boxes->getLaunchedAction() !== '')
+        {
+            $this->_passRenderingTo($boxes);
+            return;
+        }
+
         // determine which action links we should display
 
         $db_data = $this->_user;

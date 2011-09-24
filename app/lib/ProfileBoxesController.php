@@ -5,12 +5,27 @@
  */
 class ProfileBoxesController extends Component
 {
+    const DEFAULT_LIMIT = 5;
+
+
     /**
      * @var array form definictions
      * @see Forms
      */
     public $forms = array(
+        'box' => array(
+            'ajax'   => true,
+            'model'  => 'Box',
+            'inputs' => array(
+                'title',
+                'query',
+                'limit',
+                'list_paster'
+            ),
+        ),
     );
+
+
 
     /**
      * undocumented default action
@@ -30,7 +45,8 @@ class ProfileBoxesController extends Component
             $boxes = g('Box', 'model')
                 ->orderBy('id')
                 ->filter(array(
-                    'user_id' => $user['id']
+                    'user_id' => $user['id'],
+                    'removed' => null
                 ))
                 ->exec()
             ;
@@ -51,8 +67,7 @@ class ProfileBoxesController extends Component
 
         if ($this->hasAccess('new'))
         {
-            //$actions['new'] = true;
-            $actions['new'] = array(true, $this->url2c('UnderConstruction'));
+            $actions['new'] = array(true, $this->url2aInside('new'), 'class'=>'modal');
         }
 
         $this->assignByRef('actions', $actions);
@@ -68,34 +83,108 @@ class ProfileBoxesController extends Component
      */
     public function actionNew(array $params)
     {
-        $user_ident = $this->getParentParam('User', 'default', 0);
+        return $this->_addOrEdit($params, false);
     }
 
 
     /**
-     * Check access to "new" action
+     * Edit existing box
      * @author m.augustynowicz
      *
-     * @param array $params same that will be passed to action
-     *        ignored
+     * @param array $params request params:
+     *        - [0] box id
+     * @return void
      */
-    public function hasAccessToNew(array &$params)
+    public function actionEdit(array $params)
     {
-        $user = $this->getParent()->getUser();
-        return g()->auth->id() == @$user['id'];
+        return $this->_addOrEdit($params, true);
     }
 
+
     /**
-     * Check access to "edit" action
+     * Set box as removed
      * @author m.augustynowicz
      *
+     * @param array $params request params:
+     *        - [0] box id
+     * @return void
+     */
+    public function actionRemove(array $params)
+    {
+        return $this->_removeOrRestore(
+            $params,
+            // update "removed" column with
+            time(),
+            // success msg getter
+            function ($that, $box) {
+                $undo_link = $that->l2aInside(
+                    $that->trans('Undo'),
+                    'restore',
+                    array($box['id'])
+                );
+                return $that->trans(
+                    'Box <em>%s</em> removed (%s).',
+                    $box['title'],
+                    $undo_link
+                );
+            }
+        );
+    }
+
+
+    /**
+     * Set box to not removed
+     * @author m.augustynowicz
+     *
+     * @param array $params request params:
+     *        - [0] box id
+     * @return void
+     */
+    public function actionRestore(array $params)
+    {
+        return $this->_removeOrRestore(
+            $params,
+            // update "removed" column with
+            null,
+            // success msg getter
+            function ($that, $box) {
+                return $that->trans(
+                    'Box <em>%s</em> restored.',
+                    $box['title']
+                );
+            }
+        );
+    }
+
+
+    /**
+     * Grant access to adding and removing to profile owner.
+     * @author m.augustynowicz
+     *
+     * @param string $action
      * @param array $params same that will be passed to action
      *        ignored
+     *
+     * @return bool
      */
-    public function hasAccessToEdit(array &$params)
+    public function hasAccess($action, array &$params = array(), $just_checking=true)
     {
-        // TODO implement this properly
-        return $this->hasAccessToNew($params);
+        switch ($action)
+        {
+            case 'new' :
+            case 'edit' :
+            case 'remove' :
+            case 'restore' :
+                $user = $this->getParent()->getUser();
+                if (g()->auth->id() === @$user['id'])
+                {
+                    return true;
+                }
+                // else fall down
+
+            default :
+                return parent::hasAccess($action, $params);
+        }
     }
 
 
@@ -109,25 +198,227 @@ class ProfileBoxesController extends Component
      */
     public function _fillBoxes(array & $boxes)
     {
-        $can_edit = $this->hasAccess('edit');
+        $can_edit    = $this->hasAccess('edit');
+        $can_remove  = $this->hasAccess('remove');
+        $can_restore = $this->hasAccess('restore');
 
         $model_class = g()->load('Paste', 'model');
 
         foreach ($boxes as & $box)
         {
-            $box['Pastes'] = $model_class::getByQuery($box['query'], array(
-                'limit' => $box['limit']
-            ));
+            $box['Pastes'] = $model_class::getByQuery(
+                $box['query'],
+                array(
+                    'limit' => $box['limit']
+                ),
+                $count
+            );
 
             $box['Actions'] = array();
 
             if ($can_edit)
             {
-                $box['Actions']['edit'] = array(true, $this->url2c('UnderConstruction'));
+                $box['Actions']['edit'] = array(
+                    true,
+                    $this->url2aInside('edit', array($box['id'])),
+                    'class' => 'modal'
+                );
             }
 
-            $box['Actions']['all'] = array(true, $this->url2c('UnderConstruction'));
+            if ($box['removed'] === null)
+            {
+                if ($can_remove)
+                {
+                    $box['Actions']['remove'] = array(
+                        true,
+                        $this->url2aInside('remove', array($box['id']))
+                    );
+                }
+            }
+            else
+            {
+            }
+
+            $all_label = $this->trans('all (%d)', $count);
+            $box['Actions'][$all_label] = array(
+                true,
+                $this->url2c('Paste', 'search', array($box['query']))
+            );
         }
+    }
+
+
+    /**
+     * Common code for add and edit actions
+     * @author m.augustynowicz
+     *
+     * @param array $params request params:
+     *        - [0] box id
+     * @param bool $editing
+     */
+    protected function _addOrEdit(array $params, $editing = false)
+    {
+        $parent = $this->getParent();
+
+        if ($parent->getName() !== 'User')
+        {
+            return $this->redirect(array('HttpErrors', 'error404'));
+        }
+
+        $user = $parent->getUser();
+        $this->assign('user', $user);
+        $this->assign('own_profile', $user['Ident'] === g()->auth->ident());
+        $this->assign('editing', $editing);
+
+
+        if ($editing)
+        {
+            $box = g('Box', 'model')
+                ->filter(array(
+                    'id'      => $params[0],
+                    'user_id' => $user['id']
+                ))
+                ->getRow()
+            ;
+            if (empty($box))
+            {
+                return $this->redirect(array('HttpErrors', 'error403'));
+            }
+        }
+
+
+        $this->_setTemplate('form');
+
+        $form_ident = 'box';
+
+        if (empty($this->data[$form_ident]))
+        {
+            if ($editing)
+            {
+                $this->data[$form_ident] = $box;
+            }
+            else
+            {
+                $this->data[$form_ident] = array(
+                    'title'       => $this->trans('My pastes'),
+                    'query'       => "paster:{$user['Ident']}",
+                    'limit'       => self::DEFAULT_LIMIT,
+                    'list_paster' => true
+                );
+            }
+        }
+        else if ($this->_validated[$form_ident])
+        {
+            if ($editing)
+            {
+                $update_data = array(
+                    'id'      => $box['id'],
+                    'user_id' => $box['user_id']
+                ) + $this->data[$form_ident];
+                $result = g('Box', 'model')->sync($update_data, true, 'update');
+            }
+            else
+            {
+                $insert_data = array(
+                    'user_id' => $user['id']
+                ) + $this->data[$form_ident];
+
+                $result = g('Box', 'model')->sync($insert_data, true, 'insert');
+            }
+
+            if ($result !== true)
+            {
+                g()->debug->dump($result);
+                g()->addInfo(
+                    'ds fail, new box for user ' . $user['Ident'],
+                    'error',
+                    $this->trans('((error:DS:%s))', false)
+                );
+            }
+            else
+            {
+                g()->addInfo(
+                    'new box for user ' . $user['Ident'],
+                    'info',
+                    $this->trans('New box added') );
+                //g()->db->completeTrans();
+                if (empty($post_data['_backlink']))
+                    $this->redirect($parent->url2a('', $parent->getParams()));
+                else
+                    $this->redirect($post_data['_backlink']);
+            }
+        }
+    }
+
+
+    /**
+     * Common code for remove and restore actions
+     * @author m.augustynowicz
+     *
+     * @param array $params action params
+     * @param mixed $update_removed_to new value for column "removed"
+     * @param Closure $success_msg_callback callback for generating
+     *        success message. It should be a function that takes two args:
+     *        - @param Component $that
+     *        - @param array $box
+     *
+     * @return void
+     */
+    protected function _removeOrRestore(array $params, $update_removed_to, Closure $success_msg_callback)
+    {
+        $backlink = g()->req->getReferer();
+        $msg_id   = g()->req->getRequestUrl() . ' ';
+
+        $filter = array('id' => $params[0]);
+        if ($update_removed_to === null)
+        {
+            $filter[] = array('removed', '<>', null);
+        }
+        else
+        {
+            $filter['removed'] = null;
+        }
+
+        $box = g('Box', 'model')
+            ->filter($filter)
+            ->getRow()
+        ;
+
+        if (empty($box))
+        {
+            g()->addInfo(
+                $msg_id . '404',
+                'error',
+                $this->trans('Box does not exist.')
+            );
+            $this->redirect($backlink);
+        }
+
+
+        $update = array(
+            'id'      => $box['id'],
+            'removed' => $update_removed_to
+        );
+        $result = g('Box', 'model')->sync($update, true, 'update');
+        if ($result !== true)
+        {
+            g()->addInfo(
+                $msg_id,
+                'error',
+                $this->trans('((error:DS:%s))', false)
+            );
+            g()->debug->dump($result);
+        }
+        else
+        {
+            g()->addInfo(
+                'removed box #' . $box['id'],
+                'info',
+                $success_msg_callback($this, $box)
+            );
+        }
+
+        $this->redirect($backlink);
     }
 }
 

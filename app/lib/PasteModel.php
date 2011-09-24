@@ -349,10 +349,11 @@ class PasteModel extends Model
      *        - [paginator] PaginatorController instance
      *        - [limit], [offset] used only when no paginator given
      * @param bool $full get paste with content
+     * @param int $count if given, total count will be returned by reference
      *
      * @return array
      */
-    static public function getByQuery($query, array $options = array())
+    static public function getByQuery($query, array $options = array(), & $count = null)
     {
         $model = new self;
 
@@ -366,6 +367,7 @@ class PasteModel extends Model
             $options['paginator'] = false;
         }
 
+        $get_count = (func_num_args() >= 3);
 
         $full =& $options['full'];
 
@@ -529,11 +531,14 @@ SQL_SELECT_HIGHLIGHTS
 QUERY_SQL
         ;
 
-        if ($options['paginator'])
+        if ($options['paginator'] || $get_count)
         {
             $sql_count_query = "SELECT COUNT(1) FROM {$sql_subquery}";
             $count = g()->db->getOne($sql_count_query);
-            $options['paginator']->config($count);
+            if ($options['paginator'])
+            {
+                $options['paginator']->config($count);
+            }
         }
 
         $sql_query = "SELECT * FROM {$sql_subquery} ORDER BY _rank DESC";

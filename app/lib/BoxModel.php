@@ -25,6 +25,7 @@ class BoxModel extends Model
         $this->_addField(new FMultilineString('query'));
         $this->_addField(new FInt('limit', 2, true, null, 1));
         $this->_addField(new FBool('list_paster', true, true));
+        $this->_addField(new FTimestamp('removed'));
 
 
         // relations
