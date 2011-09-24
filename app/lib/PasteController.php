@@ -959,7 +959,7 @@ class PasteController extends PagesController
         var_dump($value, $this->_types);
         if (!$value)
         {
-            $err['notnull'] = 'No paste type chosen';
+            $err['required'] = 'No paste type chosen';
         }
         else if (!isset($this->_types[$value]))
         {

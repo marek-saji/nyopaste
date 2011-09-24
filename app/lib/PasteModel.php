@@ -22,7 +22,7 @@ class PasteModel extends Model
         $this->_addField(new FString('url', true));
         $this->_addField(new FString('title', true))
             ->mess(array(
-                'notnull' => $this->trans('You have to call your paste somehow.'),
+                'required' => $this->trans('You have to call your paste somehow.'),
             ));
         $this->_addField(new FMultilineString('content'));
         $this->_addField(new FString('version', true, '1'));

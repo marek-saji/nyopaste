@@ -16,14 +16,14 @@ class UserModel extends Model
         $this->_addField(new FId('id'));
         $this->_addField(new FString('login', true, null, 2, 32)) // UNIQUE
             ->mess(array(
-                'min_length' => $login_len_msg,
-                'max_length' => $login_len_msg
+                'minlength' => $login_len_msg,
+                'maxlength' => $login_len_msg
             ));
         $this->_addField(new FEmail('email', true)); // UNIQUE
         $this->_addField(new FPassword('passwd', 3, 128))
             ->mess(array(
-                'min_length' => $passwd_len_msg,
-                'max_length' => $passwd_len_msg
+                'minlength' => $passwd_len_msg,
+                'maxlength' => $passwd_len_msg
             ));
 
         // for user's statuses (STATUS_*) see main conf
