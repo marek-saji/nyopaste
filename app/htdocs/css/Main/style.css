@@ -32,6 +32,7 @@
 .sign-up, .nyo-tweets {
   float: left;
   width: 19.3em;
+  max-width: 100%;
   margin: 0 0 5em 0;
   padding: 0;
 }
@@ -59,10 +60,15 @@
   margin-left: .7em;
   /* hide twitter widget header */
 
+  /* squese on narrow screens */
+
 }
 .nyo-tweets .twtr-hd {
   height: 1px;
   padding: 0;
   margin: 0;
+}
+.nyo-tweets .twtr-doc {
+  max-width: 100%;
 }
 /* vim: set ft=css fdm=indent: */

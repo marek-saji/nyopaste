@@ -212,10 +212,20 @@ $form = g('Forms', array('paste', $this));
                     );
                     ?>
                     <noscript>
-                        <p class="nojs advice description">
+                        <p class="advice description">
                             <?=$this->trans('With JavaScript available, this field would become a neat editor. Try enabling it, if you can.')?>
                         </p>
                     </noscript>
+                    <div class="help js">
+                        <p>
+                            <?php
+                            echo $t->trans(
+                                'This is ACE editor. You may use it\'s <a href="%s" target="_blank">keyboard shortcuts</a>.',
+                                'https://github.com/ajaxorg/ace/wiki/Default-Keyboard-Shortcuts'
+                            );
+                            ?>
+                        </p>
+                    </div>
                 </li>
 
             </ul>

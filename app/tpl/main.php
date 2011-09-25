@@ -84,7 +84,7 @@ $t->inc('main_common');
         </div>
     <?php endif; /* launched action !== search */ ?>
 
-</div>
+</div> <!-- #top -->
 
 <?php
 // show page infos. will render <aside id="infos" /> at least

@@ -26,18 +26,22 @@ section {
 }
 #top {
   overflow: hidden;
-  padding: 0 1em .5em;
-  margin: 0 0 1.5em;
-  background: #eeeeee;
-  box-shadow: 0 0 1em 0.5em #eeeeee;
-  -mox-box-shadow: 0 0 1em 0.5em #eeeeee;
-  -webkit-box-shadow: 0 0 1em 0.5em #eeeeee;
-  /*
-    padding: 0 1em 1em;
-    border: #ccc solid;
-    border-width: 0 0 thin;
-    */
+  padding: 0 1em 2em;
+  margin: 0;
+  background-color: white 0%;
+  background-image: -webkit-linear-gradient(bottom, white 0%, #eeeeee 2em);
+  /* Chrome 10+, Saf5.1+, iOS 5+ */
 
+  background-image: -moz-linear-gradient(bottom, white 0%, #eeeeee 2em);
+  /* FF3.6 */
+
+  background-image: -ms-linear-gradient(bottom, white 0%, #eeeeee 2em);
+  /* IE10 */
+
+  background-image: -o-linear-gradient(bottom, white 0%, #eeeeee 2em);
+  /* Opera 11.10+ */
+
+  background-image: linear-gradient(bottom, white 0%, #eeeeee 2em);
   /* .skip-to-content */
 
   /* #head */

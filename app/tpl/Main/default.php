@@ -9,7 +9,7 @@ $twitter_screenname = 'nyopaste';
 $v->addLess($this->file('style','less'));
 ?>
 
-<section class="definition">
+<section class="definition" id="content">
 
     <dl>
         <dt>

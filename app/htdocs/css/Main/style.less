@@ -46,10 +46,11 @@
 .sign-up,
 .nyo-tweets
 {
-    float   : left;
-    width   : 19.3em;
-    margin  : 0 0 5em 0;
-    padding : 0;
+    float     : left;
+    width     : 19.3em;
+    max-width : 100%;
+    margin    : 0 0 5em 0;
+    padding   : 0;
 }
 
 .sign-up
@@ -92,6 +93,11 @@
         height  : 1px;
         padding : 0;
         margin  : 0;
+    }
+    /* squese on narrow screens */
+    .twtr-doc
+    {
+        max-width: 100%;
     }
 }
 

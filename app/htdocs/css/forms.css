@@ -252,6 +252,14 @@ body.js .holoform form fieldset ul li.field.recently-focused.invalid .field_erro
     border-radius: 0.5em;
     -moz-border-radius: 0.5em;
     -webkit-border-radius: 0.5em;
+    /* bubble arrow */
+
+  }
+  body.js .holoform form .field_error::after,
+  .holoform form .field_error::after,
+  body.js .holoform form .help::after,
+  .holoform form .help::after {
+    display: none;
   }
 }
 /* vim: set ft=css fdm=indent: */
