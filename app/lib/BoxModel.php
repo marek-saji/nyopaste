@@ -21,6 +21,7 @@ class BoxModel extends Model
 
         $this->_addField(new FId('id'));
         $this->_addField(new FForeignId('user_id', true, 'User'));
+        $this->_addField(new FInt('order'));
         $this->_addField(new FString('title', false, '', 0, 256));
         $this->_addField(new FMultilineString('query'));
         $this->_addField(new FInt('limit', 2, true, null, 1));

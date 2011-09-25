@@ -224,6 +224,9 @@ section {
 .nyopaste i {
   opacity: 0.4;
 }
+.char-icon {
+  font-size: 1.1em;
+}
 body.js label.copyable .inside {
   display: none;
 }

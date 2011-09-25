@@ -43,7 +43,8 @@ class ProfileBoxesController extends Component
         {
             $user = $parent->getUser();
             $boxes = g('Box', 'model')
-                ->orderBy('id')
+                ->orderBy('order')
+                ->orderBy('id', 'DESC') // in case of non-unique order value
                 ->filter(array(
                     'user_id' => $user['id'],
                     'removed' => null
@@ -98,6 +99,58 @@ class ProfileBoxesController extends Component
     public function actionEdit(array $params)
     {
         return $this->_addOrEdit($params, true);
+    }
+
+
+    /**
+     * Move box up or down
+     * @author m.augustynowicz
+     *
+     * @param array $params request params:
+     *        - [0] box id
+     *        - [1] direction: up or down
+     * @return void
+     */
+    public function actionMove(array $params)
+    {
+        $backlink = g()->req->getReferer();
+
+        $id = $params[0];
+        $up = ($params[1] === 'up');
+
+        $model = g('Box', 'model')
+            ->whiteList(array('id', 'order'))
+            ->orderBy('order')
+            ->orderBy('id', 'DESC') // in case of non-unique order value
+            ->setMargins(1)
+        ;
+
+        g()->db->startTrans();
+
+        $boxes = array();
+        $boxes[0] = $model->getRow($id);
+        if (empty($boxes[0]))
+        {
+            $this->redirect($backlink);
+        }
+        $box_order = $boxes[0]['order'];
+        $boxes[1] = $model
+            ->getRow(array(
+                array('order', $up ? '<' : '>', $box_order)
+            ))
+        ;
+        if (empty($boxes[1]))
+        {
+            $this->redirect($backlink);
+        }
+        $boxes[0]['order'] = $boxes[1]['order'];
+        $boxes[1]['order'] = $box_order;
+
+        $model->sync($boxes, true, 'update');
+
+        g()->db->completeTrans();
+
+        $this->redirect($backlink);
     }
 
 
@@ -175,6 +228,7 @@ class ProfileBoxesController extends Component
             case 'edit' :
             case 'remove' :
             case 'restore' :
+            case 'move' :
                 $user = $this->getParent()->getUser();
                 if (g()->auth->id() === @$user['id'])
                 {
@@ -198,6 +252,7 @@ class ProfileBoxesController extends Component
      */
     public function _fillBoxes(array & $boxes)
     {
+        $can_move    = $this->hasAccess('move');
         $can_edit    = $this->hasAccess('edit');
         $can_remove  = $this->hasAccess('remove');
         $can_restore = $this->hasAccess('restore');
@@ -215,6 +270,22 @@ class ProfileBoxesController extends Component
             );
 
             $box['Actions'] = array();
+
+            if ($can_move)
+            {
+                $box['Actions']['⇧'] = array(
+                    true,
+                    $this->url2aInside('move', array($box['id'], 'up')),
+                    'title' => $this->trans('move up'),
+                    'class' => 'char-icon'
+                );
+                $box['Actions']['⇩'] = array(
+                    true,
+                    $this->url2aInside('move', array($box['id'], 'down')),
+                    'title' => $this->trans('move down'),
+                    'class' => 'char-icon'
+                );
+            }
 
             if ($can_edit)
             {
@@ -313,17 +384,30 @@ class ProfileBoxesController extends Component
             {
                 $update_data = array(
                     'id'      => $box['id'],
-                    'user_id' => $box['user_id']
+                    'user_id' => $box['user_id'],
+                    'order'   => $box['order']
                 ) + $this->data[$form_ident];
                 $result = g('Box', 'model')->sync($update_data, true, 'update');
             }
             else
             {
+                g()->db->startTrans();
+
+                $current_max_order = g('Box', 'model')
+                    ->whiteList(array(
+                        array('order', 'max')
+                    ))
+                    ->getScalar()
+                ;
+
                 $insert_data = array(
-                    'user_id' => $user['id']
+                    'user_id' => $user['id'],
+                    'order'   => 1 + $current_max_order
                 ) + $this->data[$form_ident];
 
                 $result = g('Box', 'model')->sync($insert_data, true, 'insert');
+
+                g()->db->completeTrans();
             }
 
             if ($result !== true)
@@ -412,7 +496,8 @@ class ProfileBoxesController extends Component
         else
         {
             g()->addInfo(
-                'removed box #' . $box['id'],
+                'update "removed" to ' . $update_removed_to
+                    . 'for box #' . $box['id'],
                 'info',
                 $success_msg_callback($this, $box)
             );
