@@ -7,11 +7,11 @@
 
 $conf['acl'] = array(
     // permanent controllers
-    'usernav'            => true,
-    'menu'               => true,
+    'Usernav'            => true,
+    'Menu'               => true,
 
     // common subcomponents
-    'p'                  => true,
+    'P'                  => true,
 
     '/HttpErrors'        => true,
     '/UnderConstruction' => true,

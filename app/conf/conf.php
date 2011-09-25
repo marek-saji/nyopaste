@@ -15,26 +15,26 @@ switch (getenv('HG_ENVIRONMENT'))
         $conf['allow_debug'] = false;
 }
 
-$conf['controllers']['lib']['default'] = 'Main';
-$conf['controllers']['debug']['sub'] = array (
-    'name' => 'lib',
+$conf['controllers']['Lib']['default'] = 'Main';
+$conf['controllers']['Debug']['sub'] = array (
+    'name' => 'Lib',
     'type' => 'Library',
 );
-$conf['controllers']['debug/lib'] = & $conf['controllers']['lib'];
+$conf['controllers']['Debug/Lib'] = & $conf['controllers']['Lib'];
 
 // it's not obligatory, but let's show debug toolbar, when debug is enabled
 if ($conf['allow_debug'])
 {
     // be awesome (debug toolbar etc)
     $conf['first_controller'] = array(
-        'name'=>'debug',
+        'name'=>'Debug',
         'type'=>'Debug', // does cool things.
     );
 }
 else
 {
     // be less awesome
-    $conf['first_controller'] = & $conf['controllers']['debug']['sub'];
+    $conf['first_controller'] = & $conf['controllers']['Debug']['sub'];
 }
 
 // controllers loaded on every request
