@@ -1,105 +1,17 @@
-/* vim: set ft=css fdm=indent: */
-.paste.hentry hgroup h2, .paste.hentry hgroup h3 {
-  display: inline;
-  margin: 0;
-  padding: 0;
-}
-.paste.hentry hgroup h2.entry-title {
-  font-size: 2em;
-}
-.paste.hentry hgroup h2.entry-title .version {
-  font-size: .7em;
-}
-.paste.hentry hgroup h3 {
-  font-size: 1.2em;
-}
-.paste.hentry hgroup .meta-toggler {
-  font-size: .7em;
-  text-decoration: none;
-  color: #666;
-  outline: none;
-}
-.paste.hentry hgroup .meta-toggler .text {
-  padding-right: .25em;
-}
-.paste.hentry hgroup .meta-toggler .icon {
-  background: url(../../gfx/more-less.png) no-repeat scroll 0 center transparent;
-  /* 12x12px */
-
-  padding: 6px 12px 6px 0;
-}
-.paste.hentry hgroup .meta-toggler.collapser .icon {
-  background-position: -12px center;
-}
-.paste.hentry #meta {
-  font-size: .8em;
-}
-.paste.hentry .actions.wrapper {
-  overflow: hidden;
-  width: 100%;
-}
-.paste.hentry .actions.wrapper .actions {
-  float: left;
-  font-size: .8em;
-  margin: 0 0 .2em 0;
-}
-.paste.hentry .actions.wrapper .actions.basic {
-  float: right;
-}
-.paste.hentry .actions.wrapper .actions.share {
-  clear: both;
-}
-.paste.hentry .actions.wrapper .actions.share p {
-  display: none;
-}
-.paste.hentry .actions.wrapper .actions ul {
-  margin: 0;
-  padding: 0;
-}
-.paste.hentry .actions.wrapper .actions .action {
-  display: inline;
-  padding: 0.25em;
-}
-.paste.hentry article.entry-content {
-  border-color: #ddd;
-  border-style: solid;
-  border-width: thin 0;
-}
-.paste.hentry section.tree ol {
-  list-style: none;
-  padding: 0;
-}
-.paste.hentry section.tree ol ol {
-  padding-left: 2em;
-}
-.ajaj-msg {
-  position: fixed;
-  top: 0;
-  left: 50%;
-  width: 30em;
-  margin-left: -15em;
-  color: white;
-  background-color: black;
-  background-color: rgba(0, 0, 0, 0.8);
-  padding: 1em;
-  text-align: center;
-  border-color: white;
-  border-color: rgba(255, 255, 255, 0.3);
-  border-style: solid;
-  border-width: 0 thin thin thin;
-  border-radius: 0 0 1em 1em;
-  -moz-border-radius: 0 0 1em 1em;
-  -webkit-border-radius: 0 0 1em 1em;
-}
-.share.actions .copy-to-clipboard.action input.copyable {
-  width: 30em;
-}
-#nyroModalContent .share.actions .action {
-  display: block;
-}
-body.js #meta {
-  display: none;
-  /* toggable with js */
-
-}
-/* vim: set ft=css fdm=indent: */
+.paste.hentry hgroup h2,.paste.hentry hgroup h3{display:inline;margin:0;padding:0;}
+.paste.hentry hgroup h2.entry-title{font-size:2em;}.paste.hentry hgroup h2.entry-title .version{font-size:.7em;}
+.paste.hentry hgroup h3{font-size:1.2em;}
+.paste.hentry hgroup .meta-toggler{font-size:.7em;text-decoration:none;color:#666;outline:none;}.paste.hentry hgroup .meta-toggler .text{padding-right:.25em;}
+.paste.hentry hgroup .meta-toggler .icon{background:url(../../gfx/more-less.png) no-repeat scroll 0 center transparent;padding:6px 12px 6px 0;}
+.paste.hentry hgroup .meta-toggler.collapser .icon{background-position:-12px center;}
+.paste.hentry #meta{font-size:.8em;}
+.paste.hentry .actions.wrapper{overflow:hidden;width:100%;}.paste.hentry .actions.wrapper .actions{float:left;font-size:.8em;margin:0 0 .2em 0;}.paste.hentry .actions.wrapper .actions.basic{float:right;}
+.paste.hentry .actions.wrapper .actions.share{clear:both;}.paste.hentry .actions.wrapper .actions.share p{display:none;}
+.paste.hentry .actions.wrapper .actions ul{margin:0;padding:0;}
+.paste.hentry .actions.wrapper .actions .action{display:inline;padding:0.25em;}
+.paste.hentry article.entry-content{border-color:#ddd;border-style:solid;border-width:thin 0;}
+.paste.hentry section.tree ol{list-style:none;padding:0;}.paste.hentry section.tree ol ol{padding-left:2em;}
+.ajaj-msg{position:fixed;top:0;left:50%;width:30em;margin-left:-15em;color:white;background-color:black;background-color:rgba(0, 0, 0, 0.8);padding:1em;text-align:center;border-color:white;border-color:rgba(255, 255, 255, 0.3);border-style:solid;border-width:0 thin thin thin;border-radius:0 0 1em 1em;-moz-border-radius:0 0 1em 1em;-webkit-border-radius:0 0 1em 1em;}
+.share.actions .copy-to-clipboard.action input.copyable{width:30em;}
+#nyroModalContent .share.actions .action{display:block;}
+body.js #meta{display:none;}

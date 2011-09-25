@@ -1,265 +1,37 @@
-/* vim: set ft=css fdm=indent: */
-.holoform form {
-  width: 50em;
-  max-width: 66.66666666666667%;
-  /* fieldset */
-
-}
-.holoform form .field_error, .holoform form .help {
-  /* non-js; js styles at the bottom */
-
-  position: static;
-  top: auto;
-  left: auto;
-  margin: .25em 0;
-  padding: .5em 1em;
-  width: auto;
-  max-width: 100%;
-  border-radius: 0.5em;
-  -moz-border-radius: 0.5em;
-  -webkit-border-radius: 0.5em;
-}
-.holoform form fieldset fieldset {
-  padding: 0 1em 0 2em;
-}
-.holoform form fieldset {
-  border: none;
-  margin: 0;
-  padding: .5em 1em;
-  /* ul li.field */
-
-}
-.holoform form fieldset.verbose {
-  border: #aaa solid thin;
-  margin: 1em 0;
-}
-.holoform form fieldset.hidden {
-  display: none;
-}
-.holoform form fieldset.buttons {
-  font-size: 1.2em;
-}
-.holoform form fieldset.buttons input {
-  font-size: 1em;
-}
-.holoform form fieldset legend {
-  font-size: 1.1em;
-}
-.holoform form fieldset legend select {
-  font-size: 1em;
-}
-.holoform form fieldset label.disabled,
-.holoform form fieldset input.disabled,
-.holoform form fieldset textarea.disabled,
-.holoform form fieldset select.disabled,
-.holoform form fieldset button.disabled {
-  color: gray;
-}
-.holoform form fieldset .radio-optiongroups {
-  margin-bottom: 1em;
-}
-.holoform form fieldset .less-important-options-toggler {
-  display: block;
-  padding-left: 20px;
-  /* images are 16x16px */
-
-  min-height: 20px;
-  margin-top: 1em;
-  cursor: pointer;
-  color: #777;
-  background: transparent url(../gfx/expand-collapse.png) scroll no-repeat -16px -16px;
-}
-.holoform form fieldset .less-important-options-toggler.expander {
-  background-position: -16px 0;
-}
-.holoform form fieldset .less-important-options-toggler.collapser {
-  background-position: 0 -16px;
-}
-.holoform form fieldset legend + .less-important-options-toggler {
-  margin-top: 0;
-}
-.holoform form fieldset ul, .holoform form fieldset ul li.field {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-.holoform form fieldset ul + ul, .holoform form fieldset ul + .less-important-options-toggler + ul {
-  margin-top: 1em;
-}
-.holoform form fieldset ul li.field {
-  margin: 0 0 1em 0;
-  position: relative;
-  /*
-            .invalid
-            {
-                border-color: red;
-            }
-                */
-
-}
-.holoform form fieldset ul li.field:last-child {
-  margin-bottom: 0;
-}
-.holoform form fieldset ul li.field input,
-.holoform form fieldset ul li.field select,
-.holoform form fieldset ul li.field textarea,
-.holoform form fieldset ul li.field .encapsulating-textarea {
-  width: 97%;
-  padding: .25em;
-}
-.holoform form fieldset ul li.field label {
-  display: block;
-}
-.holoform form fieldset ul li.field label input,
-.holoform form fieldset ul li.field label select,
-.holoform form fieldset ul li.field label textarea,
-.holoform form fieldset ul li.field label .encapsulating-textarea {
-  width: auto;
-}
-.holoform form fieldset ul li.field .field_error {
-  display: block;
-  background-color: #fbb;
-  z-index: 10;
-  list-style-position: inside;
-  list-style-type: disc;
-}
-.holoform form fieldset ul li.field .field_error::after {
-  border-color: transparent #fbb;
-}
-.holoform form fieldset ul li.field .help {
-  background-color: #bfb;
-  z-index: 20;
-}
-.holoform form fieldset ul li.field .help::after {
-  border-color: transparent #bfb;
-}
-.holoform form fieldset ul li.field .help p {
-  margin: 0;
-  font-size: .8em;
-}
-.holoform form fieldset ul li.field .help p + p {
-  margin-top: .5em;
-}
-.holoform form fieldset ul li.field .description {
-  font-size: .8em;
-  color: #666;
-}
-.holoform form fieldset ul li.field .description.advice {
-  background-color: #ffb;
-  padding: .5em 1em;
-  border-radius: 0.5em;
-  -moz-border-radius: 0.5em;
-  -webkit-border-radius: 0.5em;
-}
-.holoform form fieldset ul li.field .description p {
-  margin: .75em 0;
-}
-/* .holoform form */
-.confirmation {
-  margin: 0 auto;
-  width: 40em;
-  max-width: 100%;
-}
-.confirmation .holoform form {
-  width: auto;
-  max-width: none;
-}
-#nyroModalContent .confirmation {
-  width: auto;
-}
-body.js .holoform form .field_error, body.js .holoform form .help {
-  position: absolute;
-  top: 0;
-  left: 100%;
-  margin: 0 0 0 3.5em;
-  padding: 1em;
-  width: 25em;
-  max-width: 40%;
-  z-index: 30;
-  border: white solid thin;
-  border-radius: 0.5em;
-  -moz-border-radius: 0.5em;
-  -webkit-border-radius: 0.5em;
-  /* bubble arrow */
-
-}
-body.js .holoform form .field_error::after, body.js .holoform form .help::after {
-  content: '';
-  border: transparent solid .5em;
-  border-left: none;
-  position: absolute;
-  top: 1em;
-  left: -0.5em;
-}
-body.js .holoform form fieldset fieldset {
-  padding: 0 1em;
-}
-body.js .holoform form fieldset ul.less-important-options {
-  display: none;
-}
-body.js .holoform form fieldset ul li.field .help {
-  display: none;
-}
-body.js .holoform form fieldset ul li.field.focus .field_error, body.js .holoform form fieldset ul li.field.focus .help {
-  z-index: 50;
-}
-body.js .holoform form fieldset ul li.field.recently-focused .help {
-  display: block;
-}
-body.js .holoform form fieldset ul li.field.recently-focused .field_error {
-  display: none;
-}
-body.js .holoform form fieldset ul li.field.recently-focused.invalid .help {
-  display: none;
-}
-body.js .holoform form fieldset ul li.field.recently-focused.invalid .field_error {
-  display: block;
-}
-/* outside of form for demoing purposes */
-.required .inside {
-  padding: 7px 14px 7px 0;
-  /* image is 12x12px */
-
-  background: transparent url(../gfx/asterisk.png) scroll no-repeat right center;
-}
-.required small.required {
-  display: none;
-}
-.sign-in.holoform .required {
-  display: none;
-}
-@media speech, aural {
-  .required small.required {
-    display: inline;
-  }
-}
-@media (max-width: 50em) {
-  body.js .holoform form, .holoform form {
-    width: 100%;
-    max-width: 100%;
-  }
-  body.js .holoform form .field_error,
-  .holoform form .field_error,
-  body.js .holoform form .help,
-  .holoform form .help {
-    position: static;
-    top: auto;
-    left: auto;
-    margin: .25em 0;
-    padding: .5em 1em;
-    width: auto;
-    max-width: 100%;
-    border-radius: 0.5em;
-    -moz-border-radius: 0.5em;
-    -webkit-border-radius: 0.5em;
-    /* bubble arrow */
-
-  }
-  body.js .holoform form .field_error::after,
-  .holoform form .field_error::after,
-  body.js .holoform form .help::after,
-  .holoform form .help::after {
-    display: none;
-  }
-}
-/* vim: set ft=css fdm=indent: */
+.holoform form{width:50em;max-width:66.66666666666667%;}.holoform form .field_error,.holoform form .help{position:static;top:auto;left:auto;margin:.25em 0;padding:.5em 1em;width:auto;max-width:100%;border-radius:0.5em;-moz-border-radius:0.5em;-webkit-border-radius:0.5em;}
+.holoform form fieldset fieldset{padding:0 1em 0 2em;}
+.holoform form fieldset{border:none;margin:0;padding:.5em 1em;}.holoform form fieldset.verbose{border:#aaa solid thin;margin:1em 0;}
+.holoform form fieldset.hidden{display:none;}
+.holoform form fieldset.buttons{font-size:1.2em;}.holoform form fieldset.buttons input{font-size:1em;}
+.holoform form fieldset legend{font-size:1.1em;}.holoform form fieldset legend select{font-size:1em;}
+.holoform form fieldset label.disabled,.holoform form fieldset input.disabled,.holoform form fieldset textarea.disabled,.holoform form fieldset select.disabled,.holoform form fieldset button.disabled{color:gray;}
+.holoform form fieldset .radio-optiongroups{margin-bottom:1em;}
+.holoform form fieldset .less-important-options-toggler{display:block;padding-left:20px;min-height:20px;margin-top:1em;cursor:pointer;color:#777;background:transparent url(../gfx/expand-collapse.png) scroll no-repeat -16px -16px;}.holoform form fieldset .less-important-options-toggler.expander{background-position:-16px 0;}
+.holoform form fieldset .less-important-options-toggler.collapser{background-position:0 -16px;}
+.holoform form fieldset legend+.less-important-options-toggler{margin-top:0;}
+.holoform form fieldset ul,.holoform form fieldset ul li.field{list-style:none;padding:0;margin:0;}
+.holoform form fieldset ul+ul,.holoform form fieldset ul+.less-important-options-toggler+ul{margin-top:1em;}
+.holoform form fieldset ul li.field{margin:0 0 1em 0;position:relative;}.holoform form fieldset ul li.field:last-child{margin-bottom:0;}
+.holoform form fieldset ul li.field input,.holoform form fieldset ul li.field select,.holoform form fieldset ul li.field textarea,.holoform form fieldset ul li.field .encapsulating-textarea{width:97%;padding:.25em;}
+.holoform form fieldset ul li.field label{display:block;}.holoform form fieldset ul li.field label input,.holoform form fieldset ul li.field label select,.holoform form fieldset ul li.field label textarea,.holoform form fieldset ul li.field label .encapsulating-textarea{width:auto;}
+.holoform form fieldset ul li.field .field_error{display:block;background-color:#fbb;z-index:10;list-style-position:inside;list-style-type:disc;}.holoform form fieldset ul li.field .field_error::after{border-color:transparent #fbb;}
+.holoform form fieldset ul li.field .help{background-color:#bfb;z-index:20;}.holoform form fieldset ul li.field .help::after{border-color:transparent #bfb;}
+.holoform form fieldset ul li.field .help p{margin:0;font-size:.8em;}
+.holoform form fieldset ul li.field .help p+p{margin-top:.5em;}
+.holoform form fieldset ul li.field .description{font-size:.8em;color:#666;}.holoform form fieldset ul li.field .description.advice{background-color:#ffb;padding:.5em 1em;border-radius:0.5em;-moz-border-radius:0.5em;-webkit-border-radius:0.5em;}
+.holoform form fieldset ul li.field .description p{margin:.75em 0;}
+.confirmation{margin:0 auto;width:40em;max-width:100%;}.confirmation .holoform form{width:auto;max-width:none;}
+#nyroModalContent .confirmation{width:auto;}
+body.js .holoform form .field_error,body.js .holoform form .help{position:absolute;top:0;left:100%;margin:0 0 0 3.5em;padding:1em;width:25em;max-width:40%;z-index:30;border:white solid thin;border-radius:0.5em;-moz-border-radius:0.5em;-webkit-border-radius:0.5em;}body.js .holoform form .field_error::after,body.js .holoform form .help::after{content:'';border:transparent solid .5em;border-left:none;position:absolute;top:1em;left:-0.5em;}
+body.js .holoform form fieldset fieldset{padding:0 1em;}
+body.js .holoform form fieldset ul.less-important-options{display:none;}
+body.js .holoform form fieldset ul li.field .help{display:none;}
+body.js .holoform form fieldset ul li.field.focus .field_error,body.js .holoform form fieldset ul li.field.focus .help{z-index:50;}
+body.js .holoform form fieldset ul li.field.recently-focused .help{display:block;}
+body.js .holoform form fieldset ul li.field.recently-focused .field_error{display:none;}
+body.js .holoform form fieldset ul li.field.recently-focused.invalid .help{display:none;}
+body.js .holoform form fieldset ul li.field.recently-focused.invalid .field_error{display:block;}
+.required .inside{padding:7px 14px 7px 0;background:transparent url(../gfx/asterisk.png) scroll no-repeat right center;}
+.required small.required{display:none;}
+.sign-in.holoform .required{display:none;}
+@media speech, aural{.required small.required{display:inline;}}@media (max-width: 50em){body.js .holoform form,.holoform form{width:100%;max-width:100%;}body.js .holoform form .field_error,.holoform form .field_error,body.js .holoform form .help,.holoform form .help{position:static;top:auto;left:auto;margin:.25em 0;padding:.5em 1em;width:auto;max-width:100%;border-radius:0.5em;-moz-border-radius:0.5em;-webkit-border-radius:0.5em;}body.js .holoform form .field_error::after,.holoform form .field_error::after,body.js .holoform form .help::after,.holoform form .help::after{display:none;}}

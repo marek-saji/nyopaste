@@ -1,24 +1,4 @@
-.holoform#content form {
-  /* hide the ACE settings icon.
-     * it does not have a classname itself, so.. */
-
-}
-.holoform#content form .text.content.field textarea {
-  min-height: 20em;
-  max-height: 50em;
-}
-.holoform#content form .ace_editor div {
-  display: none;
-}
-.holoform#content form .ace_editor .ace_gutter,
-.holoform#content form .ace_editor .ace_gutter div,
-.holoform#content form .ace_editor .ace_scroller,
-.holoform#content form .ace_editor .ace_scroller div,
-.holoform#content form .ace_editor .ace_sb,
-.holoform#content form .ace_editor .ace_sb div {
-  display: block;
-}
-.holoform#content form .buttons .store-settings {
-  font-size: .6em;
-}
-/* vim: set ft=css fdm=indent: */
+.holoform#content form{}.holoform#content form .text.content.field textarea{min-height:20em;max-height:50em;}
+.holoform#content form .ace_editor div{display:none;}
+.holoform#content form .ace_editor .ace_gutter,.holoform#content form .ace_editor .ace_gutter div,.holoform#content form .ace_editor .ace_scroller,.holoform#content form .ace_editor .ace_scroller div,.holoform#content form .ace_editor .ace_sb,.holoform#content form .ace_editor .ace_sb div{display:block;}
+.holoform#content form .buttons .store-settings{font-size:.6em;}
