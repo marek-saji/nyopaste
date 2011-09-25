@@ -153,16 +153,20 @@ $t->inc('infos');
 <?php if (null !== ($key = @g()->conf['keys']['uservoice'])) : ?>
     <script type="text/javascript">
         (function() {
-            var uv = document.createElement('script');
-            uv.type = 'text/javascript';
-            uv.async = true;
-            uv.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'widget.uservoice.com/<?=$key?>.js';
-            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(uv, s);
+            var uv;
+            if (hg('nyroModalFit')())
+            {
+                uv = document.createElement('script');
+                uv.type = 'text/javascript';
+                uv.async = true;
+                uv.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'widget.uservoice.com/<?=$key?>.js';
+                var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(uv, s);
 
-            $('.uservoice').bind('click.uservoice', function(e){
-                e.preventDefault();
-                UserVoice.showPopupWidget();
-            });
+                $('.uservoice').bind('click.uservoice', function(e){
+                    e.preventDefault();
+                    UserVoice.showPopupWidget();
+                });
+            }
         })();
     </script>
 <?php endif; ?>

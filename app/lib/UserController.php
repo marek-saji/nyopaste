@@ -124,7 +124,7 @@ class UserController extends PagesController implements IUserController
     {
         $this->_getUser();
 
-        $this->addChild('ProfileBoxes', 'boxes');
+        $this->addChild('ProfileBoxes', 'Boxes');
     }
 
 
@@ -136,7 +136,7 @@ class UserController extends PagesController implements IUserController
      */
     public function actionDefault(array $params)
     {
-        $boxes = $this->getChild('boxes');
+        $boxes = $this->getChild('Boxes');
         if ($boxes->getLaunchedAction() !== '')
         {
             $this->_passRenderingTo($boxes);

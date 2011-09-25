@@ -97,7 +97,7 @@ $v->addLess($this->file('default', 'less'));
 
     <section class="boxes">
         <?php
-        $this->getChild('boxes')->render();
+        $this->getChild('Boxes')->render();
         ?>
     </section>
 

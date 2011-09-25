@@ -497,7 +497,7 @@ class ProfileBoxesController extends Component
         {
             g()->addInfo(
                 'update "removed" to ' . $update_removed_to
-                    . 'for box #' . $box['id'],
+                    . ' for box #' . $box['id'],
                 'info',
                 $success_msg_callback($this, $box)
             );
