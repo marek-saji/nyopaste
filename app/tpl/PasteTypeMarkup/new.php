@@ -17,6 +17,7 @@ $v->addLess($this->file('new', 'less'));
                         array(
                             'label' => $this->trans("((parser:$parser_name))"),
                             'value' => $parser_name,
+                            'attrs' => array('required' => false)
                         )
                     );
                     ?>

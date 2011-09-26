@@ -144,11 +144,21 @@ $form = g('Forms', array('paste', $this));
                 <!-- preffered URL -->
                 <li class="preffered_url field">
                     <?php
-                    $label = ((bool)@$static_fields['url'] ? '' : 'preffered ') . 'URL';
-                    $form->label('url', $label, array('required'=>false));
+                    $attrs = array('required' => false);
                     ?>
                     <?php
-                    $form->input('url');
+                    if ((bool) @$static_fields['url'])
+                    {
+                        $label = 'URL';
+                    }
+                    else
+                    {
+                        $label = 'preffered URL';
+                    }
+                    $form->label('url', $label, $attrs);
+                    ?>
+                    <?php
+                    $form->input('url', array('attrs' => $attrs));
                     ?>
                     <div class="help">
                         <p>
