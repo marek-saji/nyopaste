@@ -14,6 +14,12 @@ class PasteModel extends Model
      */
     const URL_BASE = '-_.ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 
+    /**
+     * Used in version field
+     */
+    const VER_SEPARATOR = '.';
+    const VER_ONE = '1'; // '1', '0', 'a' and 'A' make sense
+
     public function __construct()
     {
         parent::__construct();
@@ -25,7 +31,7 @@ class PasteModel extends Model
                 'required' => $this->trans('You have to call your paste somehow.'),
             ));
         $this->_addField(new FMultilineString('content'));
-        $this->_addField(new FString('version', true, '1'));
+        $this->_addField(new FString('version', true, self::VER_ONE));
 
         $this->_addField(new FForeignId('parent_id', false, 'Paste'));
         $this->_addField(new FForeignId('root_id', false, 'Paste'));
@@ -119,7 +125,7 @@ class PasteModel extends Model
     public function getNewTreeData(array $base=null)
     {
         $data = array(
-            'version'   => 1,
+            'version'   => self::VER_ONE,
             'parent_id' => @$base['id'],
             'root_id'   => @$base['root_id']
         );
@@ -149,17 +155,10 @@ class PasteModel extends Model
         }
         else
         {
-            if ($children_count === 1)
-            {
-                $base_version = $base['version'];
-            }
-            else
-            {
-                $last_child = end($children);
-                $base_version = $last_child['version'];
-            }
-            $separator = g()->conf['paste']['version_separator'];
-            $data['version'] = $base_version . $separator . '1';
+            $last_child = end($children);
+            $data['version'] = $last_child['version']
+                . self::VER_SEPARATOR . self::VER_ONE
+            ;
         }
 
         return $data;
@@ -168,11 +167,10 @@ class PasteModel extends Model
 
     protected function _incrementVersion($version)
     {
-        $separator = g()->conf['paste']['version_separator'];
-        $version = explode($separator, $version);
+        $version = explode(self::VER_SEPARATOR, $version);
         end($version);
-        $version[key($version)] = 1 + current($version);
-        return implode($separator, $version);
+        $version[key($version)] += 1;
+        return implode(self::VER_SEPARATOR, $version);
     }
 
 

@@ -12,7 +12,5 @@ $conf['paste'] = array(
 
     'permalink' => '~%s,%s',
 
-    'version_separator' => '.',
-
 );
 
