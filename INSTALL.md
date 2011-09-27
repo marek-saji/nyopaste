@@ -41,18 +41,20 @@ setup
             cp src/app/conf/conf.keys.php conf/
             edit conf/conf.keys.php
 
-1. configure apache
+1. configure apache virtual host
+
    - create vhost pointing to `src/app/htdocs/`
    - create alias `hg/` pointing to `src/hg/htdocs/`
-   - allow [.htaccess][] magic tricks
+   - allow [.htaccess][] magic tricks (`Overwrite All`)
    - make sure [mod_rewrite][] is on
-   - set HG_ENVIRONMENT to one of LOCAL, DEV, TEST or PROD
+   - set `HG_ENVIRONMENT` to one of `LOCAL`, `DEV`, `TEST` or `PROD`
 
-1. open your site in the browsers, enable favourite debugs
+1. open your site in the browser, enable favourite debugs
 
 1. head to `/DataSet/list` and create all models
 
 1. head to `/Dev` and launch these actions:
+
    - addDefaults (updated 2010-06-17)
 
 
