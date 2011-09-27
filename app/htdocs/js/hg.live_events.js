@@ -606,7 +606,7 @@ $('a[href^="#"]')
  *  @author m.augustynowicz
  */
 $(function () {
-    var $error = $('.error:first');
+    var $error = $('.error, .field_error:not(:empty)').eq(0);
     if ($error.length !== 0) {
         var err_top = $error.offset().top,
             html = $('html')[0]

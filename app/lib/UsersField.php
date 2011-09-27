@@ -24,6 +24,7 @@ class UsersField extends FMultilineString
         // convert to id=>login keeping order from $value
 
         $users = array();
+        $not_users = array();
         foreach ($users_logins as $login)
         {
             if (array_key_exists($login, $rows))
@@ -31,12 +32,29 @@ class UsersField extends FMultilineString
                 $row =& $rows[$login];
                 $users[$row['id']] = $row['login'];
             }
+            else
+            {
+                $not_users[] = $login;
+            }
+        }
+
+        if (sizeof($not_users) > 0)
+        {
+            $not_users_html = '<ol><li>';
+            $not_users_html .= implode('</li><li>', $not_users);
+            $not_users_html .= '</li></ol>';
+            $translator = g()->first_controller;
+            $err['non-users'] = $translator->trans(
+                'Following are not %s user names: %s',
+                g()->conf['site_name'],
+                $not_users_html
+            );
         }
 
 
         $this->_logins =& $users;
 
-        return $this->_errors($err, $value);
+        return $err;
     }
 
     public function getLogins()

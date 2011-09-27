@@ -15,8 +15,8 @@
 .holoform form fieldset ul li.field{margin:0 0 1em 0;position:relative;}.holoform form fieldset ul li.field:last-child{margin-bottom:0;}
 .holoform form fieldset ul li.field input,.holoform form fieldset ul li.field select,.holoform form fieldset ul li.field textarea,.holoform form fieldset ul li.field .encapsulating-textarea{width:97%;padding:.25em;}
 .holoform form fieldset ul li.field label{display:block;}.holoform form fieldset ul li.field label input,.holoform form fieldset ul li.field label select,.holoform form fieldset ul li.field label textarea,.holoform form fieldset ul li.field label .encapsulating-textarea{width:auto;}
-.holoform form fieldset ul li.field .field_error{display:block;background-color:#fbb;z-index:10;list-style-position:inside;list-style-type:disc;}.holoform form fieldset ul li.field .field_error::after{border-color:transparent #fbb;}
-.holoform form fieldset ul li.field .help{background-color:#bfb;z-index:20;}.holoform form fieldset ul li.field .help::after{border-color:transparent #bfb;}
+.holoform form fieldset ul li.field .field_error{display:block;background-color:#fbb;z-index:20;list-style-position:inside;list-style-type:disc;}.holoform form fieldset ul li.field .field_error::after{border-color:transparent #fbb;}
+.holoform form fieldset ul li.field .help{background-color:#bfb;z-index:10;}.holoform form fieldset ul li.field .help::after{border-color:transparent #bfb;}
 .holoform form fieldset ul li.field .help p{margin:0;font-size:.8em;}
 .holoform form fieldset ul li.field .help p+p{margin-top:.5em;}
 .holoform form fieldset ul li.field .description{font-size:.8em;color:#666;}.holoform form fieldset ul li.field .description.advice{background-color:#ffb;padding:.5em 1em;border-radius:0.5em;-moz-border-radius:0.5em;-webkit-border-radius:0.5em;}
@@ -27,7 +27,8 @@ body.js .holoform form .field_error,body.js .holoform form .help{position:absolu
 body.js .holoform form fieldset fieldset{padding:0 1em;}
 body.js .holoform form fieldset ul.less-important-options{display:none;}
 body.js .holoform form fieldset ul li.field .help{display:none;}
-body.js .holoform form fieldset ul li.field.focus .field_error,body.js .holoform form fieldset ul li.field.focus .help{z-index:50;}
+body.js .holoform form fieldset ul li.field.focus .help{z-index:50;}
+body.js .holoform form fieldset ul li.field.focus .field_error{z-index:51;}
 body.js .holoform form fieldset ul li.field.recently-focused .help{display:block;}
 body.js .holoform form fieldset ul li.field.recently-focused .field_error{display:none;}
 body.js .holoform form fieldset ul li.field.recently-focused.invalid .help{display:none;}

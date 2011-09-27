@@ -171,7 +171,7 @@
             {
                 display: block;
                 background-color: #fbb;
-                z-index: 10;
+                z-index: 20;
                 list-style-position: inside;
                 list-style-type: disc;
 
@@ -184,7 +184,7 @@
             .help
             {
                 background-color: #bfb;
-                z-index: 20;
+                z-index: 10;
 
                 &::after
                 {
@@ -289,10 +289,13 @@ body.js .holoform form
 
             &.focus
             {
-                .field_error,
                 .help
                 {
                     z-index: 50;
+                }
+                .field_error
+                {
+                    z-index: 51;
                 }
             }
 
