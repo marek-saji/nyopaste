@@ -1,5 +1,7 @@
 RewriteEngine on
 
+SetEnvIf Request_URI "robots\.txt$" HG_DUMMY_URI=/RobotsTxt
+
 # don't go anywhere.
 RewriteRule ^hg/ - [L]
 

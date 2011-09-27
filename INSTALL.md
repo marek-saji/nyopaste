@@ -55,12 +55,6 @@ setup
 1. head to `/Dev` and launch these actions:
    - addDefaults (updated 2010-06-17)
 
-### on production
-
-1. switch to production `robots.txt`
-
-        mv src/app/htdocs/robots{.prod,}.txt
-
 
 
 [.htaccess]:             http://httpd.apache.org/docs/current/howto/htaccess.html
