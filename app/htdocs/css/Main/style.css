@@ -1,9 +1,9 @@
-.definition,.sign-up-and-nyo-tweets{max-width:40em;margin:1em auto 0 auto;padding:.07em 2em;}
+.definition,.user-startpoints-and-nyo-tweets{max-width:40em;margin:1em auto 0 auto;padding:.07em 2em;}
 .definition{border:#ccc solid;border-width:0 thin;box-shadow:0.3em 0 0.3em #cccccc,-0.3em 0 0.3em #cccccc;-mox-box-shadow:0.3em 0 0.3em #cccccc,-0.3em 0 0.3em #cccccc;-webkit-box-shadow:0.3em 0 0.3em #cccccc,-0.3em 0 0.3em #cccccc;}.definition dl{font:1.1em Palatino, Palatino Linotype, Georgia, Times, Times New Roman, serif;line-height:1.4em;text-align:justify;}.definition dl dt{float:left;margin:0;}
 .definition dl dd{margin:0 0 1.25em 0;}.definition dl dd p{margin:0 0 .25em 0;}
 .definition dl dfn{font-weight:bold;}
-.sign-up,.nyo-tweets{float:left;width:19.3em;max-width:100%;margin:0 0 5em 0;padding:0;}
-.sign-up{margin-right:.7em;}.sign-up p{font-size:1.1em;font-weight:bold;}
-.sign-up ul{list-style:disc outside;padding:0;margin:0;}.sign-up ul li{padding:0;margin:1em 0 0 0;}.sign-up ul li p{font-size:1em;font-weight:normal;}
+.user-startpoints,.nyo-tweets{float:left;width:19.3em;max-width:100%;margin:0 0 5em 0;padding:0;}
+.user-startpoints{margin-right:.7em;}.user-startpoints p{font-size:1.1em;font-weight:bold;}
+.user-startpoints ul{list-style:disc outside;padding:0;margin:0;}.user-startpoints ul li{padding:0;margin:1em 0 0 0;}.user-startpoints ul li p{font-size:1em;font-weight:normal;}
 .nyo-tweets{margin-left:.7em;}.nyo-tweets .twtr-hd{height:1px;padding:0;margin:0;}
 .nyo-tweets .twtr-doc{max-width:100%;}

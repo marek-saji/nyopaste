@@ -45,44 +45,80 @@ $v->addLess($this->file('style','less'));
     @todo if (loggedin) "sign up for"
 <?php endif; /* local environment */ ?>
 
-<div class="sign-up-and-nyo-tweets">
+<div class="user-startpoints-and-nyo-tweets">
 
-    <section class="sign-up">
+    <section class="user-startpoints">
+        <?php if (g()->auth->loggedIn()) : ?>
 
-        <p>
-            <?php
-            $url = $this->url2c('User', 'new');
-            ?>
-            <?=$this->trans('<a href="%s">Sign up</a> for:', $url)?>
-        </p>
+            <p>
+                <?=$this->trans('May I interest you in:')?>
+            </p>
 
-        <ul>
-            <li>
-                <p><?=$this->trans('quick acces your pastes,')?></p>
-            </li>
-            <li>
-                <p><?=$this->trans('storing your default settings,')?></p>
-            </li>
-            <li>
+            <ul>
+                <li>
+                    <p>
+                        <?=$this->l2c('creating a paste', 'Paste', 'new')?>,
+                    </p>
+                </li>
+                <li>
+                    <p>
+                        <?php
+                        echo $this->trans(
+                            'setting up <a href="%s">your profile</a>,',
+                            $this->url2c('User', '', array(g()->auth->ident()))
+                        );
+                        ?>
+                    </p>
+                </li>
+                <li>
+                    <p>
+                        <?php
+                        echo $this->trans(
+                            'exploring <a href="%s">existing pastes</a>?',
+                            $this->url2c('Paste', 'search')
+                        );
+                        ?>
+                    </p>
+                </li>
+            </ul>
+
+        <?php else : ?>
+
+            <p>
                 <?php
-                $url = $this->url2c('Group');
+                $url = $this->url2c('User', 'new');
                 ?>
-                <p><?=$this->trans('creating new and joining <a href="%s">groups</a>,', $url)?></p>
-            </li>
-            <li>
-                <p><?=$this->trans('customising your public profile')?></p>
-                <?=$this->l2c($this->trans('example'), 'User', '', array('admin'));?>
-            </li>
-        </ul>
+                <?=$this->trans('<a href="%s">Sign up</a> for:', $url)?>
+            </p>
 
-        <p>
-            <?php
-            $url = $this->url2c('Paste', 'new');
-            ?>
-            <?=$this->trans('or <a href="%s">paste anonymously</a>.', $url)?>
-        </p>
+            <ul>
+                <li>
+                    <p><?=$this->trans('quick acces your pastes,')?></p>
+                </li>
+                <li>
+                    <p><?=$this->trans('storing your default settings,')?></p>
+                </li>
+                <li>
+                    <?php
+                    $url = $this->url2c('Group');
+                    ?>
+                    <p><?=$this->trans('creating new and joining <a href="%s">groups</a>,', $url)?></p>
+                </li>
+                <li>
+                    <p><?=$this->trans('customising your public profile')?></p>
+                    <?=$this->l2c($this->trans('example'), 'User', '', array('admin'));?>
+                </li>
+            </ul>
 
-    </section>
+            <p>
+                <?php
+                $url = $this->url2c('Paste', 'new');
+                ?>
+                <?=$this->trans('or <a href="%s">paste anonymously</a>.', $url)?>
+            </p>
+
+        <?php endif; /* logged in */ ?>
+    </section> <!-- .user-startpoints -->
 
     <section class="nyo-tweets">
 
