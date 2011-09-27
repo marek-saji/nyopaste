@@ -5,6 +5,7 @@
 .holoform form fieldset.buttons{font-size:1.2em;}.holoform form fieldset.buttons input{font-size:1em;}
 .holoform form fieldset legend{font-size:1.1em;}.holoform form fieldset legend select{font-size:1em;}
 .holoform form fieldset label.disabled,.holoform form fieldset input.disabled,.holoform form fieldset textarea.disabled,.holoform form fieldset select.disabled,.holoform form fieldset button.disabled{color:gray;}
+.holoform form fieldset textarea{resize:vertical;}
 .holoform form fieldset .radio-optiongroups{margin-bottom:1em;}
 .holoform form fieldset .less-important-options-toggler{display:block;padding-left:20px;min-height:20px;margin-top:1em;cursor:pointer;color:#777;background:transparent url(../gfx/expand-collapse.png) scroll no-repeat -16px -16px;}.holoform form fieldset .less-important-options-toggler.expander{background-position:-16px 0;}
 .holoform form fieldset .less-important-options-toggler.collapser{background-position:0 -16px;}

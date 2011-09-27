@@ -136,6 +136,28 @@ $(function(){
 
 
     /**
+     * Per-user access
+     * ---------------
+     * Change option to "allow only these users", when staring to type-in users.
+     */
+    $(':input[name="Paste_paste[access_users]"]')
+        .change(function () {
+            var $this = $(this);
+            if ($this.val() === "")
+            {
+                return;
+            }
+            $this
+                .closest('.private.privacy.field')
+                    .find(':input[name="Paste_paste[privacy]"]')
+                        .prop('checked', true)
+                        .triggerHandler('change')
+            ;
+        })
+    ;
+
+
+    /**
      * Change submit label, when "store settigns" checked
      * --------------------------------------------------
      */
