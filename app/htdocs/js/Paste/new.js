@@ -113,6 +113,12 @@ $(function(){
                     .insertBefore($toggler)
                 ;
             }
+
+            if ($list.find('.field_error:not(:empty)').length > 0)
+            {
+                $toggler.triggerHandler('click.less-important-options');
+            }
+
         })
         .filter('.with-excerpt')
             .find(':input')
