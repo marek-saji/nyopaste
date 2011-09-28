@@ -491,7 +491,11 @@ class PasteController extends PagesController
                 //'source_url'           => &$db_data['source_url'],
                 'tags'                 => &$db_data['tags'],
                 'type'                 => &$db_data['type'],
-                'publicly_versionable' => &$db_data['publicly_versionable']
+                'publicly_versionable' => &$db_data['publicly_versionable'],
+                'privacy'              => &$db_data['privacy'],
+                'access_users'         => &$db_data['access_users'],
+                'encode'               => &$db_data['encode'],
+                'enc_passwd'           => &$db_data['enc_passwd']
             );
 
             // limit to one type
@@ -756,7 +760,14 @@ class PasteController extends PagesController
 
         foreach ($static_fields as $input_name => $static_value)
         {
-            $this->forms[$form_id]['inputs'][$input_name]['tpl'] = 'Forms/static';
+            if ($input_name === 'privacy')
+            {
+                $this->forms[$form_id]['inputs'][$input_name]['tpl'] = 'Forms/hidden';
+            }
+            else
+            {
+                $this->forms[$form_id]['inputs'][$input_name]['tpl'] = 'Forms/static';
+            }
         }
         $this->assignByRef('static_fields', $static_fields);
     }

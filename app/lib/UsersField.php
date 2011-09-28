@@ -13,46 +13,52 @@ class UsersField extends FMultilineString
     {
         $err = parent::invalid($value);
 
-        $users_logins = preg_split('/[\s,]+/m', $value);
-        $rows = g('User', 'model')
-            ->filter(array('login' => $users_logins))
-            ->whiteList(array('id', 'login'))
-            ->exec('login')
-        ;
+        $this->_logins = array();
 
-
-        // convert to id=>login keeping order from $value
-
-        $users = array();
-        $not_users = array();
-        foreach ($users_logins as $login)
+        if (trim($value) !== '')
         {
-            if (array_key_exists($login, $rows))
+            $users_logins = preg_split('/[\s,]+/m', $value);
+
+            $rows = g('User', 'model')
+                ->filter(array('login' => $users_logins))
+                ->whiteList(array('id', 'login'))
+                ->exec('login')
+            ;
+
+
+            // convert to id=>login keeping order from $value
+
+            $users = array();
+            $not_users = array();
+            foreach ($users_logins as $login)
             {
-                $row =& $rows[$login];
-                $users[$row['id']] = $row['login'];
+                if (array_key_exists($login, $rows))
+                {
+                    $row =& $rows[$login];
+                    $users[$row['id']] = $row['login'];
+                }
+                else
+                {
+                    $not_users[] = $login;
+                }
             }
-            else
+
+            if (sizeof($not_users) > 0)
             {
-                $not_users[] = $login;
+                $not_users_html = '<ol><li>';
+                $not_users_html .= implode('</li><li>', $not_users);
+                $not_users_html .= '</li></ol>';
+                $translator = g()->first_controller;
+                $err['non-users'] = $translator->trans(
+                    'Following are not %s user names: %s',
+                    g()->conf['site_name'],
+                    $not_users_html
+                );
             }
+
+
+            $this->_logins =& $users;
         }
-
-        if (sizeof($not_users) > 0)
-        {
-            $not_users_html = '<ol><li>';
-            $not_users_html .= implode('</li><li>', $not_users);
-            $not_users_html .= '</li></ol>';
-            $translator = g()->first_controller;
-            $err['non-users'] = $translator->trans(
-                'Following are not %s user names: %s',
-                g()->conf['site_name'],
-                $not_users_html
-            );
-        }
-
-
-        $this->_logins =& $users;
 
         return $err;
     }
