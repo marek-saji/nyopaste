@@ -504,6 +504,7 @@ SQL_SELECT_HIGHLIGHTS
                     -- basic data
                     {$model['url']},
                     {$model['version']},
+                    {$model['creation']},
                     -- result rank
                     {$sql_query_select_rank},
                     -- hightlighted data
@@ -523,8 +524,7 @@ SQL_SELECT_HIGHLIGHTS
                         {$sql_query_where_matches}
                     )
                 ORDER BY
-                    {$model['root_id']},
-                    _rank DESC
+                    {$model['root_id']}
             ) pastes
 QUERY_SQL
         ;
@@ -539,7 +539,7 @@ QUERY_SQL
             }
         }
 
-        $sql_query = "SELECT * FROM {$sql_subquery} ORDER BY _rank DESC";
+        $sql_query = "SELECT * FROM {$sql_subquery} ORDER BY _rank DESC, creation DESC";
         if ($sql_limit !== false)
         {
             $sql_query .= " LIMIT {$sql_limit}";

@@ -6,17 +6,21 @@
  * @param array $user user's data including [Ident]
  * @param bool $own_profile is this logged-in user's profile
  */
-extract(
-    array_merge(
-        array(
-            'user'        => null,
-            'own_profile' => false,
-            'editing'     => false
-        ),
-        (array) $____local_variables
-    ),
-    EXTR_REFS|EXTR_PREFIX_INVALID, 'param'
+
+$param_defaults = array(
+    'user'        => null,
+    'own_profile' => false,
+    'editing'     => false
 );
+foreach ($param_defaults as $param => $value)
+{
+    if (!isset($$param))
+    {
+        $$param = $value;
+    }
+}
+unset($param, $value);
+
 
 $form_ident = 'box';
 
@@ -98,10 +102,9 @@ $v->setTitle($title);
                 </li>
                 <li class="field">
                     <?php
-                    $form->label('list_paster', 'display paster name');
-                    ?>
-                    <?php
-                    $form->input('list_paster');
+                    $form->input('list_paster', array(
+                        'label' => 'display paster name'
+                    ));
                     ?>
                 </li>
             </ul>

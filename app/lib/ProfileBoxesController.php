@@ -292,6 +292,7 @@ class ProfileBoxesController extends Component
                 $box['Actions']['edit'] = array(
                     true,
                     $this->url2aInside('edit', array($box['id'])),
+                    'title' => $this->trans('edit this box'),
                     'class' => 'modal'
                 );
             }
@@ -302,18 +303,17 @@ class ProfileBoxesController extends Component
                 {
                     $box['Actions']['remove'] = array(
                         true,
-                        $this->url2aInside('remove', array($box['id']))
+                        $this->url2aInside('remove', array($box['id'])),
+                        'title' => $this->trans('remove this box')
                     );
                 }
-            }
-            else
-            {
             }
 
             $all_label = $this->trans('all (%d)', $count);
             $box['Actions'][$all_label] = array(
                 true,
-                $this->url2c('Paste', 'search', array($box['query']))
+                $this->url2c('Paste', 'search', array($box['query'])),
+                'title' => $this->trans('view all pastes')
             );
         }
     }

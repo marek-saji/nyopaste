@@ -1,6 +1,7 @@
 @import "../less.less";
 
 @panel-width: 15em;
+@panel-margin: 1em;
 
 
 #whole-content
@@ -17,6 +18,7 @@
         float     : left;
         display   : block;
         width     : @panel-width;
+        margin    : 0 @panel-margin 0 0;
         overflow  : hidden;
     }
 
@@ -56,7 +58,7 @@
 
 section.boxes
 {
-    margin-left: @panel-width;
+    margin-left: @panel-width + @panel-margin;
 
     ul.boxes
     {
@@ -69,6 +71,27 @@ section.boxes
         li.box
         {
             .break-inside(avoid);
+
+            .pastes
+            {
+                padding: 0;
+                margin: 0 0 0 2em;
+
+                li
+                {
+                    margin: 0 0 .5em 0;
+
+                    strong.query-keyword
+                    {
+                        font-weight: normal;
+                    }
+
+                    time
+                    {
+                        font-size: 0.8em;
+                    }
+                }
+            }
 
             .actions
             {
