@@ -148,7 +148,8 @@ class PasteController extends PagesController
 
 
         // fetch main and paste type data
-        if (!$this->getOne($url, $ver, true, $db_data))
+        $result = $this->getOne($db_data, array('with_tree' => true));
+        if ($result === false)
         {
             return false;
         }
@@ -486,7 +487,10 @@ class PasteController extends PagesController
         // creating new version
         if ($parent_url)
         {
-            $this->getOne($parent_url, $parent_ver, false, $db_data);
+            $this->getOne($db_data, array(
+                'url' => $parent_url,
+                'ver' => $parent_ver,
+            ));
 
             $static_fields = array(
                 'title'                => &$db_data['title'],
@@ -795,14 +799,27 @@ class PasteController extends PagesController
      * Common code for fetching one paste
      * @author m.augustynowicz
      *
-     * @param mixed $id from URL
      * @param array $result rerence result will be stored to
-     * @param bool $redirect if set to true, will redirect to error page,
-     *        when no user fetched
+     * @param array $options
+     *        - [url] paste ident (defaults to current in request)
+     *        - [ver] paste version (defaults to current in request)
+     *        - [with_tree] fetch with paste tree
+     *        - [redirect] if set to true, will redirect to error page,
+     *          when no user fetched
+     *
      * @return bool success on fetching data
      */
-    public function getOne($url, $ver, $with_tree = false, &$result, $redirect = true)
+    public function getOne(&$result, array $options = array())
     {
+        $default_options = array(
+            'url'       => $this->getParam(0),
+            'ver'       => $this->getParam('v'),
+            'with_tree' => false,
+            'rediect'   => true
+        );
+        $options = array_intersect($options + $default_options, $default_options);
+        extract($options);
+
         if (isset($this->_getOne_cache[$url][$ver][$with_tree]))
         {
             $result = $this->_getOne_cache[$url][$ver][$with_tree];
@@ -1012,7 +1029,7 @@ class PasteController extends PagesController
             case 'restore' :
             case 'new' : // new version of an existing paste
 
-                $result = $this->getOne($url, $ver, true, $paste);
+                $result = $this->getOne($paste, array('with_tree' => true));
 
                 if ($action === 'new')
                 {

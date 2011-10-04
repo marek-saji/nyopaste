@@ -32,7 +32,7 @@ abstract class PasteTypeController extends Component
         $ver = $this->getParentParam('Paste', 'default', 'v');
 
         $db_data = array();
-        $this->getParent()->getOne($url, $ver, true, $db_data);
+        $this->getParent()->getOne($db_data);
         $this->assignByRef('row', $db_data);
     }
 
