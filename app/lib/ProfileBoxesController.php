@@ -68,7 +68,11 @@ class ProfileBoxesController extends Component
 
         if ($this->hasAccess('new'))
         {
-            $actions['new'] = array(true, $this->url2aInside('new'), 'class'=>'modal');
+            $actions['new'] = array(
+                true,
+                $this->url2aInside('new', array('#' => 'content')),
+                'class' => 'modal'
+            );
         }
 
         $this->assignByRef('actions', $actions);

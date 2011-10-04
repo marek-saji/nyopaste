@@ -61,7 +61,7 @@ $v->setTitle($title);
 ?>
 
 
-<section class="modal-wannabe">
+<section class="modal-wannabe" id="content">
 
     <h2><?=$title?></h2>
 
