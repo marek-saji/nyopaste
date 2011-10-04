@@ -187,6 +187,7 @@ class PasteController extends PagesController
             'download'   => array($this, $action,   array(1=>'get') + $action_params),
             'plain text' => array($this, $action,   array(1=>'raw') + $action_params),
             'share'      => array(true, '#share', 'class'=>'modal'),
+
             'newVer'     => array($this, 'new',     $action_params),
             'edit'       => array($this, 'edit',    $action_params),
             'remove'     => $removed ? false :
@@ -194,6 +195,7 @@ class PasteController extends PagesController
             'restore'    => !$removed ? false :
                             array($this, 'restore', $action_params),
         );
+        // check permissions to actions
         foreach ($all_actions as $action => & $url)
         {
             if (!is_array($url) || true === $url[0])
@@ -211,6 +213,7 @@ class PasteController extends PagesController
             }
         }
 
+        // split actions into [BasicActions] and [Actions]
         $basic_actions = array('download'=>1, 'plain text'=>1, 'share'=>1);
         $db_data['BasicActions'] = array_intersect_key(
             $all_actions,
@@ -244,6 +247,7 @@ class PasteController extends PagesController
             $ver_check_timeout = 5*60000; // 5min
         }
         $this->assign('ver_check_timeout', $ver_check_timeout);
+
     }
 
 
@@ -797,7 +801,7 @@ class PasteController extends PagesController
      *        when no user fetched
      * @return bool success on fetching data
      */
-    public function getOne($url, $ver, $with_tree=false, &$result, $redirect=true)
+    public function getOne($url, $ver, $with_tree = false, &$result, $redirect = true)
     {
         if (isset($this->_getOne_cache[$url][$ver][$with_tree]))
         {
@@ -982,49 +986,52 @@ class PasteController extends PagesController
 
 
     /**
-     * Checks access to "new" action
-     * @todo implement me (for $params[0]
+     * Checks access to actions performed on a paste
      * @author m.augustynowicz
      *
-     * @param array $params request params
+     * @param array $params request params:
+     *        - [0] identifier
+     *        - [v] version
      *
      * @return bool
      */
-    public function hasAccessToNew(array &$params)
+    public function hasAccess($action, array & $params = array(), $just_checking = true)
     {
         $url = @$params[0];
         $ver = @$params['v'];
 
-        // new paste
-
-        if (!$url)
+        // creating completly new version, allow for all
+        if ($action === 'new' && empty($url))
         {
             return true;
         }
 
-
-        // new version of a existing paste
-
-        if (!$this->getOne($url, $ver, true, $result))
+        switch ($action)
         {
-            return false;
+            case 'remove' :
+            case 'restore' :
+            case 'new' : // new version of an existing paste
+
+                $result = $this->getOne($url, $ver, true, $paste);
+
+                if ($action === 'new')
+                {
+                    $publicly_versionable = g('Functions')->anyToBool($paste['publicly_versionable']);
+
+                    if ($publicly_versionable)
+                    {
+                        return true;
+                    }
+                }
+
+                if (g()->auth->loggedIn() && $paste['paster_id'] === g()->auth->id())
+                {
+                    return true;
+                }
+
         }
 
-        $publicly_versionable = g('Functions')->anyToBool($result['publicly_versionable']);
-
-        if ($publicly_versionable)
-        {
-            return true;
-        }
-        else if ($result['paster_id'])
-        {
-            return $result['paster_id'] == g()->auth->id();
-        }
-        else
-        {
-            return false;
-        }
-
+        return parent::hasAccess($action, $params, $just_checking);
     }
 
 }
