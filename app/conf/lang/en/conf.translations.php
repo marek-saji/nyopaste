@@ -70,6 +70,13 @@ $conf['translations']['paste'] = array(
         'newVer' => 'create new version',
     ),
 
+    '((pastetype:%s))' => array(
+        'markup' => 'formatted text',
+        'source' => 'source code',
+        'plain'  => 'plain text',
+        null     => '%s'
+    ),
+
     'v%s' => '<abbr title="version">v</abbr>%s',
 );
 

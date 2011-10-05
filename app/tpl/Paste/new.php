@@ -264,7 +264,7 @@ $form = g('Forms', array('paste', $this));
                             <?php
                             $form->input('type', array(
                                 'value' => $idx,
-                                'label' => $t->trans($type)
+                                'label' => $t->trans('((pastetype:%s))', $type)
                             ));
                             ?>
                             <fieldset class="type-specific <?=urlencode($type)?>">

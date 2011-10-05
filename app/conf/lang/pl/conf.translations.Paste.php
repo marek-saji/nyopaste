@@ -60,6 +60,14 @@ $conf['translations']['Paste'] = array(
         'newVer' => 'stwórz nową wersję',
     ),
 
+    // paste types
+    '((pastetype:%s))' => array(
+        'markup' => 'tekst formatowany',
+        'source' => 'kod źródłowy',
+        'plain'  => 'czysty tekst',
+        null     => '%s'
+    ),
+
     'New version(s) of this paste available. You may want to refresh the page, to see them.'
         => 'Pojawiła się nowa wersja wpisu. Odśwież stronę, aby ją zobaczyć.',
 );
