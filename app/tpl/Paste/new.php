@@ -87,7 +87,7 @@ $form = g('Forms', array('paste', $this));
 
             <?php
             $less_important_options_json = htmlspecialchars(json_encode(array(
-                'expand' => $this->trans('more options including tags, original author, source URL and <q>keep for&hellip;</q>'),
+                'expand' => $this->trans('more options including tags, original author and source URL'),
                 'collapse' => $this->trans('it\'s too cluttered, hide these options'),
             )), ENT_QUOTES);
             ?>
