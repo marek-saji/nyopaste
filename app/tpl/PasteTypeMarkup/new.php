@@ -8,6 +8,15 @@ $v->addLess($this->file('new', 'less'));
 
     <!-- parser -->
     <li class="field parsers">
+
+        <p>
+            <?=$this->trans('You can write using simple markup that will be coverted into formatted text.')?>
+        </p>
+
+        <p>
+            <?=$this->trans('Empty lines always creates new paragraphs, but other syntax sligtly differs, choose one suits you the best.')?>
+        </p>
+
         <dl>
             <?php foreach ($parsers as $parser_name) : ?>
                 <dt>
