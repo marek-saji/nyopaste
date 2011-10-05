@@ -182,7 +182,7 @@ class PasteController extends PagesController
         $action = $this->getLaunchedAction();
         if ($this->_default_action == $action)
             $action = '';
-        $removed = $db_data['status'] & STATUS_DELETED;
+        $removed = (bool) $db_data['removed'];
         $action_params = array($url) + ($ver ? array('v'=>$ver) : array());
         $all_actions = array(
             'download'   => array($this, $action,   array(1=>'get') + $action_params),
@@ -781,6 +781,84 @@ class PasteController extends PagesController
     }
 
 
+
+    /**
+     * Remove paste (not permanent)
+     * @author m.augustynowicz
+     *
+     * @param array $params request params:
+     *        - [0] url
+     *        - [v] version
+     * @return void
+     */
+    public function actionRemove(array $params)
+    {
+        return $this->_removeOrRestore(
+            $params,
+            // update "removed" column with current timestamp
+            time(),
+            // success msg getter
+            function ($that, $paste) {
+                $undo_link = $that->l2a(
+                    $that->trans('Undo'),
+                    'restore',
+                    array(
+                        0   => $paste['url'],
+                        'v' => $paste['version']
+                    )
+                );
+                return $that->trans(
+                    'Paste <em>%s <abbr title="version">v</abbr>%s</em> removed (%s).',
+                    $paste['title'],
+                    $paste['version'],
+                    $undo_link
+                );
+            },
+            // success redirect getter
+            function ($that, $paste) {
+                return $that->url2a('new');
+            }
+        );
+    }
+
+
+    /**
+     * Restore removed paste
+     * @author m.augustynowicz
+     *
+     * @param array $params request params:
+     *        - [0] url
+     *        - [v] version
+     * @return void
+     */
+    public function actionRestore(array $params)
+    {
+        return $this->_removeOrRestore(
+            $params,
+            // update "removed" column with current timestamp
+            null,
+            // success msg getter
+            function ($that, $paste) {
+                return $that->trans(
+                    'Paste <em>%s <abbr title="version">v</abbr>%s</em> restored.',
+                    $paste['title'],
+                    $paste['version']
+                );
+            },
+            // success redirect getter
+            function ($that, $paste) {
+                return $that->url2a(
+                    '',
+                    array(
+                        0   => $paste['url'],
+                        'v' => $paste['version']
+                    )
+                );
+            }
+        );
+    }
+
+
     /**
      * Error 404: paste not found.
      * @author m.augustynowicz
@@ -806,28 +884,31 @@ class PasteController extends PagesController
      *        - [with_tree] fetch with paste tree
      *        - [redirect] if set to true, will redirect to error page,
      *          when no user fetched
+     *        - [removed] also get removed pastes
      *
      * @return bool success on fetching data
      */
     public function getOne(&$result, array $options = array())
     {
         $default_options = array(
-            'url'       => $this->getParam(0),
-            'ver'       => $this->getParam('v'),
-            'with_tree' => false,
-            'rediect'   => true
+            'url'                     => $this->getParam(0),
+            'ver'                     => $this->getParam('v'),
+            'with_tree'               => false,
+            'with_type_specific_data' => true,
+            'redirect'                => true,
+            'removed'                 => false
         );
         $options = array_intersect($options + $default_options, $default_options);
         extract($options);
 
-        if (isset($this->_getOne_cache[$url][$ver][$with_tree]))
+        if (isset($this->_getOne_cache[$url][$ver][$with_tree][$with_type_specific_data][$removed]))
         {
-            $result = $this->_getOne_cache[$url][$ver][$with_tree];
+            $result = $this->_getOne_cache[$url][$ver][$with_tree][$with_type_specific_data][$removed];
             return false !== $result;
         }
 
         $model_class = g()->load('Paste', 'model');
-        $result = $model_class::getByUrl($url, $ver);
+        $result = $model_class::getByUrl($url, $ver, $removed);
 
         if (!$result)
         {
@@ -843,8 +924,12 @@ class PasteController extends PagesController
             }
         }
 
-        $this->_types[$result['type']]
-            ->getOne($result['id'], $result);
+        if ($with_type_specific_data)
+        {
+            $this->_types[$result['type']]
+                ->getOne($result['id'], $result)
+            ;
+        }
 
         if ($with_tree)
         {
@@ -866,7 +951,7 @@ class PasteController extends PagesController
                 ->getTree($result['root_id']);
         }
 
-        $this->_getOne_cache[$url][$ver][$with_tree] = $result;
+        $this->_getOne_cache[$url][$ver][$with_tree][$with_type_specific_data][$removed] = $result;
         return true;
     }
 
@@ -1023,13 +1108,19 @@ class PasteController extends PagesController
             return true;
         }
 
+        $getter_params = array(
+            'with_tree' => false
+        );
         switch ($action)
         {
-            case 'remove' :
             case 'restore' :
+                $getter_params['removed'] = true;
+            case 'remove' :
+                $getter_params['with_type_specific_data'] = false;
+
             case 'new' : // new version of an existing paste
 
-                $result = $this->getOne($paste, array('with_tree' => true));
+                $result = $this->getOne($paste, $getter_params);
 
                 if ($action === 'new')
                 {
@@ -1049,6 +1140,66 @@ class PasteController extends PagesController
         }
 
         return parent::hasAccess($action, $params, $just_checking);
+    }
+
+
+    /**
+     * Common code for remove and restore actions
+     * @author m.augustynowicz
+     *
+     * @param array $params request params
+     * @param mixed $new_removed_value new value for column "removed".
+     *        in general it's either null or current timestamp.
+     * @param Closure $success_msg_callback callback for generating
+     *        success message. It should be a function that takes two args:
+     *        - @param Component $that
+     *        - @param array paste
+     */
+    protected function _removeOrRestore($params, $new_removed_value, Closure $success_msg_callback, Closure $success_redirect_callback)
+    {
+        $backlink = g()->req->getReferer();
+        $msg_id   = g()->req->getRequestUrl() . ' ';
+
+        try
+        {
+            // should be in cache
+            $exists = $this->getOne($paste, array(
+                'with_tree'               => false,
+                'with_type_specific_data' => false,
+                'removed'                 => ($new_removed_value === null)
+            ));
+
+            if ($exists === false)
+            {
+                throw new HgException('Paste does not exist');
+            }
+
+            $paste_update = array(
+                'id'      => $paste['id'],
+                'removed' => $new_removed_value
+            );
+
+            $result = g('Paste', 'model')->sync($paste_update, true, 'update');
+            if ($result !== true)
+            {
+                g()->debug->dump($result);
+                throw new HgException('((error:DS:%s))');
+            }
+
+            g()->addInfo(
+                $msg_id,
+                'info',
+                $success_msg_callback($this, $paste)
+            );
+            $backlink = $success_redirect_callback($this, $paste);
+        }
+        catch (HgException $e)
+        {
+            $msg = $this->trans($e->getMessage(), false);
+            g()->addInfo($msg_id . $msg, 'error', $msg);
+        }
+
+        $this->redirect($backlink);
     }
 
 }

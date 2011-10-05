@@ -20,6 +20,11 @@ class PasteModel extends Model
     const VER_SEPARATOR = '.';
     const VER_ONE = '1'; // '1', '0', 'a' and 'A' make sense
 
+    /**
+     * Delay after which restoring is impossible.
+     */
+    const SECONDS_TO_RESTORE = 300;
+
     public function __construct()
     {
         parent::__construct();
@@ -43,6 +48,8 @@ class PasteModel extends Model
         $this->relate('Paster', 'User', 'Nto1');
 
         $this->_addField(new FInt('status', 2, true, STATUS_ACTIVE));
+
+        $this->_addField(new FTimestamp('removed'));
 
         $this->_addField(new FString('author'));
         $this->_addField(new FURL('source_url'))
@@ -226,12 +233,21 @@ class PasteModel extends Model
      *
      * @return array
      */
-    static public function getByUrl($url, $ver=null)
+    static public function getByUrl($url, $ver = null, $removed = null)
     {
         $filters = array(
-            'url' => $url,
-            'version' => $ver
+            'url'     => $url,
+            'version' => $ver,
         );
+        if ($removed !== true)
+        {
+            $filters['removed'] = null;
+        }
+        else
+        {
+            $ttl = strtotime(self::SECONDS_TO_RESTORE . ' seconds ago');
+            $filters[] = array('removed', '>', $ttl);
+        }
 
         $model = new self;
 
@@ -278,7 +294,7 @@ class PasteModel extends Model
 
         $result['Tags'] = array();
         $tags = g('PasteTag','model')
-                ->filter(array('paste_id'=>$result['id']))
+                ->filter(array('paste_id' => $result['id']))
                 ->exec();
         foreach ($tags as &$tag)
         {
@@ -313,13 +329,18 @@ class PasteModel extends Model
             }
         }
 
+        $filters = array(
+            'removed' => null
+        );
+
         if (null !== $root_id)
         {
-            $this->filter(array('root_id' => $root_id));
+            $filters['root_id'] = $root_id;
         }
 
-        $tree = array();
+        $this->filter($filters);
         $flat = $this->exec('id');
+        $tree = array();
 
         foreach ($flat as &$paste)
         {
@@ -513,6 +534,9 @@ SQL_SELECT_HIGHLIGHTS
                     {$model}
                     {$sql_query_plus_from_query}
                 WHERE
+                    -- not removed
+                    removed IS NULL
+                    AND
                     -- visible
                     (
                         {$model['privacy']} = {$sql_val_public}

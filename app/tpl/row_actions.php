@@ -57,8 +57,6 @@ $attrs = array_diff_key($____local_variables, $defaults);
                 $action == $this->_default_action and $action='';
                 switch ($action)
                 {
-                    case 'remove' :
-                    case 'restore' :
                     case 'login' :
                         $value[3] = array('class'=>'modal');
                         break;
