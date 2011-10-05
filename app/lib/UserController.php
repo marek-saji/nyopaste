@@ -760,6 +760,11 @@ class UserController extends PagesController implements IUserController
     {
         $errors = array();
 
+        if (empty($value))
+        {
+            return $errors;
+        }
+
         if (in_array(strtolower($value), g()->conf['users']['reserved logins']))
         {
             $errors['special_login'] = 'This login name is reserved, sorry. Try different one';

@@ -40,9 +40,11 @@ $v->setTitle($title);
                     <?php
                     $form->input('login');
                     ?>
-                    <p class="help">
-                        <?=$this->trans('Choose wisely, it cannot be changed later on.')?>
-                    </p>
+                    <div class="help">
+                        <p>
+                            <?=$this->trans('Choose wisely, it cannot be changed later on.')?>
+                        </p>
+                    </div>
                 </li>
 
                 <li class="field">
@@ -52,9 +54,11 @@ $v->setTitle($title);
                     <?php
                     $form->input('passwd');
                     ?>
-                    <p class="help">
-                        <?=$this->trans('Enter your password. Twice, just to be sure you didn\'t make a typo.')?>
-                    </p>
+                    <div class="help">
+                        <p>
+                            <?=$this->trans('Enter your password. Twice, just to be sure you didn\'t make a typo.')?>
+                        </p>
+                    </div>
                 </li>
 
                 <li class="field">
@@ -64,9 +68,14 @@ $v->setTitle($title);
                     <?php
                     $form->input('email');
                     ?>
-                    <p class="help">
-                        <?=$this->trans('You will need this address to activate your accout. Also, if you happen to forget your password in the future, you can use this address to get a new one.')?>
-                    </p>
+                    <div class="help">
+                        <p>
+                            <?=$this->trans('This is not required, but useful if you happen to forget your password.')?>
+                        </p>
+                        <p>
+                            <?=$this->trans('Don\'t worry, we won\'t to anything evil with it.')?>
+                        </p>
+                    </div>
                 </li>
 
                 <?php if (g()->auth->loggedIn() && !empty($user_types_values)) : ?>

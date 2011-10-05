@@ -19,7 +19,7 @@ class UserModel extends Model
                 'minlength' => $login_len_msg,
                 'maxlength' => $login_len_msg
             ));
-        $this->_addField(new FEmail('email', true)); // UNIQUE
+        $this->_addField(new FEmail('email')); // UNIQUE or NULL
         $this->_addField(new FPassword('passwd', 3, 128))
             ->mess(array(
                 'minlength' => $passwd_len_msg,
