@@ -403,13 +403,13 @@ $form = g('Forms', array('paste', $this));
                             'store_settings',
                             array(
                                 'class' => 'store-settings',
-                                'label' => $this->trans('<span class="nojs"><em>do not</em> create a paste, </span>just store settings as default for future pastes')
+                                'label' => $this->trans('store settings as future defaults')
                             )
                         );
                         ?>
                         <div class="help">
                             <p>
-                                <?=$this->trans('<em>Instead</em> of creating a new paste, save values as default for future pastes.')?>
+                                <?=$this->trans('<em>Aside from</em> creating a new paste, save values (except title and content) as defaults for future pastes.')?>
                             </p>
                         </div>
                     </li>
@@ -439,19 +439,9 @@ $form = g('Forms', array('paste', $this));
         {
             $submit = 'accept terms of service and ' . $submit;
         }
-        $data_values = json_encode(array(
-            false => $submit,
-            true  => $this->trans('store settings')
-        ));
         $this->inc('Forms/buttons', array(
             'form'    => & $form,
-            'submit'  => false,
-            'buttons' => array(
-                array(
-                    'value'       => $submit,
-                    'data-values' => $data_values
-                )
-            ),
+            'submit'  => $submit,
             'cancel'  => g()->req->getReferer() ? 'cancel' : false,
         ));
         ?>

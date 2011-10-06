@@ -407,7 +407,7 @@ class PasteController extends PagesController
         $this->assign('new_version', (bool) $parent_url);
 
 
-        // don't create new paste -- just store settings for future
+        // store settings for future
         if (g()->auth->loggedIn() && @$this->data[$form_id]['store_settings'])
         {
             $setting = g('UserSetting', 'model');
@@ -424,6 +424,9 @@ class PasteController extends PagesController
                 '' => $this->data[$form_id]
             );
             unset($setting_value['']['store_settings']);
+            unset($setting_value['']['title']);
+            unset($setting_value['']['content_text']);
+            unset($setting_value['']['content_file']);
 
             // paste types data
             foreach ($this->_types as $type_name => $type)
@@ -456,7 +459,7 @@ class PasteController extends PagesController
                 g()->addInfo(
                     'Paste_paste form settings stored',
                     'info',
-                    $this->trans('Settings saved as new form defaults')
+                    $this->trans('Settings saved as new defaults')
                 );
             }
             else
@@ -464,11 +467,9 @@ class PasteController extends PagesController
                 g()->addInfo(
                     'Paste_paste form settings not stored',
                     'error',
-                    $this->trans('Error occurred while storing form defaults.')
+                    $this->trans('Error occurred while storing defaults.')
                 );
             }
-
-            $this->redirect(g()->req->getRequestUrl());
         }
 
 
