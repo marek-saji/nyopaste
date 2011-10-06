@@ -548,7 +548,8 @@ SQL_SELECT_HIGHLIGHTS
                         {$sql_query_where_matches}
                     )
                 ORDER BY
-                    {$model['root_id']}
+                    {$model['root_id']}, -- for DISTINCT
+                    {$model['creation']} DESC  -- promote latest version
             ) pastes
 QUERY_SQL
         ;
