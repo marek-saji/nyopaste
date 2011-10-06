@@ -670,3 +670,13 @@ $(window).load(function () {
     });
 });
 
+
+/**
+ * Focus clicked elements
+ * ----------------------
+ * Chrome tries to fool us, but we are smarter than this.
+ */
+$(':input').live('click', function () {
+    $(this).filter(':not(:focus)').focus();
+});
+
