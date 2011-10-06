@@ -1,7 +1,7 @@
 <?php if ($tree) : ?>
-    <ol>
+    <ol class="tree">
         <?php foreach ($tree as &$paste) : ?>
-            <li>
+            <li class="node">
                 <?=$this->l2a($this->trans('v%s', $paste['version']), '', array($paste['url'], 'v'=>$paste['version']))?>
                 <?=$this->trans('by')?>
                 <?=$this->inc('paster', array('row' => $paste))?>

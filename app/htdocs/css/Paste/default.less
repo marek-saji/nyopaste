@@ -109,14 +109,31 @@
 
     section.tree
     {
-        ol
+        ol.tree
         {
             list-style : none;
             padding    : 0;
 
-            ol
+            ol.tree
             {
-                padding-left : 2em;
+                margin-left  : .25em;
+                padding-left : .5em;
+                border-left  : black dashed thin;
+
+                li:before {
+                    margin-left: -.5em;
+                    content: '\2013'; /* em dash and space */
+                }
+
+                li
+                {
+                    margin: .25em 0;
+                }
+
+                ol.tree
+                {
+                    margin-left  : 1em;
+                }
             }
 
             time
