@@ -2,7 +2,7 @@ html,body{font-family:sans-serif;margin:0;padding:0;}
 article,aside,figure,footer,header,hgroup,menu,nav,section{display:block;}
 #top,#infos,#whole-content,#foot{clear:both;}
 #top,#foot{padding:0 1em;}
-#top{overflow:hidden;padding:0 1em 2em;margin:0;background-color:white 0%;background-image:-webkit-linear-gradient(bottom, white 0%, #eeeeee 2em);background-image:-moz-linear-gradient(bottom, white 0%, #eeeeee 2em);background-image:-ms-linear-gradient(bottom, white 0%, #eeeeee 2em);background-image:-o-linear-gradient(bottom, white 0%, #eeeeee 2em);background-image:linear-gradient(bottom, white 0%, #eeeeee 2em);}#top *{margin:0;padding:0;list-style:none;}
+#top{overflow:hidden;padding:0 1em 2em;margin:0;background-color:white 0%;background-image:-webkit-linear-gradient(bottom, white 0%, #eeeeee 2em);background-image:-moz-linear-gradient(bottom, white 0%, #eeeeee 2em);background-image:-ms-linear-gradient(bottom, white 0%, #eeeeee 2em);background-image:-o-linear-gradient(bottom, white 0%, #eeeeee 2em);background-image:linear-gradient(bottom, white 0%, #eeeeee 2em);}#top h1,#top ul,#top li{margin:0;padding:0;list-style:none;}
 #top nav li{display:inline;}
 #top .skip-to-content{text-align:center;width:100%;background-color:transparent;font-size:.8em;}#top .skip-to-content a{color:#eee;}#top .skip-to-content a:hover,#top .skip-to-content a:active,#top .skip-to-content a:focus{color:black;}
 #top .usernav{float:right;}
@@ -29,7 +29,7 @@ article,aside,figure,footer,header,hgroup,menu,nav,section{display:block;}
 .nyopaste{color:#555;}.nyopaste i{opacity:0.4;}
 .char-icon{font-size:1.1em;}
 body.js label.copyable .inside{display:none;}
-.vcard a .photo{vertical-align:middle;border-right:#eeeeee solid 0.33em;}
+.vcard a .photo{vertical-align:middle;margin-right:.33em;}
 #foot{margin:2em 0 1em 0;overflow:hidden;}#foot p{font-size:.7em;padding:0;margin:.5em 1em;color:#666;}#foot p a{color:#333;}
 #foot .nyopaste i{opacity:.8;}
 @media (min-width: 60em){#foot section{width:50%;float:left;}#foot section.copyright{text-align:right;}}
