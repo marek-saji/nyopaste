@@ -54,56 +54,10 @@
             display      : none;
         }
     }
-}
 
-section.boxes
-{
-    margin-left: @panel-width + @panel-margin;
-
-    ul.boxes
+    section.boxes
     {
-        list-style    : none;
-        margin        : 0;
-        padding       : 0;
-        .column-width (20em);
-        .column-gap   (1em);
-
-        li.box
-        {
-            .break-inside(avoid);
-
-            .pastes
-            {
-                padding: 0;
-                margin: 0 0 0 2em;
-
-                li
-                {
-                    margin: 0 0 .5em 0;
-
-                    strong.query-keyword
-                    {
-                        font-weight: normal;
-                    }
-
-                    time
-                    {
-                        font-size: 0.8em;
-                    }
-                }
-            }
-
-            .actions
-            {
-                text-align : right;
-                list-style : none;
-
-                li
-                {
-                    display : inline;
-                }
-            }
-        }
+        margin-left: @panel-width + @panel-margin;
     }
 }
 

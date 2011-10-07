@@ -1,9 +1,17 @@
 <?php
+$v->addLess($this->file('default', 'less'));
+?>
+<?php
 $this->inc('row_actions', array(
     'actions'     => $actions,
     'inside_link' => true
 ));
 ?>
+
+<pre>
+- przy jednym paste-e w boksie akcje do boksu zostały zidentyfikowane jako
+  akcje na paste-e
+</pre>
 
 <?php if (empty($boxes)) : ?>
     <ul class="empty boxes">

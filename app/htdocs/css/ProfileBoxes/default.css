@@ -1,0 +1,3 @@
+ul.boxes{list-style:none;margin:0;padding:0;column-width:20em;-moz-column-width:20em;-webkit-column-width:20em;column-gap:1em;-moz-column-gap:1em;-webkit-column-gap:1em;}ul.boxes li.box{column-break-inside:avoid;-moz-column-break-inside:avoid;-webkit-column-break-inside:avoid;page-break-inside:avoid;}ul.boxes li.box .pastes{padding:0;margin:0 0 0 2em;}ul.boxes li.box .pastes li{margin:0 0 .5em 0;}ul.boxes li.box .pastes li strong.query-keyword{font-weight:normal;}
+ul.boxes li.box .pastes li time{font-size:0.8em;}
+ul.boxes li.box .actions{text-align:right;list-style:none;}ul.boxes li.box .actions li{display:inline;}
