@@ -1,8 +1,8 @@
 .holoform form{width:50em;max-width:66.66666666666667%;}.holoform form .field_error,.holoform form .help{position:static;top:auto;left:auto;margin:.25em 0;padding:.5em 1em;width:auto;max-width:100%;border-radius:0.5em;-moz-border-radius:0.5em;-webkit-border-radius:0.5em;}
-.holoform form fieldset fieldset{padding:0 1em 0 2em;}
-.holoform form fieldset{border:none;margin:0;padding:.5em 1em;}.holoform form fieldset.verbose{border:#aaa solid thin;margin:1em 0;}
+.holoform form fieldset{border:none;margin:0;padding:.5em 1em;}.holoform form fieldset.verbose{border:#aaa solid thin;padding:.5em 1em;margin:1em 0;}
 .holoform form fieldset.hidden{display:none;}
 .holoform form fieldset.buttons{font-size:1.2em;}.holoform form fieldset.buttons input{font-size:1em;}
+.holoform form fieldset fieldset{padding:0 1em 0 2em;}
 .holoform form fieldset legend{font-size:1.1em;}.holoform form fieldset legend select{font-size:1em;}
 .holoform form fieldset label.disabled,.holoform form fieldset input.disabled,.holoform form fieldset textarea.disabled,.holoform form fieldset select.disabled,.holoform form fieldset button.disabled{color:gray;}
 .holoform form fieldset textarea{resize:vertical;}
@@ -26,13 +26,11 @@
 body.js .holoform form .field_error,body.js .holoform form .help{position:absolute;top:0;left:100%;margin:0 0 0 3.5em;padding:1em;width:25em;max-width:40%;z-index:30;border:white solid thin;border-radius:0.5em;-moz-border-radius:0.5em;-webkit-border-radius:0.5em;}body.js .holoform form .field_error::after,body.js .holoform form .help::after{content:'';border:transparent solid .5em;border-left:none;position:absolute;top:1em;left:-0.5em;}
 body.js .holoform form fieldset fieldset{padding:0 1em;}
 body.js .holoform form fieldset ul.less-important-options{display:none;}
-body.js .holoform form fieldset ul li.field .help{display:none;}
+body.js .holoform form fieldset ul li.field .help{visibility:hidden;}
 body.js .holoform form fieldset ul li.field.focus .help{z-index:50;}
 body.js .holoform form fieldset ul li.field.focus .field_error{z-index:51;}
-body.js .holoform form fieldset ul li.field.recently-focused .help{display:block;}
-body.js .holoform form fieldset ul li.field.recently-focused .field_error{display:none;}
-body.js .holoform form fieldset ul li.field.recently-focused.invalid .help{display:none;}
-body.js .holoform form fieldset ul li.field.recently-focused.invalid .field_error{display:block;}
+body.js .holoform form fieldset ul li.field.recently-focused .help,body.js .holoform form fieldset ul li.field.recently-focused.invalid .field_error{visibility:visible;}
+body.js .holoform form fieldset ul li.field.recently-focused.invalid .help,body.js .holoform form fieldset ul li.field.recently-focused .field_error{visibility:hidden;}
 .required .inside{padding:7px 14px 7px 0;background:transparent url(../gfx/asterisk.png) scroll no-repeat right center;}
 .required small.required{display:none;}
 .sign-in.holoform .required{display:none;}

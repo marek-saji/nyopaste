@@ -28,20 +28,16 @@
         .field-box;
     }
 
-    fieldset fieldset
-    {
-        padding: 0 1em 0 2em;
-    }
-
     fieldset
     {
         border: none;
         margin: 0;
-        padding: .5em 1em;
+        padding: .5em 1em; /* @fixme it should be 0 here, but that breaks .help */
 
         &.verbose
         {
             border: #aaa solid thin;
+            padding: .5em 1em;
             margin: 1em 0;
         }
 
@@ -58,6 +54,11 @@
             {
                 font-size: 1em;
             }
+        }
+
+        fieldset
+        {
+            padding: 0 1em 0 2em;
         }
 
         legend
@@ -285,7 +286,7 @@ body.js .holoform form
 
         li.field
         {
-            .help { display: none; }
+            .help { visibility: hidden; }
 
             &.focus
             {
@@ -301,13 +302,16 @@ body.js .holoform form
 
             &.recently-focused
             {
-                .help        { display: block; }
-                .field_error { display: none; }
-
-                &.invalid
+                .help,
+                &.invalid .field_error
                 {
-                    .help        { display: none; }
-                    .field_error { display: block; }
+                    visibility: visible;
+                }
+
+                &.invalid .help,
+                .field_error
+                {
+                    visibility: hidden;
                 }
             }
         }

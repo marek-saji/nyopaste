@@ -1,7 +1,6 @@
-#whole-content h2{font-size:1em;}
-#whole-content .avatar,#whole-content .paster-meta{clear:left;float:left;display:block;width:15em;margin:0 1em 0 0;overflow:hidden;}
+#whole-content h2{font-size:1em;text-align:center;}
 #whole-content .avatar{text-align:center;}#whole-content .avatar img{max-width:100%;}
 #whole-content .paster-meta .actions{font-size:.8em;}
 #whole-content .paster-meta .actions ul,#whole-content .paster-meta .actions ul li,#whole-content .paster-meta dl dd{list-style:none;margin-left:0;padding-left:0;}
 #whole-content .paster-meta dt.website,#whole-content .paster-meta dt.about_me{display:none;}
-#whole-content section.boxes{margin-left:16em;}
+@media all and (min-width: 40em){#whole-content h2{text-align:left;} #whole-content .avatar,#whole-content .paster-meta{clear:left;float:left;display:block;width:15em;margin:0 1em 0 0;overflow:hidden;} #whole-content .boxes_wrapper{margin-left:16em;}}

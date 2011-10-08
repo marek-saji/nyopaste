@@ -95,11 +95,11 @@ $v->addLess($this->file('default', 'less'));
 
     </section>
 
-    <section class="boxes">
+    <div class="boxes_wrapper">
         <?php
         $this->getChild('Boxes')->render();
         ?>
-    </section>
+    </div>
 
 </section>
 

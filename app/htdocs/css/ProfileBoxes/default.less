@@ -1,48 +1,97 @@
 @import "../less.less";
 
-ul.boxes
+@pastesLeftMargin: 2.5em;
+@boxBorder: thin solid #aaa;
+
+section.boxes
 {
-    list-style    : none;
-    margin        : 0;
-    padding       : 0;
-    .column-width (20em);
-    .column-gap   (1em);
 
-    li.box
+    .Boxes.actions ul,
+    .Boxes.actions ul li
     {
-        .break-inside(avoid);
+        list-style : none;
+        margin     : 0;
+        padding    : 0;
+    }
 
-        .pastes
+    ul.boxes
+    {
+        list-style    : none;
+        margin        : 0;
+        padding       : 0;
+        .column-width (20em);
+        .column-gap   (1em);
+
+        li.box
         {
-            padding: 0;
-            margin: 0 0 0 2em;
+            .break-inside(avoid);
+            margin-bottom : 1em;
 
-            li
+            fieldset
             {
-                margin: 0 0 .5em 0;
+                border  : @boxBorder;
+                padding : 0;
 
-                strong.query-keyword
+                legend
                 {
-                    font-weight: normal;
+                    margin-left : @pastesLeftMargin;
                 }
 
-                time
+                .pastes
                 {
-                    font-size: 0.8em;
+                    padding : 0;
+                    margin  : .5em @pastesLeftMargin/2 .5em @pastesLeftMargin;
+
+                    li
+                    {
+                        margin     : 0 0 .5em 0;
+                        min-height : 22px; /* user avatar */
+
+                        strong.query-keyword
+                        {
+                            font-weight: normal;
+                        }
+
+                        time
+                        {
+                            font-size: 0.8em;
+                        }
+                    }
+                }
+
+                .actions
+                {
+                    text-align       : right;
+                    list-style       : none;
+                    font-size        : .8em;
+                    padding          : .25em .5em;
+                    border-top       : @boxBorder;
+                    background-color : #fafafa;
+
+
+                    li
+                    {
+                        display : inline;
+                    }
                 }
             }
         }
+    }
 
-        .actions
-        {
-            text-align : right;
-            list-style : none;
+    div.empty.boxes
+    {
+        text-align  : center;
+        font-weight : bold;
+        color       : #aaa;
+    }
 
-            li
-            {
-                display : inline;
-            }
-        }
+}
+
+@media all and (monochrome)
+{
+    section.boxes div.empty.boxes
+    {
+        color : #666;
     }
 }
 

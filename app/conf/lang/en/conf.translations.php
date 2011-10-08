@@ -53,14 +53,14 @@ $conf['translations']['user'] = array(
     // actions that can be performed on user object:
     '((action:%s:%s))' => array(
         'default' => 'show profile',
-        'edit'    => 'edit these informations or change password'
+        'edit'    => 'edit profile or change password'
     ),
 );
 
 $conf['translations']['boxes'] = array(
     // actions that can be performed on boxes object:
     '((action:%s:%s))' => array(
-        'new' => 'add a box',
+        'new' => 'add new list',
         'all' => 'view all',
     ),
 );

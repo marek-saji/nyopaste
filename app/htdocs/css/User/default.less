@@ -8,18 +8,8 @@
 {
     h2
     {
-        font-size : 1em;
-    }
-
-    .avatar,
-    .paster-meta
-    {
-        clear     : left;
-        float     : left;
-        display   : block;
-        width     : @panel-width;
-        margin    : 0 @panel-margin 0 0;
-        overflow  : hidden;
+        font-size  : 1em;
+        text-align : center;
     }
 
     .avatar
@@ -54,10 +44,32 @@
             display      : none;
         }
     }
+}
 
-    section.boxes
+@media all and (min-width: 40em)
+{
+    #whole-content
     {
-        margin-left: @panel-width + @panel-margin;
+        h2
+        {
+            text-align : left;
+        }
+
+        .avatar,
+        .paster-meta
+        {
+            clear     : left;
+            float     : left;
+            display   : block;
+            width     : @panel-width;
+            margin    : 0 @panel-margin 0 0;
+            overflow  : hidden;
+        }
+
+        .boxes_wrapper
+        {
+            margin-left: @panel-width + @panel-margin;
+        }
     }
 }
 

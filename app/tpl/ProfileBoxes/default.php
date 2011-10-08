@@ -1,60 +1,65 @@
 <?php
 $v->addLess($this->file('default', 'less'));
 ?>
-<?php
-$this->inc('row_actions', array(
-    'actions'     => $actions,
-    'inside_link' => true
-));
-?>
 
-<pre>
-- przy jednym paste-e w boksie akcje do boksu zostały zidentyfikowane jako
-  akcje na paste-e
-</pre>
+<section class="boxes">
 
-<?php if (empty($boxes)) : ?>
-    <ul class="empty boxes">
-        <li>
-            <?=$this->trans('no boxes')?>
-        </li>
-    </ul>
-<?php else /* if empty($boxes) */ : ?>
-    <ul class="boxes">
-        <?php foreach ($boxes as & $box) : ?>
-            <li class="box">
-                <fieldset>
-                    <?php if ($box['title']) : ?>
-                        <legend><?=$box['title']?></legend>
-                    <?php endif; /* $box['title'] */ ?>
+    <?php
+    $this->inc('row_actions', array(
+        'actions'     => $actions,
+        'inside_link' => true
+    ));
+    ?>
 
-                    <?php if (empty($box['Pastes'])) : ?>
-                        <?=$this->trans('no items')?>
-                    <?php else /* if empty($box['Pastes']) */ : ?>
-                        <ol class="pastes">
-                            <?php foreach ($box['Pastes'] as & $paste) : ?>
-                                <li>
-                                    <?=$this->l2c($this->trans('%s v%s', $paste['title'], $paste['version']), 'Paste', '', array($paste['url'], 'v'=>$paste['version']))?>
-                                    <?php if ($box['list_paster']) : ?>
-                                        <?=$this->trans('by')?>
-                                        <?=$this->inc('paster', array('row' => $paste))?>
-                                    <?php endif; /* $box['list_paster'] */ ?>
-                                    <time class="published" datetime="<?=$paste['creation']?>">
-                                        <?=$f->formatDate($paste['creation'])?>
-                                    </time>
-                                </li>
-                            <?php endforeach; /* $box['Pastes'] */ ?>
-                        </ol>
-                        <?php
-                        $this->inc('row_actions', array(
-                            'actions'     => $box['Actions'],
-                            'inside_link' => true
-                        ));
-                        ?>
-                    <?php endif; /* if empty($box['Pastes']) else */ ?>
-                </fieldset>
-            </li>
-        <?php endforeach; /* $boxes */ ?>
-    </ul> <!-- .boxes -->
-<?php endif; /* if empty($boxes) else */ ?>
+    <?php if (empty($boxes)) : ?>
 
+        <div class="empty boxes">
+            <p><?=$this->trans('You can create lists of pastes here for everyone to see.')?></p>
+            <p><?=$this->trans('These can be your pastes, but don\'t have to.')?></p>
+            <p>
+                <?=$this->l2aInside('add your first list', 'new', array('#' => 'content'), array('class' => 'modal'))?>
+            </p>
+        </div>
+
+    <?php else /* if empty($boxes) */ : ?>
+
+        <ul class="boxes">
+            <?php foreach ($boxes as & $box) : ?>
+                <li class="box">
+                    <fieldset>
+                        <?php if ($box['title']) : ?>
+                            <legend><?=$box['title']?></legend>
+                        <?php endif; /* $box['title'] */ ?>
+
+                        <?php if (empty($box['Pastes'])) : ?>
+                            <?=$this->trans('no items')?>
+                        <?php else /* if empty($box['Pastes']) */ : ?>
+                            <ol class="pastes">
+                                <?php foreach ($box['Pastes'] as & $paste) : ?>
+                                    <li>
+                                        <?=$this->l2c($this->trans('%s v%s', $paste['title'], $paste['version']), 'Paste', '', array($paste['url'], 'v'=>$paste['version']))?>
+                                        <?php if ($box['list_paster']) : ?>
+                                            <?=$this->trans('by')?>
+                                            <?=$this->inc('paster', array('row' => $paste))?>
+                                        <?php endif; /* $box['list_paster'] */ ?>
+                                        <time class="published" datetime="<?=$paste['creation']?>">
+                                            <?=$f->formatDate($paste['creation'])?>
+                                        </time>
+                                    </li>
+                                <?php endforeach; /* $box['Pastes'] */ ?>
+                            </ol>
+                            <?php
+                            $this->inc('row_actions', array(
+                                'actions'     => $box['Actions'],
+                                'inside_link' => true
+                            ));
+                            ?>
+                        <?php endif; /* if empty($box['Pastes']) else */ ?>
+                    </fieldset>
+                </li>
+            <?php endforeach; /* $boxes */ ?>
+        </ul> <!-- .boxes -->
+
+    <?php endif; /* if empty($boxes) else */ ?>
+
+</section> <!-- .boxes -->

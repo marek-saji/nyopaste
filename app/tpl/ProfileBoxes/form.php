@@ -28,33 +28,33 @@ if ($own_profile)
 {
     if ($editing)
     {
-        $title = $this->trans('Edit box from your profile');
+        $title = $this->trans('Edit pastes list');
     }
     else
     {
-        $title = $this->trans('Create new box on your profile');
+        $title = $this->trans('Create new list on your profile');
     }
 }
 else if ($user)
 {
     if ($editing)
     {
-        $title = $this->trans('Edit box on %s\'s profile');
+        $title = $this->trans('Edit pastes list on %s\'s profile');
     }
     else
     {
-        $title = $this->trans('Create new box on %s\'s profile', $user['Ident']);
+        $title = $this->trans('Create new list on %s\'s profile', $user['Ident']);
     }
 }
 else
 {
     if ($editing)
     {
-        $title = $this->trans('Edit a box');
+        $title = $this->trans('Edit pastes list');
     }
     else
     {
-        $title = $this->trans('Create new box');
+        $title = $this->trans('Create new pastes list');
     }
 }
 $v->setTitle($title);
@@ -91,13 +91,27 @@ $v->setTitle($title);
                     <?php
                     $form->input('query');
                     ?>
+                    <?php if ($user) : ?>
+                        <div class="help">
+                            <?php if ($own_profile) : ?>
+                                <p><?=$this->trans('Pastes matching this search query will automagically show up on your profile.')?></p>
+                                <p><?=$this->trans('To restrict to only your pastes, use <code>paster:%s</code>.', $user['Ident'])?></p>
+                            <?php else : ?>
+                                <p><?=$this->trans('Pastes matching this search query will automagically show up on %s\'s profile.', $user['DisplayName'])?></p>
+                                <?=$this->trans('To restrict to only this user\'s pastes, use <code>paster:%s</code>.', $user['Ident'])?>
+                            <?php endif; /* $own */ ?>
+                        </div>
+                    <?php endif; /* $user */ ?>
                 </li>
                 <li class="field">
+                    <label>
+                        <?php
+                        ob_start();
+                        $form->input('limit');
+                        $input = ob_get_clean();
+                        ?>
+                        <?=$this->trans('show %s latest pastes', $input)?>
                     <?php
-                    $form->label('limit', 'number of items to show');
-                    ?>
-                    <?php
-                    $form->input('limit');
                     ?>
                 </li>
                 <li class="field">
@@ -106,6 +120,9 @@ $v->setTitle($title);
                         'label' => 'display paster name'
                     ));
                     ?>
+                    <div class="help">
+                        <p><?=$this->trans('You can disable it, if all pastes in the list are from the same person.')?>
+                    </div>
                 </li>
             </ul>
         </fieldset>

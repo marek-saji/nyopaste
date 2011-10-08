@@ -263,6 +263,9 @@ class ProfileBoxesController extends Component
 
         $model_class = g()->load('Paste', 'model');
 
+        $first_id = arr(reset($boxes), 'id');
+        $last_id  = arr(end($boxes),   'id');
+
         foreach ($boxes as & $box)
         {
             $box['Pastes'] = $model_class::getByQuery(
@@ -277,26 +280,32 @@ class ProfileBoxesController extends Component
 
             if ($can_move)
             {
-                $box['Actions']['⇧'] = array(
-                    true,
-                    $this->url2aInside('move', array($box['id'], 'up')),
-                    'title' => $this->trans('move up'),
-                    'class' => 'char-icon'
-                );
-                $box['Actions']['⇩'] = array(
-                    true,
-                    $this->url2aInside('move', array($box['id'], 'down')),
-                    'title' => $this->trans('move down'),
-                    'class' => 'char-icon'
-                );
+                if ($box['id'] !== $first_id)
+                {
+                    $box['Actions']['⇧'] = array(
+                        true,
+                        $this->url2aInside('move', array($box['id'], 'up')),
+                        'title' => $this->trans('move up'),
+                        'class' => 'char-icon'
+                    );
+                }
+                if ($box['id'] !== $last_id)
+                {
+                    $box['Actions']['⇩'] = array(
+                        true,
+                        $this->url2aInside('move', array($box['id'], 'down')),
+                        'title' => $this->trans('move down'),
+                        'class' => 'char-icon'
+                    );
+                }
             }
 
             if ($can_edit)
             {
                 $box['Actions']['edit'] = array(
                     true,
-                    $this->url2aInside('edit', array($box['id'])),
-                    'title' => $this->trans('edit this box'),
+                    $this->url2aInside('edit', array($box['id'], '#' => 'content')),
+                    'title' => $this->trans('edit this list'),
                     'class' => 'modal'
                 );
             }
@@ -308,7 +317,7 @@ class ProfileBoxesController extends Component
                     $box['Actions']['remove'] = array(
                         true,
                         $this->url2aInside('remove', array($box['id'])),
-                        'title' => $this->trans('remove this box')
+                        'title' => $this->trans('remove this list')
                     );
                 }
             }
