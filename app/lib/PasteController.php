@@ -138,6 +138,13 @@ class PasteController extends PagesController
                     'url' => $url
                 ))
             ;
+
+            // paste does not exist
+            if ($newest === false)
+            {
+                return $this->delegateAction('error404', $params);
+            }
+
             $params['v'] = $newest['version'];
             $this->redirect(array(
                 $this->url(),
