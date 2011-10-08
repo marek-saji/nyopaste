@@ -139,6 +139,7 @@ class ProfileBoxesController extends Component
         }
         $box_order = $boxes[0]['order'];
         $boxes[1] = $model
+            ->orderBy('order', $up ? 'DESC' : 'ASC')
             ->getRow(array(
                 array('order', $up ? '<' : '>', $box_order)
             ))
