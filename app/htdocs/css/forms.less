@@ -300,6 +300,7 @@ body.js .holoform form
                 }
             }
 
+            &.focus,
             &.recently-focused
             {
                 .help,
@@ -337,6 +338,116 @@ body.js .holoform form
     display: none;
 }
 
+body.js   .wide.holoform form,
+body.nojs .wide.holoform form
+{
+    width: 100%;
+    max-width: 100%;
+
+    fieldset ul
+    {
+        li.field
+        {
+            .field_error,
+            .help
+            {
+                .field-box;
+                visibility : visible;
+                display    : block;
+
+                /* bubble arrow */
+                &::after
+                {
+                    display: none;
+                }
+            }
+        }
+    }
+}
+
+body.js .wide.holoform form
+{
+    fieldset ul
+    {
+        li.field
+        {
+            .help { display: none; }
+
+            &.focus,
+            &.recently-focused
+            {
+                .help,
+                &.invalid .field_error
+                {
+                    display: block;
+                }
+
+                &.invalid .help,
+                .field_error
+                {
+                    display: none;
+                }
+            }
+        }
+    }
+}
+
+@media all and (max-width: 50em)
+{
+    body.js   .holoform form,
+    body.nojs .holoform form
+    {
+        width: 100%;
+        max-width: 100%;
+
+        fieldset ul
+        {
+            li.field
+            {
+                .field_error,
+                .help
+                {
+                    .field-box;
+                    visibility : visible;
+
+                    /* bubble arrow */
+                    &::after
+                    {
+                        display: none;
+                    }
+                }
+            }
+        }
+    }
+
+    body.js .holoform form
+    {
+        fieldset ul
+        {
+            li.field
+            {
+                .help { display: none; }
+
+                &.focus,
+                &.recently-focused
+                {
+                    .help,
+                    &.invalid .field_error
+                    {
+                        display: block;
+                    }
+
+                    &.invalid .help,
+                    .field_error
+                    {
+                        display: none;
+                    }
+                }
+            }
+        }
+    }
+}
+
 @media speech, aural
 {
     .required small.required
@@ -345,29 +456,6 @@ body.js .holoform form
     }
 }
 
-
-@media (max-width: 50em)
-{
-    body.js .holoform form,
-    .holoform form
-    {
-        width: 100%;
-        max-width: 100%;
-
-        .field_error,
-        .help
-        {
-            .field-box;
-
-            /* bubble arrow */
-            &::after
-            {
-                display: none;
-            }
-        }
-    }
-
-}
 
 /* vim: set ft=css fdm=indent: */
 

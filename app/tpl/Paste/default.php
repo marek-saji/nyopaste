@@ -34,7 +34,7 @@ $meta_data_toggler = json_encode(array(
                 </span>
             </h2>
             <h3>
-                <?=$this->trans('by %s', $this->inc('paster', $row))?>
+                <?=$this->trans('pasted by %s', $this->inc('paster', $row))?>
             </h3>
         </hgroup>
 
@@ -99,35 +99,40 @@ $meta_data_toggler = json_encode(array(
     </article>
 
     <div id="share" class="modaled">
-        <h3>
-            <?=$this->trans('share this paste')?>
-        </h3>
-        <?php
-        $permalink = g()->req->getBaseUri(true)
-            . sprintf(
-                g()->conf['paste']['permalink'],
-                $this->getParam(0), $this->getParam('v')
-            )
-        ;
-        $share_text   = $this->trans('%s', $row['title']);
-        $mail_subject = $this->trans('%s at %s', $row['title'], strip_tags(g()->conf['site_name']));
-        $mail_body    = $this->trans("Take a look at this:\n\n%2\$s", $row['title'], $permalink);
+        <div class="share-inside">
+            <h3>
+                <?=$this->trans('share this paste')?>
+            </h3>
+            <?php
+            $permalink = g()->req->getBaseUri(true)
+                . sprintf(
+                    g()->conf['paste']['permalink'],
+                    $this->getParam(0), $this->getParam('v')
+                )
+            ;
+            $share_text   = $this->trans('%s', $row['title']);
+            $mail_subject = $this->trans('%s at %s', $row['title'], strip_tags(g()->conf['site_name']));
+            $mail_body    = $this->trans("Take a look at this:\n\n%2\$s", $row['title'], $permalink);
 
-        $this->inc('share', array(
-            'link'         => $permalink,
-            'title'        => $share_text,
-            'mail_subject' => $mail_subject,
-            'mail_body'    => $mail_body
-        ));
-        ?>
+            $this->inc('share', array(
+                'link'         => $permalink,
+                'title'        => $share_text,
+                'mail_subject' => $mail_subject,
+                'mail_body'    => $mail_body
+            ));
+            ?>
+        </div>
     </div>
 
     <?php if (@$row['Tree'][$row['root_id']]['Children']) : ?>
-        <section class="tree">
+        <section class="tree" id="tree">
             <h3><?=$this->trans('All versions of this paste:')?></h3>
 
             <?php
-            $this->inc('tree', array('tree'=>&$row['Tree']));
+            $this->inc('tree', array(
+                'tree'    => & $row['Tree'],
+                'current' => $row['id']
+            ));
             ?>
         </section>
     <?php endif; ?>

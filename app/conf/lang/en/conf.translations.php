@@ -67,7 +67,10 @@ $conf['translations']['boxes'] = array(
 
 $conf['translations']['paste'] = array(
     '((action:%s:%s))' => array(
-        'newVer' => 'create new version',
+        'newVer'     => 'create new version',
+        'allVer'     => 'all versions',
+        'download'   => 'download raw',
+        'plain text' => 'view as plain text',
     ),
 
     '((pastetype:%s))' => array(

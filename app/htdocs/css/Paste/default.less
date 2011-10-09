@@ -170,9 +170,34 @@
 
 #nyroModalContent
 {
-    .share.actions .action
+    .share-inside
     {
-        display: block;
+        margin-left: @actioniconsize*4/3;
+
+        .share.actions
+        {
+
+            ul
+            {
+                margin  : 0;
+                padding : 0;
+
+                .action
+                {
+                    display : block;
+
+                    &.addthis
+                    {
+                        margin  : 0 0 0 -@actioniconsize*4/3;
+
+                        &.compact
+                        {
+                            margin : 0;
+                        }
+                    }
+                }
+            }
+        }
     }
 }
 

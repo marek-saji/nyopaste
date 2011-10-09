@@ -16,5 +16,5 @@
 .paste.hentry section.tree ol.tree time{font-size:.8em;}
 .ajaj-msg{position:fixed;top:0;left:50%;width:30em;margin-left:-15em;color:white;background-color:black;background-color:rgba(0, 0, 0, 0.8);padding:1em;text-align:center;border-color:white;border-color:rgba(255, 255, 255, 0.3);border-style:solid;border-width:0 thin thin thin;border-radius:0 0 1em 1em;-moz-border-radius:0 0 1em 1em;-webkit-border-radius:0 0 1em 1em;}
 .share.actions .copy-to-clipboard.action input.copyable{width:30em;}
-#nyroModalContent .share.actions .action{display:block;}
+#nyroModalContent .share-inside{margin-left:21.333333333333332px;}#nyroModalContent .share-inside .share.actions ul{margin:0;padding:0;}#nyroModalContent .share-inside .share.actions ul .action{display:block;}#nyroModalContent .share-inside .share.actions ul .action.addthis{margin:0 0 0 -21.333333333333332px;}#nyroModalContent .share-inside .share.actions ul .action.addthis.compact{margin:0;}
 body.js #meta{display:none;}

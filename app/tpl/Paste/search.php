@@ -23,28 +23,37 @@ $v->addLess($this->file('search', 'less'));
     <?php
     $form = g('Forms', array('search', $this));
     ?>
-    <div class="holoform search">
+    <div class="holoform search wide">
 
         <?php
         $form->create();
         ?>
 
         <fieldset>
-            <?php
-            $form->label('query', 'search');
-            ?>
-            <?php
-            $form->input('query', array(
-                'ajax' => false, // do not validate
-                'attrs' => array(
-                    'placeholder' => 'search for a paste',
-                    'type'        => 'search',
-                    'autosave'    => 'search'
-                )
-            ));
-            ?>
+            <ul>
+                <li class="field">
+                    <?php
+                    $form->label('query', 'search');
+                    ?>
+                    <?php
+                    $form->input('query', array(
+                        'ajax' => false, // do not validate
+                        'attrs' => array(
+                            'placeholder' => 'search for a paste',
+                            'type'        => 'search',
+                            'autosave'    => 'search'
+                        )
+                    ));
+                    ?>
 
-            <p>@todo</p>
+                    <div class="help">
+                        <ul>
+                            <li><?=$this->trans('Use <code>paster:query</code> and <code>group:query</code> to search for only user/group\'s pastes.')?></li>
+                            <li><?=$this->trans('Use brackets and <code>OR</code> operator to build even more advanced queries.')?></li>
+                        </ul>
+                    </div>
+                </li>
+            </ul>
         </fieldset>
 
         <?php

@@ -6,8 +6,8 @@ body.Paste__search
         {
             form
             {
-                width      : auto;
-                max-width  : none;
+                width      : 70%;
+                margin     : 0 auto;
                 text-align : center;
 
                 label
@@ -16,8 +16,15 @@ body.Paste__search
                 }
                 input.text
                 {
-                    width : 70%;
-                    font-size: 1.1em;
+                    font-size : 1.1em;
+                    width     : 100%;
+                }
+
+                .help
+                {
+                    font-size : .9em;
+                    width     : 70%;
+                    margin    : 0 auto;
                 }
             }
         }
@@ -40,6 +47,28 @@ body.Paste__search
             .query-keyword
             {
                 background-color: yellow;
+            }
+        }
+    }
+}
+
+@media all and (max-width: 50em)
+{
+    body.Paste__search
+    {
+        #whole-content
+        {
+            .search.holoform
+            {
+                form
+                {
+                    width : 100%;
+
+                    .help
+                    {
+                        width : 100%;
+                    }
+                }
             }
         }
     }

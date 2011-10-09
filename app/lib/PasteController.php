@@ -161,6 +161,15 @@ class PasteController extends PagesController
             return false;
         }
 
+        if (empty($db_data['Tree'][$db_data['root_id']]['Children']))
+        {
+            $has_tree = false;
+        }
+        else
+        {
+            $has_tree = true;
+        }
+
 
         switch ($display_type)
         {
@@ -192,11 +201,12 @@ class PasteController extends PagesController
         $removed = (bool) $db_data['removed'];
         $action_params = array($url) + ($ver ? array('v'=>$ver) : array());
         $all_actions = array(
-            'download'   => array($this, $action,   array(1=>'get') + $action_params),
             'plain text' => array($this, $action,   array(1=>'raw') + $action_params),
+            'download'   => array($this, $action,   array(1=>'get') + $action_params),
             'share'      => array(true, '#share', 'class'=>'modal'),
 
             'newVer'     => array($this, 'new',     $action_params),
+            'allVer'     => $has_tree ? array(true,  '#tree') : false,
             'edit'       => array($this, 'edit',    $action_params),
             'remove'     => $removed ? false :
                             array($this, 'remove',  $action_params),
