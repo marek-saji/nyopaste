@@ -18,7 +18,7 @@
 $defaults = array(
     'actions'     => array(),
     'name'        => $t->getName(),
-    'inside_link' => false
+    'inside_link' => false,
 );
 extract(
     array_merge(
@@ -54,10 +54,14 @@ $attrs = array_diff_key($____local_variables, $defaults);
             ?>
             <li class="<?=$action?> action">
                 <?php
-                $action == $this->_default_action and $action='';
-                switch ($action)
+                if ($action == $this->_default_action)
                 {
-                    case 'login' :
+                    $action = '';
+                }
+                switch ("$name/$action")
+                {
+                    case 'User/login' :
+                    case 'User/remove' :
                         $value[3] = array('class'=>'modal');
                         break;
                     default :
