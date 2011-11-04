@@ -1,8 +1,7 @@
 @import "less.less";
 
 @formwidth: 50em;
-@formwidthpr: 100% * 2/3;
-@formtoasideratio: 1/2;
+@formtoasideratio: 2/3;
 
 .field-box()
 {
@@ -19,7 +18,7 @@
 .holoform form
 {
     width     : @formwidth;
-    max-width : @formwidthpr;
+    max-width : 100% * @formtoasideratio;
 
     .field_error,
     .help
@@ -254,8 +253,8 @@ body.js .holoform form
         left: 100%;
         margin: 0 0 0 3.5em;
         padding: 1em;
-        width: @formwidth * @formtoasideratio;
-        max-width: 100% * @formtoasideratio - 10;
+        width     : @formwidth * (1-@formtoasideratio);
+        max-width : 100% * (1-@formtoasideratio);
         z-index: 30;
         border: white solid thin;
         .border-radius(.5em);

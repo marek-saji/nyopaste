@@ -4,4 +4,4 @@ body.Paste__search #whole-content .search.holoform form .help{font-size:.9em;wid
 body.Paste__search .pastes.hfeed .hentry h4{font-weight:normal;}
 body.Paste__search .pastes.hfeed .hentry .entry-content{overflow:auto;}
 body.Paste__search .pastes.hfeed .hentry .query-keyword{background-color:yellow;}
-@media all and (max-width: 50em){body.Paste__search #whole-content .search.holoform form{width:100%;}}
+@media all and (max-width: 50em){body.Paste__search #whole-content .search.holoform form{width:100%;}body.Paste__search #whole-content .search.holoform form .help{width:100%;}}
