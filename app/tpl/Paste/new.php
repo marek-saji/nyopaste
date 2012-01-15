@@ -25,6 +25,16 @@ $form = g('Forms', array('paste', $this));
         <h2><?=$title?></h2>
     </header>
 
+    <?php if ($use_captcha) : ?>
+        <noscript>
+            <div class="error">
+                <p>
+                    <strong><?=$this->trans('Currently JavaScript is required to paste things, sorry.')?></strong>
+                </p>
+            </div>
+        </noscript>
+    <?php endif; /* $use_captcha */ ?>
+
     <p>
         <?=$this->trans('Fields marked with asterisk are required.')?>
     </p>
@@ -374,25 +384,12 @@ $form = g('Forms', array('paste', $this));
 
 
         <?php if ($use_captcha) : ?>
-            <fieldset class="verbose">
-                <legend><?=$this->trans('prove that you are human')?></legend>
-                <ul>
-                    <!-- CAPTCHA -->
-                    <li class="captcha field">
-                        <?=recaptcha_get_html($recaptcha_publickey);?>
-                        <div class="help">
-                            <p>
-                                <?=$this->trans('To prove you are not an evil robot, complete this chalange.')?>
-                            </p>
-                            <p>
-                                <?=$this->trans('After signing-in, this will not appear.')?>
-                            </p>
-                        </div>
-                    </li>
-                </ul>
-            </fieldset>
-        <?php endif; ?>
-
+            <?php
+            $this->inc('recaptcha', array(
+                'recaptcha_publickey' => $recaptcha_publickey
+            ));
+            ?>
+        <?php endif; /* $use_captcha */ ?>
 
         <?php if (g()->auth->loggedIn()) : ?>
             <fieldset>

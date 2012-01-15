@@ -95,15 +95,12 @@ $v->setTitle($title);
         </fieldset>
 
         <?php if ($use_captcha) : ?>
-            <fieldset>
-                <ul>
-                    <!-- CAPTCHA -->
-                    <li class="captcha field">
-                        <?=recaptcha_get_html($recaptcha_publickey);?>
-                    </li>
-                </ul>
-            </fieldset>
-        <?php endif; ?>
+            <?php
+            $this->inc('recaptcha', array(
+                'recaptcha_publickey' => $recaptcha_publickey
+            ));
+            ?>
+        <?php endif; /* $use_captcha */ ?>
 
         <?php if (!g()->auth->loggedIn()) : ?>
             <p>

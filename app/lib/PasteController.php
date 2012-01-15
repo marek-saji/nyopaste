@@ -557,7 +557,23 @@ class PasteController extends PagesController
 
         // assign reCAPTCHA settings
 
-        $use_captcha = !g()->auth->loggedIn() && !g()->debug->on('disable', 'captcha');
+        if (g()->auth->loggedIn())
+        {
+            $use_captcha = false;
+        }
+        else if (g()->debug->on('disable', 'captcha'))
+        {
+            $use_captcha = false;
+        }
+        else if (!@g()->conf['keys']['recaptcha']['public'])
+        {
+            $use_captcha = false;
+        }
+        else
+        {
+            $use_captcha = true;
+        }
+
         if ($use_captcha)
         {
             g()->load('recaptcha-php-1.10/recaptchalib', null);
@@ -566,6 +582,7 @@ class PasteController extends PagesController
                 g()->conf['keys']['recaptcha']['public']
             );
         }
+
         $this->assign('use_captcha', $use_captcha);
 
 
