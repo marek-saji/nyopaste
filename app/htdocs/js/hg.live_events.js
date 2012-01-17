@@ -96,7 +96,9 @@ $(function(){
     try
     {
         if (typeof $.datepicker == 'undefined')
+        {
             return;
+        }
         var default_hg_opts = {
             dateFormat: 'yy-mm-dd',
             showOn: 'button',
@@ -115,10 +117,14 @@ $(function(){
             var me = $(this);
             var opts = $.extend({}, default_opts); // clone
             if (typeof hg_datepickers != 'undefined')
-            $.each(hg_datepickers, function(selector){
-                if (me.is(selector))
-                    $.extend(opts, this);
-            });
+            {
+                $.each(hg_datepickers, function(selector) {
+                    if (me.is(selector))
+                    {
+                        $.extend(opts, this);
+                    }
+                });
+            }
 
             me.datepicker(opts);
 
@@ -194,7 +200,9 @@ $(function(){
                 var context = $(this);
                 var tabs = context.find('.tabs:first');
                 if (!tabs.children().is('.active'))
+                {
                     tabs.children(':first').addClass('active');
+                }
                 tabs.children('.active').each(function(){
                     // ok. I don't know why, but calling toggleTab here
                     // did not work /:
@@ -341,7 +349,9 @@ $(function(){
 
 
             if (me.height() <= height)
+            {
                 return; // we happy with the things they are already.
+            }
 
             me.css({
                 'overflow' : 'hidden',
@@ -349,7 +359,7 @@ $(function(){
             });
 
             var wrapper = me.wrap($('<div />', {
-                'class' : 'collapsable_wrapper',
+                'class' : 'collapsable_wrapper'
             })).parent();
 
             var expander = $('<a />', {
@@ -430,7 +440,9 @@ $(function(){
         $('textarea.autoexpandable').live('keydown', function(e){
             var me = $(this);
             if (me.data('hg.autoexpandable.timeout'))
+            {
                 return;
+            }
             me.data('hg.autoexpandable.timeout', window.setTimeout(function(){
                 me.removeData('hg.autoexpandable.timeout');
                 if (!me.data('hg.autoexpandable.min-height'))
@@ -508,7 +520,7 @@ $('.holoform .field_error')
  * ---------------------------------------
  * @author m.augustynowicz
  */
-(hg.init.copyToClipboard = function(){
+hg.init.copyToClipboard = function () {
     if (typeof ZeroClipboard != 'object')
     {
         return false;
@@ -516,7 +528,10 @@ $('.holoform .field_error')
 
     for (var i in ZeroClipboard.clients)
     {
-        ZeroClipboard.clients[i].reposition();
+        if (ZeroClipboard.clients.hasOwnProperty(i))
+        {
+            ZeroClipboard.clients[i].reposition();
+        }
     }
 
     $('embed[id^=ZeroClipboardMovie_]').parent().remove();
@@ -566,7 +581,9 @@ $('.holoform .field_error')
     ;
 
     return true;
-})();
+};
+
+hg.init.copyToClipboard();
 
 
 
@@ -626,7 +643,7 @@ $(function () {
 $(window).load(function () {
     $('.autocomplete').each(function () {
         var $this       = $(this),
-            $dataSource = $this.data('impersonating') || $this
+            $dataSource = $this.data('impersonating') || $this,
             data        = $dataSource.data('hgAutocomplete') || {}
         ;
 
