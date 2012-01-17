@@ -79,6 +79,6 @@ $form = g('Forms', array('login', $this));
 
     </div> <!-- .holoform -->
 
-</section><!-- #login -->
+</section><!-- #login.modal-wannabe -->
 
 

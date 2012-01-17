@@ -19,7 +19,9 @@ $t->inc('main_common');
 <div id="top">
 
     <nav class="skip-to-content">
-        <a href="#content"><?=$t->trans('skip to content')?></a>
+        <small>
+            <a href="#content"><?=$t->trans('skip to content')?></a>
+        </small>
     </nav>
 
     <header id="head">

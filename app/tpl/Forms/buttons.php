@@ -92,17 +92,18 @@ if (!empty($cancel) && $cancel_link)
                 ?>
             <?php else : ?>
                 <?php
-                $button += array(
-                    'type' => 'submit'
-                );
+                $label =& $button['value'];
+                unset($button['value']);
+
                 if (@$button['name'])
                 {
                     $long_ident = $this->getFormsIdent($form);
                     $button['name'] = sprintf('%s[%s]', $long_ident, $button['name']);
                 }
                 echo $f->tag(
-                    'input',
-                    $button
+                    'button',
+                    $button,
+                    $label
                 );
                 ?>
             <?php endif; /* array_key_exists('href', $button */ ?>

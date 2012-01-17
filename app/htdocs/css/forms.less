@@ -49,7 +49,8 @@
         {
             font-size: 1.2em;
 
-            input
+            input,
+            button
             {
                 font-size: 1em;
             }
@@ -170,25 +171,25 @@
             .field_error
             {
                 display: block;
-                background-color: #fbb;
+                background-color: @colourError;
                 z-index: 20;
                 list-style-position: inside;
                 list-style-type: disc;
 
                 &::after
                 {
-                    border-color: transparent #fbb;
+                    border-color: transparent @colourError;
                 }
             }
 
             .help
             {
-                background-color: #bfb;
+                background-color: @colourHelp;
                 z-index: 10;
 
                 &::after
                 {
-                    border-color: transparent #bfb;
+                    border-color: transparent @colourHelp;
                 }
 
                 p
@@ -399,20 +400,28 @@ body.js .wide.holoform form
         width: 100%;
         max-width: 100%;
 
-        fieldset ul
+        fieldset
         {
-            li.field
+            &.buttons
             {
-                .field_error,
-                .help
-                {
-                    .field-box;
-                    visibility : visible;
+                text-align: center;
+            }
 
-                    /* bubble arrow */
-                    &::after
+            ul
+            {
+                li.field
+                {
+                    .field_error,
+                    .help
                     {
-                        display: none;
+                        .field-box;
+                        visibility : visible;
+
+                        /* bubble arrow */
+                        &::after
+                        {
+                            display: none;
+                        }
                     }
                 }
             }

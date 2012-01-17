@@ -143,5 +143,5 @@ $v->setTitle($title);
 
     </div> <!-- .holoform -->
 
-</section>
+</section> <!-- #content.modal-wannabe -->
 
