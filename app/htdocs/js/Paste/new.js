@@ -213,6 +213,11 @@ $(function(){
     $('.editor').each(function(){
         console.info('init ACE on ', this);
         $(this).data('ace_editor', ace.transformTextarea(this));
+
+        // display help message
+        hg('yesscript')(
+            $('script[language="text/html+yesscript+ace"]')
+        );
     });
 
 });

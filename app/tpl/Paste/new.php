@@ -236,16 +236,18 @@ $form = g('Forms', array('paste', $this));
                             <?=$this->trans('With JavaScript available, this field would become a neat editor. Try enabling it, if you can.')?>
                         </p>
                     </noscript>
-                    <div class="help js">
-                        <p>
-                            <?php
-                            echo $t->trans(
-                                'This is ACE editor. You may use it\'s <a href="%s" target="_blank">keyboard shortcuts</a>.',
-                                'https://github.com/ajaxorg/ace/wiki/Default-Keyboard-Shortcuts'
-                            );
-                            ?>
-                        </p>
-                    </div>
+                    <script language="text/html+yesscript+ace">
+                        <div class="help js">
+                            <p>
+                                <?php
+                                echo $t->trans(
+                                    'This is ACE editor. You may use it\'s <a href="%s" target="_blank">keyboard shortcuts</a>.',
+                                    'https://github.com/ajaxorg/ace/wiki/Default-Keyboard-Shortcuts'
+                                );
+                                ?>
+                            </p>
+                        </div>
+                    </script>
                 </li>
 
             </ul>

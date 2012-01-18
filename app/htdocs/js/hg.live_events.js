@@ -460,3 +460,12 @@ $(':input').live('click', function () {
     $(this).filter(':not(:focus)').focus();
 });
 
+
+/**
+ * Initialize yescript
+ * -------------------
+ */
+$(function () {
+    hg('yesscript')();
+});
+
