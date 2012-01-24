@@ -31,22 +31,25 @@ $conf['translations']['PasteTypeMarkup'] = array(
 
     '((parser:markdown))' => 'Markdown',
     '((parser:markdown:desc))' => '
-<pre><code>- *emphasis*, **strong emphasis**,  [link](http://example.com/), `code`
-- use dashes to make lists
-    - oh, and this is a sub-list (four space/tab indent)
-        1. and this is ordered sub-sub-list
-        1. you don\'t have to care about numbers,
-           markdown will take care of that.</code></pre>
+<p>
+    <span class="avoid-br"><code>*emphasis*</code>,</span>
+    <span class="avoid-br"><code>**strong emphasis**</code>,</span>
+    <span class="avoid-br"><code>[link](http://example.com/)</code>,</span>
+    <span class="avoid-br"><code>`code`</code></span>
+</p>
+
 <p><a href="http://daringfireball.net/projects/markdown/syntax">there\'s more you can do with Markdown</a></p>
 ',
 
 
     '((parser:textile))' => 'Textile',
     '((parser:textile:desc))' => '
-<pre><code>* _emphasis_, *strong emphasis*,  "link":http://example.com/, @code@
-* use asterists to make lists
-** oh, and this is a sub-list
-**# and this is ordered sub-sub-list</code></pre>
+<p>
+    <span class="avoid-br"><code>_emphasis_</code>,</span>
+    <span class="avoid-br"><code>*strong emphasis*</code>,</span>
+    <span class="avoid-br"><code>"link":http://example.com/</code>,</span>
+    <span class="avoid-br"><code>@code@</code></span>
+</p>
 <p><a href="http://textile.thresholdstate.com/">there\'s more you can do with Textile</a></p>
 ',
 

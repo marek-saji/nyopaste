@@ -30,13 +30,28 @@
 $conf['translations']['PasteTypeMarkup'] = array(
 
     '((parser:markdown))' => 'Markdown',
-    '((parser:markdown:desc))' => '<blockquote><p><i lang="en">Markdown</i> pozwala na tworzenie łatwego w czytaniu i pisaniu tekstu.</p></blockquote>
-        <p><a href="http://pl.wikipedia.org/wiki/Markdown">dowiedz się więcej o <i lang="en">Markdown</i></a></p>',
+    '((parser:markdown:desc))' => '
+<p>
+    <span class="avoid-br"><code>*wyróżnienie*</code>,</span>
+    <span class="avoid-br"><code>**silne wyróżnienie**</code>,</span>
+    <span class="avoid-br"><code>[link](http://example.com/)</code>,</span>
+    <span class="avoid-br"><code>`kod`</code></span>
+</p>
+
+<p><a href="http://daringfireball.net/projects/markdown/syntax">możesz zrobić dużo więcej przy pomocy Markdown</a></p>
+',
 
 
     '((parser:textile))' => 'Textile',
-    '((parser:textile:desc))' => '<blockquote><p><i lang="en">Textile</i> działa na tekście z *prostym* systemem znaczników i wytwarza poprawny <abbr lang="en">XHTML</abbr>.</p></blockquote>
-        <p><a href=http://pl.wikipedia.org/wiki/Textile">dowiedz się więcej o <i lang="en">Textile</i></a></p>',
+    '((parser:textile:desc))' => '
+<p>
+    <span class="avoid-br"><code>_wyróżnienie_</code>,</span>
+    <span class="avoid-br"><code>*silne wyróżnienie*</code>,</span>
+    <span class="avoid-br"><code>"link":http://example.com/</code>,</span>
+    <span class="avoid-br"><code>@kod@</code></span>
+</p>
+<p><a href="http://textile.thresholdstate.com/">możesz zrobić dużo więcej przy pomocy Textile</a></p>
+',
 
 );
 
