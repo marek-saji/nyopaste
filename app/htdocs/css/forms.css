@@ -1,7 +1,7 @@
 .holoform form{width:50em;max-width:66.66666666666666%;}.holoform form .field_error,.holoform form .help{position:static;top:auto;left:auto;margin:.25em 0;padding:.5em 1em;width:auto;max-width:100%;border-radius:0.5em;-moz-border-radius:0.5em;-webkit-border-radius:0.5em;}
 .holoform form fieldset{border:none;margin:0;padding:.5em 1em;}.holoform form fieldset.verbose{border:#aaa solid thin;padding:.5em 1em;margin:1em 0;}
 .holoform form fieldset.hidden{display:none;}
-.holoform form fieldset.buttons{font-size:1.2em;}.holoform form fieldset.buttons input,.holoform form fieldset.buttons button{font-size:1em;}
+.holoform form fieldset.buttons{font-size:1.2em;line-height:2em;}.holoform form fieldset.buttons input,.holoform form fieldset.buttons button{font-size:1em;}
 .holoform form fieldset fieldset{padding:0 1em 0 2em;}
 .holoform form fieldset legend{font-size:1.1em;}.holoform form fieldset legend select{font-size:1em;}
 .holoform form fieldset label.disabled,.holoform form fieldset input.disabled,.holoform form fieldset textarea.disabled,.holoform form fieldset select.disabled,.holoform form fieldset button.disabled{color:gray;}

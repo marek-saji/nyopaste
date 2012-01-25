@@ -5,10 +5,6 @@ $act      = $ctrl->getLaunchedAction();
 $url      = "$ctrl_url/$act";
 ?>
 <ul>
-    <?php if (g()->debug->allowed()) : ?>
-        <li>@todo</li>
-    <?php endif; ?>
-
     <?php
     $class = ($url === 'Paste/new') ? 'active' : '';
     ?>

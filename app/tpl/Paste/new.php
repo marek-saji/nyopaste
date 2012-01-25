@@ -21,6 +21,7 @@ $form = g('Forms', array('paste', $this));
 ?>
 
 <section>
+
     <header>
         <h2><?=$title?></h2>
     </header>

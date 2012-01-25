@@ -23,14 +23,17 @@
  */
 extract(array_merge(
     array(
-        'form'         => null, // null value will raise error
-        'buttons'      => array(),
+        'form'            => null, // null value will raise error
+        'buttons'         => array(),
         // "submit" a.k.a. first button
-        'submit'       => 'Save',
-        'submit_class' => '',
+        'submit'          => 'save',
+        'submit_class'    => '',
+        // separator between buttons
+        'separator'       => 'or',
+        'separator_class' => '',
         // "cancel" a.k.a. last button (link)
-        'cancel'       => 'Cancel',
-        'cancel_link'  => true,
+        'cancel'          => 'cancel',
+        'cancel_link'     => true,
     ),
     (array) $____local_variables
 ));
@@ -72,42 +75,58 @@ if (!empty($cancel) && $cancel_link)
     $buttons[] = ob_get_clean();
 }
 
+if (empty($buttons))
+{
+    return;
+}
+
+$buttons_html_arr = array();
+foreach ($buttons as $button)
+{
+    if (is_string($button))
+    {
+        $buttons_html_arr[] = $button;
+    }
+    elseif (array_key_exists('href', $button))
+    {
+        $label = & $button['label'];
+        unset($label);
+        $buttons_html_arr[] = $f->tag(
+            'a',
+            $button,
+            $label
+        );
+    }
+    else
+    {
+        $label =& $button['value'];
+        unset($button['value']);
+
+        if (@$button['name'])
+        {
+            $long_ident = $this->getFormsIdent($form);
+            $button['name'] = sprintf('%s[%s]', $long_ident, $button['name']);
+        }
+        $buttons_html_arr[] = $f->tag(
+            'button',
+            $button,
+            $label
+        );
+    }
+}
+
+$separator_html = $f->tag(
+    'span',
+    array(
+        'class' => "separator {$separator_class}"
+    ),
+    $separator
+);
+
 ?>
 <fieldset class="buttons">
-    <?php if ($buttons) : ?>
-        <?php foreach ($buttons as $button) : ?>
-            <?php if (is_string($button)) : ?>
-                <?php
-                echo $button;
-                ?>
-            <?php elseif (array_key_exists('href', $button)) : ?>
-                <?php
-                $label = & $button['label'];
-                unset($label);
-                echo $f->tag(
-                    'a',
-                    $button,
-                    $label
-                );
-                ?>
-            <?php else : ?>
-                <?php
-                $label =& $button['value'];
-                unset($button['value']);
-
-                if (@$button['name'])
-                {
-                    $long_ident = $this->getFormsIdent($form);
-                    $button['name'] = sprintf('%s[%s]', $long_ident, $button['name']);
-                }
-                echo $f->tag(
-                    'button',
-                    $button,
-                    $label
-                );
-                ?>
-            <?php endif; /* array_key_exists('href', $button */ ?>
-        <?php endforeach; ?>
-    <?php endif; /* $buttons */ ?>
+    <?php
+    echo join(" {$separator_html} ", $buttons_html_arr);
+    ?>
 </fieldset>
 

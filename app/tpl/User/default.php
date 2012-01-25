@@ -60,6 +60,15 @@ $v->addLess($this->file('default', 'less'));
             ?>
 
             <dl>
+                <?php if (trim($row['AboutMe'])) : ?>
+                    <!-- about me -->
+                    <dt class="about_me text">
+                        <?=$t->trans('something about you')?>
+                    </dt>
+                    <dd class="about_me text user-content">
+                        <?=$row['AboutMe']?>
+                    </dd>
+                <?php endif; ?>
                 <?php if (trim($row['website'])) : ?>
                     <!-- website -->
                     <dt class="website text url">
@@ -78,15 +87,6 @@ $v->addLess($this->file('default', 'less'));
                             $row['website']
                         );
                         ?>
-                    </dd>
-                <?php endif; ?>
-                <?php if (trim($row['AboutMe'])) : ?>
-                    <!-- about me -->
-                    <dt class="about_me text">
-                        <?=$t->trans('something about you')?>
-                    </dt>
-                    <dd class="about_me text user-content">
-                        <?=$row['AboutMe']?>
                     </dd>
                 <?php endif; ?>
             </dl>

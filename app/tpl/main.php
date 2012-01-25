@@ -113,21 +113,21 @@ $t->inc('infos');
             $admin_login   = g()->conf['users']['admin']['login'];
             $admin_profile = $this->url2c('User', '', array($admin_login));
             ?>
-            <?= $this->trans('Created and maintained by <span class="vcard"><a class="fn url" href="%s">Marek Augustynowicz</a></span>.', $admin_profile) ?>
+            <?= $this->trans('Created and maintained by <span class="vcard"><a class="fn url avoid-br" href="%s">Marek Augustynowicz</a></span>.', $admin_profile) ?>
         </p>
         <p>
-            <?= $this->trans('The code is licensed under <a rel="license" href="http://www.opensource.org/licenses/mit-license.php">MIT License</a> and available at <a href="https://github.com/marek-saji/nyopaste">GitHub</a>.') ?>
+            <?= $this->trans('The code is licensed under <a rel="license" href="http://www.opensource.org/licenses/mit-license.php" class="avoid-br">MIT License</a> and available at <a href="https://github.com/marek-saji/nyopaste">GitHub</a>.') ?>
         </p>
     </section>
     <section class="more">
         <p>
-            <?=$this->trans('If you have an idea how we can improve the site, please <a class="uservoice" href="https://nyopaste.uservoice.com">let us know</a>.')?>
+            <?=$this->trans('If you have an idea how we can improve the site, please <a class="uservoice avoid-br" href="https://nyopaste.uservoice.com">let us know</a>.')?>
         </p>
         <p>
             <?php
             echo $this->trans('Before using %s, read %s.',
                 g()->conf['site_name'],
-                $this->l2c($this->trans('Terms of Service'), 'Paste', '', array('TOS'))
+                $this->l2c($this->trans('Terms of Service'), 'Paste', '', array('TOS'), array('class'=>'avoid-br'))
             );
             ?>
         </p>

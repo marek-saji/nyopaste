@@ -13,10 +13,15 @@ $v->addLess($this->file('style','less'));
 
     <dl>
         <dt>
-            <dfn>pastebin</dfn>
-            /<i class="ipa">peɪstbɪn</i>/,
-            also: <dfn>nopaste</dfn>
-            /<i class="ipa">nəʊpeɪst</i>/
+            <span class="avoid-br">
+                <dfn>pastebin</dfn>
+                /<i class="ipa">peɪstbɪn</i>/,
+            </span>
+            also:
+            <span class="avoid-br">
+                <dfn>nopaste</dfn>
+                /<i class="ipa">nəʊpeɪst</i>/
+            </span>
             &#8212;&nbsp;
         </dt>
         <dd>
@@ -25,8 +30,10 @@ $v->addLess($this->file('style','less'));
             </p>
         </dd>
         <dt>
-            <dfn class="nyopaste">n<i class="kern_ny">y</i>opaste</dfn>
-            /<i class="ipa">njopeɪst</i>/
+            <span class="avoid-br">
+                <dfn class="nyopaste">n<i class="kern_ny">y</i>opaste</dfn>
+                /<i class="ipa">njopeɪst</i>/
+            </span>
             &#8212;&nbsp;
         </dt>
         <dd>

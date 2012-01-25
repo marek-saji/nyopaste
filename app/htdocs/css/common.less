@@ -7,10 +7,15 @@
 @ny_kern : -0.2em;
 @yo_kern : -0.3em;
 
+html
+{
+    font-family : sans-serif;
+    min-height  : 100%;
+}
+
 html,
 body
 {
-    font-family: sans-serif;
     margin: 0;
     padding: 0;
 }
@@ -51,8 +56,6 @@ menu, nav, section { display: block; }
 
     nav li
     {
-        display: inline;
-
         a
         {
             white-space: nowrap;
@@ -64,7 +67,7 @@ menu, nav, section { display: block; }
     {
         li a
         {
-            margin: 0 0 0 1em;
+            margin: 0 .5em;
         }
     }
 
@@ -95,30 +98,10 @@ menu, nav, section { display: block; }
             font-size   : @logo_size;
             font-weight : normal;
             font-family : 'Quattrocento', Times, 'Times New Roman', serif;
-            position : relative;
-            z-index: 0;
-
-            .kern_n
-            {
-                margin-left : -(@ny_kern + @yo_kern);
-            }
-            .kern_ny
-            {
-                margin-left : @ny_kern;
-                position    : relative;
-                top         : -.01em;
-                z-index     : -1;
-            }
-            .kern_yo
-            {
-                margin-left : @yo_kern;
-            }
-
         }
 
         small
         {
-            margin-left : @motto_size / -(@ny_kern + @yo_kern);
             font-size   : @motto_size;
             font-weight : normal;
             color       : #777;
@@ -239,6 +222,13 @@ div#nyroModalFull
     page-break-inside: avoid;
 }
 
+a:active
+{
+    position : relative;
+    top      : .1rem;
+    left     : .1rem;
+}
+
 // for opera
 button
 {
@@ -291,7 +281,7 @@ body.js
     {
         font-size: .7em;
         padding: 0;
-        margin: .5em 1em;
+        margin: 1em;
         color: #666;
 
         a
@@ -310,25 +300,66 @@ body.js
 }
 
 
-@media (min-width: 60em)
+/* nicely kerned logo */
+@media all and (min-width: 16em)
 {
-    #foot
+    #top
     {
-        section
+        #head
         {
-            width : 50%;
-            float : left;
-
-            &.copyright
+            h1
             {
-                text-align: right;
+                position : relative;
+                z-index  : 0;
+
+                .kern_n
+                {
+                    margin-left : -(@ny_kern + @yo_kern);
+                }
+                .kern_ny
+                {
+                    margin-left : @ny_kern;
+                    position    : relative;
+                    top         : -.01em;
+                    z-index     : -1;
+                }
+                .kern_yo
+                {
+                    margin-left : @yo_kern;
+                }
+            }
+
+            small
+            {
+                margin-left : @motto_size / -(@ny_kern + @yo_kern);
             }
         }
     }
 }
 
+
 /* 3 menu items */
-@media (min-width: 36em)
+@media all and (min-width: 25em)
+{
+    #top
+    {
+        nav li
+        {
+            display: inline;
+        }
+
+        .search
+        {
+            input.query
+            {
+                width: 20em;
+            }
+        }
+    }
+}
+
+/* logo + 3 menu items */
+@media all and (min-width: 36em)
 {
     #top
     {
@@ -372,6 +403,7 @@ body.js
 
             input.query
             {
+                width: 10em;
                 .transition(width .2s ease-in);
 
                 &.focus
@@ -383,6 +415,32 @@ body.js
         }
 
     } /* #top */
+
+    #foot
+    {
+        p
+        {
+            margin: .5em 1em;
+        }
+    } // #foot
+}
+
+/* two-column footer */
+@media all and (min-width: 60em)
+{
+    #foot
+    {
+        section
+        {
+            width : 50%;
+            float : left;
+
+            &.copyright
+            {
+                text-align : right;
+            }
+        }
+    }
 }
 
 
