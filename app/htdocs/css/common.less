@@ -2,6 +2,11 @@
 
 @headerbg: #eee;
 
+@logo_size : 2.5em;
+@motto_size : 0.72em;
+@ny_kern : -0.2em;
+@yo_kern : -0.3em;
+
 html,
 body
 {
@@ -47,7 +52,11 @@ menu, nav, section { display: block; }
     nav li
     {
         display: inline;
-        white-space: nowrap;
+
+        a
+        {
+            white-space: nowrap;
+        }
     }
 
     #menu,
@@ -83,29 +92,34 @@ menu, nav, section { display: block; }
         h1
         {
             line-height : 1em;
-            font-size   : 2.5em;
+            font-size   : @logo_size;
             font-weight : normal;
             font-family : 'Quattrocento', Times, 'Times New Roman', serif;
             position : relative;
             z-index: 0;
 
+            .kern_n
+            {
+                margin-left : -(@ny_kern + @yo_kern);
+            }
             .kern_ny
             {
-                margin-left : -.2em;
+                margin-left : @ny_kern;
                 position    : relative;
                 top         : -.01em;
                 z-index     : -1;
             }
             .kern_yo
             {
-                margin-left : -.3em;
+                margin-left : @yo_kern;
             }
 
         }
 
         small
         {
-            font-size   : .72em;
+            margin-left : @motto_size / -(@ny_kern + @yo_kern);
+            font-size   : @motto_size;
             font-weight : normal;
             color       : #777;
         }
