@@ -1,4 +1,4 @@
-*{box-sizing:border-box;-moz-box-sizing:border-box;*behavior:url(/css/box-sizing-polyfill/boxsizing.htc);vertical-align:middle;}
+*{box-sizing:border-box;-moz-box-sizing:border-box;*behavior:url(/css/box-sizing-polyfill/boxsizing.htc);}
 html{font-family:sans-serif;min-height:100%;text-rendering:optimizeLegibility;}
 html,body{margin:0;padding:0;}
 article,aside,figure,footer,header,hgroup,menu,nav,section{display:block;}
