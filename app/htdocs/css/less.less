@@ -9,9 +9,24 @@
 
 // functions
 
+.boxSizingBorderBox()
+{
+    box-sizing      : border-box;
+    -moz-box-sizing : border-box;
+    // IE6,7 polyfill (asterisk is a IE hack)
+    *behavior : url(/css/box-sizing-polyfill/boxsizing.htc);
+}
+
+.displayInlineBlock()
+{
+    display : inline;
+    display : inline-block;
+}
+
 .shadow(@shadow)
 {
             box-shadow : @shadow;
+        -ms-box-shadow : @shadow;
        -mox-box-shadow : @shadow;
     -webkit-box-shadow : @shadow;
 }
@@ -19,6 +34,7 @@
 .two-shadows(@shadowA, @shadowB)
 {
             box-shadow : @shadowA, @shadowB;
+        -ms-box-shadow : @shadowA, @shadowB;
        -mox-box-shadow : @shadowA, @shadowB;
     -webkit-box-shadow : @shadowA, @shadowB;
 }
@@ -26,16 +42,17 @@
 .rotate(@rotate)
 {
             transform : rotate(@rotate);
-         -o-transform : rotate(@rotate); /* Opera 10.5 */
-        -ms-transform : rotate(@rotate); /* IE9 */
-       -moz-transform : rotate(@rotate); /* FF3.5+ */
-    -webkit-transform : rotate(@rotate); /* Saf3.1+, Chrome */
+         -o-transform : rotate(@rotate); // Opera 10.5
+        -ms-transform : rotate(@rotate); // IE9
+       -moz-transform : rotate(@rotate); // FF3.5+
+    -webkit-transform : rotate(@rotate); // Saf3.1+, Chrome
     zoom              : 1;
 }
 
 .border-radius (@radius: .5em)
 {
             border-radius: @radius;
+        -ms-border-radius: @radius;
        -moz-border-radius: @radius;
     -webkit-border-radius: @radius;
 }
@@ -43,27 +60,31 @@
 .column-width(@width)
 {
             column-width : @width;
+        -ms-column-width : @width;
        -moz-column-width : @width;
     -webkit-column-width : @width;
 }
 .column-gap(@gap)
 {
             column-gap : @gap;
+        -ms-column-gap : @gap;
        -moz-column-gap : @gap;
     -webkit-column-gap : @gap;
 }
 
 .break-inside(@policy)
 {
+              page-break-inside : @policy;
             column-break-inside : @policy;
+        -ms-column-break-inside : @policy;
        -moz-column-break-inside : @policy;
     -webkit-column-break-inside : @policy;
-    page-break-inside           : @policy;
 }
 
 .transition(@transition)
 {
             transition : @transition;
+        -ms-transition : @transition;
        -moz-transition : @transition;
     -webkit-transition : @transition;
 }
@@ -71,16 +92,16 @@
 .bgGradient(@side, @colourA, @colourB)
 {
     background-color: @colourA;
-    background-image: -webkit-linear-gradient(@side, @colourA, @colourB); /* Chrome 10+, Saf5.1+, iOS 5+ */
-    background-image:    -moz-linear-gradient(@side, @colourA, @colourB); /* FF3.6 */
-    background-image:     -ms-linear-gradient(@side, @colourA, @colourB); /* IE10 */
-    background-image:      -o-linear-gradient(@side, @colourA, @colourB); /* Opera 11.10+ */
+    background-image: -webkit-linear-gradient(@side, @colourA, @colourB); // Chrome 10+, Saf5.1+, iOS 5+
+    background-image:    -moz-linear-gradient(@side, @colourA, @colourB); // FF3.6
+    background-image:     -ms-linear-gradient(@side, @colourA, @colourB); // IE10
+    background-image:      -o-linear-gradient(@side, @colourA, @colourB); // Opera 11.10+
     background-image:         linear-gradient(@side, @colourA, @colourB);
 }
 .bgGradientSimpleTop(@colourA, @colourB)
 {
     .bgGradient(top, @colourA, @colourB);
-    background-image: -webkit-gradient(linear, left top, left bottom, from(@colourA), to(@colourB)); /* Saf4+, Chrome */
+    background-image: -webkit-gradient(linear, left top, left bottom, from(@colourA), to(@colourB)); // Saf4+, Chrome
 }
 
 /* vim: set ft=css fdm=indent: */

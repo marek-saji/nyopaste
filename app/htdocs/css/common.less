@@ -7,10 +7,17 @@
 @ny_kern : -0.2em;
 @yo_kern : -0.3em;
 
+*
+{
+    .boxSizingBorderBox();
+    vertical-align   : middle;
+}
+
 html
 {
-    font-family : sans-serif;
-    min-height  : 100%;
+    font-family    : sans-serif;
+    min-height     : 100%;
+    text-rendering : optimizeLegibility;
 }
 
 html,
@@ -22,6 +29,12 @@ body
 
 article, aside, figure, footer, header, hgroup,
 menu, nav, section { display: block; }
+
+a
+{
+    &:link    { color: #36b; }
+    &:visited { color: #63b; }
+}
 
 #top,
 #infos,
@@ -40,10 +53,10 @@ menu, nav, section { display: block; }
 #top
 {
     overflow: hidden;
-    padding: 0 1em 2em;
+    padding: 0 1em 0.5em;
     margin: 0;
     text-align: center;
-    .bgGradient(bottom, white 0%, @headerbg 2em);
+    .bgGradient(bottom, white 0%, @headerbg 0.5em);
 
     h1,
     ul,
@@ -56,19 +69,18 @@ menu, nav, section { display: block; }
 
     nav li
     {
+        display : inline;
+
         a
         {
             white-space: nowrap;
+            margin : 0 0.25em;
         }
     }
 
-    #menu,
     .usernav
     {
-        li a
-        {
-            margin: 0 .5em;
-        }
+        margin-bottom: 0.5em;
     }
 
     #head,
@@ -89,20 +101,22 @@ menu, nav, section { display: block; }
 
     #head
     {
-        margin      : 0 1em 0 0;
-        line-height : 1em;
+        margin      : 0 0 0.5em 0;
+        text-align  : center;
+        line-height : 0em; /* TODO test this! */
+        font-size   : 2.5em;
 
         h1
         {
             line-height : 1em;
-            font-size   : @logo_size;
+            font-size   : 1em;
             font-weight : normal;
             font-family : 'Quattrocento', Times, 'Times New Roman', serif;
         }
 
         small
         {
-            font-size   : @motto_size;
+            font-size   : .28em;
             font-weight : normal;
             color       : #777;
         }
@@ -117,8 +131,6 @@ menu, nav, section { display: block; }
 
     .search
     {
-        margin-top: 1em;
-
         input.query
         {
             width: 10em;
@@ -189,6 +201,7 @@ div#nyroModalFull
     div#nyroModalWrapper
     {
         padding: 0 1em;
+        box-sizing: content-box;
     }
 }
 
@@ -222,7 +235,7 @@ div#nyroModalFull
     page-break-inside: avoid;
 }
 
-a:active
+a:active:not(.nyroModalClose)
 {
     position : relative;
     top      : .1rem;
@@ -301,7 +314,7 @@ body.js
 
 
 /* nicely kerned logo */
-@media all and (min-width: 16em)
+@media all and (min-width: 12.5em)
 {
     #top
     {
@@ -343,16 +356,27 @@ body.js
 {
     #top
     {
-        nav li
+        padding: 0 1em 2em;
+        .bgGradient(bottom, white 0%, @headerbg 2em);
+
+        nav
         {
-            display: inline;
+            li
+            {
+                display : inline;
+
+                a
+                {
+                    margin : 0 0 0 1em;
+                }
+            }
         }
 
         .search
         {
             input.query
             {
-                width: 20em;
+                width : 20em;
             }
         }
     }
@@ -388,12 +412,18 @@ body.js
         .usernav
         {
             float: right;
+            margin-bottom: 1.36em;
         }
 
         #head,
         #menu
         {
             float: left;
+        }
+
+        #head
+        {
+            margin      : 0 1em 0 0;
         }
 
         .search

@@ -33,6 +33,7 @@
             text-decoration : none;
             color           : #666;
             outline         : none;
+            white-space     : nowrap;
 
             .text
             {
@@ -165,35 +166,33 @@
 
 .share.actions .copy-to-clipboard.action input.copyable
 {
-    width: 30em;
+    width     : 30em;
+    max-width : 100%;
 }
 
-#nyroModalContent
+.share-inside
 {
-    .share-inside
+    margin-left: @actioniconsize*4/3;
+
+    .share.actions
     {
-        margin-left: @actioniconsize*4/3;
 
-        .share.actions
+        ul
         {
+            margin  : 0;
+            padding : 0;
 
-            ul
+            .action
             {
-                margin  : 0;
-                padding : 0;
+                display : block;
 
-                .action
+                &.addthis
                 {
-                    display : block;
+                    margin  : 0 0 0 -@actioniconsize*4/3;
 
-                    &.addthis
+                    &.compact
                     {
-                        margin  : 0 0 0 -@actioniconsize*4/3;
-
-                        &.compact
-                        {
-                            margin : 0;
-                        }
+                        margin : 0;
                     }
                 }
             }
