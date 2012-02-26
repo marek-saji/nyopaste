@@ -61,15 +61,16 @@ class DevController extends DeveloperController
             'Paste',
             array(
                 array(
-                    'id'        => -1,
-                    'root_id'   => -1,
-                    'paster_id' => -1,
-                    'paster'    => g()->conf['users']['admin']['login'],
-                    'url'       => 'TOS',
-                    'title'     => 'Terms of Service',
-                    'content'   => file_get_contents(APP_DIR.'/conf/default_pastes/TOS.markdown'),
-                    'type'      => 'markup',
-                    'privacy'   => 'not listed'
+                    'id'                   => -1,
+                    'root_id'              => -1,
+                    'paster_id'            => -1,
+                    'paster'               => g()->conf['users']['admin']['login'],
+                    'url'                  => 'TOS',
+                    'title'                => 'Terms of Service',
+                    'content'              => file_get_contents(APP_DIR.'/conf/default_pastes/TOS.markdown'),
+                    'type'                 => 'markup',
+                    'privacy'              => 'not listed',
+                    'publicly_versionable' => false,
                 )
             )
         );
