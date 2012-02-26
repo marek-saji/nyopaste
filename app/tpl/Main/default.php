@@ -48,10 +48,6 @@ $v->addLess($this->file('style','less'));
 
 </section>
 
-<?php if (g()->debug->allowed()) : ?>
-    @todo if (loggedin) "sign up for"
-<?php endif; /* local environment */ ?>
-
 <div class="user-startpoints-and-nyo-tweets">
 
     <section class="user-startpoints">
