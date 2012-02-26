@@ -36,8 +36,11 @@ if (empty($recaptcha_publickey) === true)
             </script>
 
             <div id="recaptcha_image"></div>
-            <p>
+            <p class="recaptcha_only_if_image">
                 <?=$this->trans('Type in text from the image.')?>
+            </p>
+            <p class="recaptcha_only_if_audio">
+                <?=$this->trans('Type in numbers you hear.')?>
             </p>
             <input type="text" id="recaptcha_response_field" value="" name="recaptcha_response_field" />
 
