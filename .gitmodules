@@ -11,3 +11,6 @@
 [submodule "app/htdocs/js/code-illuminated"]
 	path = app/htdocs/js/code-illuminated
 	url = https://github.com/marek-saji/code-illuminated.git
+[submodule "app/htdocs/css/box-sizing-polyfill"]
+	path = app/htdocs/css/box-sizing-polyfill
+	url = https://github.com/Schepp/box-sizing-polyfill.git
