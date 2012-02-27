@@ -148,11 +148,16 @@ class UserController extends PagesController implements IUserController
         $db_data = $this->_user;
 
         $db_data['Actions'] = array(
-            'edit'    => true,
-            'remove'  => !($this->_user['status'] & STATUS_DELETED)
-                         && $this->_user['id'] > 0,
-            'restore' => (bool) ($this->_user['status'] & STATUS_DELETED)
+            'edit'    => true
         );
+        if ($this->_user['id'] != g()->auth->id())
+        {
+            $db_data['Actions'] += array(
+                'remove'  => !($this->_user['status'] & STATUS_DELETED)
+                             && $this->_user['id'] > 0,
+                'restore' => (bool) ($this->_user['status'] & STATUS_DELETED)
+            );
+        }
         foreach ($db_data['Actions'] as $action => & $permitted)
         {
             if (!$permitted)
@@ -370,11 +375,13 @@ class UserController extends PagesController implements IUserController
                          && $db_data['id'] > 0,
             'restore' => (bool) ($db_data['status'] & STATUS_DELETED)
         );
+        $db_data['permitted Actions'] = false;
         foreach ($db_data['Actions'] as $action => & $permitted)
         {
             if (!$permitted)
                 continue;
             $permitted = (bool) $this->hasAccess($action, $params);
+            $db_data['permitted Actions'] += $permitted;
         }
         unset($permitted);
 

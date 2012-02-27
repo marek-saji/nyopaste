@@ -53,7 +53,8 @@ $conf['translations']['user'] = array(
     // actions that can be performed on user object:
     '((action:%s:%s))' => array(
         'default' => 'show profile',
-        'edit'    => 'edit profile or change password'
+        'edit'    => 'edit profile or change password',
+        'remove'  => '<strong>Remove</strong> an accout',
     ),
 );
 

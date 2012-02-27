@@ -20,11 +20,6 @@ $form = g('Forms', array('edit', $this));
 <section>
     <header>
         <h2><?=$title?></h2>
-        <?php
-        $t->inc('row_actions', array(
-            'actions' => & $row['Actions']
-        ));
-        ?>
     </header>
 
     <div class="holoform">
@@ -148,4 +143,18 @@ $form = g('Forms', array('edit', $this));
     </div> <!-- .holoform -->
 
 </section>
+
+<?php if ($row['permitted Actions']) : ?>
+    <section class="danger-zone">
+
+        <h3><?=$this->trans('Danger Zone')?></h3>
+
+        <?php
+        $t->inc('row_actions', array(
+            'actions' => & $row['Actions']
+        ));
+        ?>
+
+    </section>
+<?php endif; /* empty actions */ ?>
 

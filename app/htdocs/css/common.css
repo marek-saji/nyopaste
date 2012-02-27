@@ -25,6 +25,7 @@ a:visited{color:#63b;}
 #whole-content a.share.action.addthis,#nyroModalContent a.share.action.addthis{background-image:url(../gfx/share-addthis.png);}
 #whole-content .user-content,#nyroModalContent .user-content{overflow:hidden;}
 #whole-content ul.tags,#nyroModalContent ul.tags,#whole-content ul.tags li,#nyroModalContent ul.tags li{list-style:none;margin:0;padding:0;display:inline;}
+#whole-content .danger-zone h3,#nyroModalContent .danger-zone h3,#whole-content .danger-zone a,#nyroModalContent .danger-zone a{color:#ffbbbb;}
 div#nyroModalFull{font-size:1em;}div#nyroModalFull div#nyroModalWrapper{padding:0 1em;box-sizing:content-box;}
 .modal-wannabe{width:50em;max-width:100%;margin:0 auto;box-sizing:border-box;padding:0.5em 1em;border:#ccc solid thin;border-width:0 thin;box-shadow:0.3em 0 0.3em #cccccc,-0.3em 0 0.3em #cccccc;-ms-box-shadow:0.3em 0 0.3em #cccccc,-0.3em 0 0.3em #cccccc;-mox-box-shadow:0.3em 0 0.3em #cccccc,-0.3em 0 0.3em #cccccc;-webkit-box-shadow:0.3em 0 0.3em #cccccc,-0.3em 0 0.3em #cccccc;}
 .nyopaste{color:#555;}.nyopaste i{opacity:0.4;}

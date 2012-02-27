@@ -37,6 +37,10 @@ $conf['acl'] = array(
     '/User/lostPasswd'   => array('unauthorized' => true),
     '/User/resetPasswd'  => array('unauthorized' => true),
 
+    '/User/edit'         => array('superadmin' => true, 'admin' => 'true'),
+    '/User/remove'       => array('superadmin' => true),
+    '/User/restore'      => array('superadmin' => true),
+
     '/User/logout'       => array('authorized' => true),
 
     '/User/delete'       => array('superadmin' => true, 'admin' => true),
