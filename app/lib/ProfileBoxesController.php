@@ -264,8 +264,8 @@ class ProfileBoxesController extends Component
 
         $model_class = g()->load('Paste', 'model');
 
-        $first_id = arr(reset($boxes), 'id');
-        $last_id  = arr(end($boxes),   'id');
+        $first_id = arr(reset($boxes) ?: array('id'=>null), 'id');
+        $last_id  = arr(end($boxes)   ?: array('id'=>null), 'id');
 
         foreach ($boxes as & $box)
         {
