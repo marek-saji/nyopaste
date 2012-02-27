@@ -43,18 +43,13 @@ a
     clear: both;
 }
 
-#top,
-#foot
-{
-    padding: 0 1em;
-}
-
 #top
 {
-    overflow: hidden;
-    padding: 0 1em 0.5em;
-    margin: 0;
-    text-align: center;
+    overflow         : hidden;
+    padding          : 0 1em 0.5em;
+    margin           : 0;
+    text-align       : center;
+    background-color : @headerbg;
     .bgGradient(bottom, white 0%, @headerbg 0.5em);
 
     h1,
@@ -100,22 +95,19 @@ a
 
     #head
     {
-        margin      : 0 0 0.5em 0;
         text-align  : center;
-        line-height : 0em; /* TODO test this! */
-        font-size   : 2.5em;
 
         h1
         {
             line-height : 1em;
-            font-size   : 1em;
+            font-size   : @logo_size;
             font-weight : normal;
             font-family : 'Quattrocento', Times, 'Times New Roman', serif;
         }
 
         small
         {
-            font-size   : .28em;
+            font-size   : @motto_size;
             font-weight : normal;
             color       : #777;
         }
@@ -124,7 +116,6 @@ a
     #menu
     {
         font-size: 1.2em;
-        margin-top: .3em;
         line-height: 1.666em;
     }
 
@@ -287,6 +278,7 @@ body.js
 #foot
 {
     margin   : 2em 0 1em 0;
+    padding  : 0 1em;
     overflow : hidden;
 
     p
@@ -355,8 +347,8 @@ body.js
 {
     #top
     {
-        padding: 0 1em 2em;
-        .bgGradient(bottom, white 0%, @headerbg 2em);
+        padding: 0 1em 1em;
+        .bgGradient(bottom, white 0%, @headerbg 1em);
 
         nav
         {
@@ -422,7 +414,12 @@ body.js
 
         #head
         {
-            margin      : 0 1em 0 0;
+            margin : 0 1em 0 0;
+        }
+
+        #menu
+        {
+            margin-top : .3em;
         }
 
         .search
