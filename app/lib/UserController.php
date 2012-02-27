@@ -331,8 +331,6 @@ class UserController extends PagesController implements IUserController
         }
         else
         {
-            /** @todo send an e-mail */
-
             if (g()->auth->loggedIn())
             {
                 g()->addInfo('user created', 'info',
@@ -349,6 +347,28 @@ class UserController extends PagesController implements IUserController
             }
             else
             {
+                // welcome e-mail
+                $user_email = $user->getData('email');
+                $user_login = $user->getData('login');
+                $user_ident = $user->getData(g()->conf['users']['ident_field']);
+                if ($user_email)
+                {
+                    $mailer = g('Mail', array($this));
+                    $mail_vars = array(
+                        'user_login'  => $user_login,
+                        'profile_url' => $this->url2a('', array($user_ident), true)
+                    );
+
+                    if (!$mailer->send($user_email, 'new', $mail_vars))
+                    {
+                        g()->addInfo(
+                            'mail error',
+                            'error',
+                            $this->trans('There has been an error while sending welcome e-mail, we are sorry.')
+                        );
+                    }
+                }
+
                 g()->addInfo('user created', 'info',
                         $this->trans('Your account has been created. You may sign in now') );
                 $this->redirect($this->url2a('login'));
