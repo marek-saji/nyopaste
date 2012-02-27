@@ -38,7 +38,7 @@ $conf['translations']['PasteTypeMarkup'] = array(
     <span class="avoid-br"><code>`code`</code></span>
 </p>
 
-<p><a href="http://daringfireball.net/projects/markdown/syntax">there\'s more you can do with Markdown</a></p>
+<p><a target="_blank" href="http://daringfireball.net/projects/markdown/syntax">there\'s much more you can do with Markdown</a></p>
 ',
 
 
@@ -50,7 +50,7 @@ $conf['translations']['PasteTypeMarkup'] = array(
     <span class="avoid-br"><code>"link":http://example.com/</code>,</span>
     <span class="avoid-br"><code>@code@</code></span>
 </p>
-<p><a href="http://textile.thresholdstate.com/">there\'s more you can do with Textile</a></p>
+<p><a target="_blank" href="http://textile.thresholdstate.com/">there\'s much more you can do with Textile</a></p>
 ',
 
 );
