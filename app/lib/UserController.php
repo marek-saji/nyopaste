@@ -280,8 +280,15 @@ class UserController extends PagesController implements IUserController
         if ($use_captcha)
         {
             g()->load('recaptcha-php-1.10/recaptchalib', null);
-            $this->assign('recaptcha_publickey',
-                          g()->conf['keys']['recaptcha']['public']);
+            if (@g()->conf['keys']['recaptcha']['public'])
+            {
+                $this->assign('recaptcha_publickey',
+                              g()->conf['keys']['recaptcha']['public']);
+            }
+            else
+            {
+                $use_captcha = false;
+            }
         }
         $this->assign('use_captcha', $use_captcha);
 
