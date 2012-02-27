@@ -26,6 +26,11 @@ body
     padding: 0;
 }
 
+body.env-lte-dev
+{
+    border-top : #000 solid thick;
+}
+
 article, aside, figure, footer, header, hgroup,
 menu, nav, section { display: block; }
 
@@ -345,6 +350,11 @@ body.js
 /* 3 menu items */
 @media all and (min-width: 25em)
 {
+    body.env-lte-dev
+    {
+        border-top-color : #888;
+    }
+
     #top
     {
         padding: 0 1em 1em;
@@ -376,6 +386,11 @@ body.js
 /* logo + 3 menu items */
 @media all and (min-width: 36em)
 {
+    body.env-lte-dev
+    {
+        border-top-color : #fff;
+    }
+
     #top
     {
         text-align: right;
