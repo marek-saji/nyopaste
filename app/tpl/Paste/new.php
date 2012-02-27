@@ -184,12 +184,6 @@ $form = g('Forms', array('paste', $this));
                     </div>
                 </li>
 
-                <?php if (g()->debug->allowed()) : ?>
-                <li class="keep_for field">
-                    @todo "keep for.."
-                </li>
-                <?php endif; ?>
-
             </ul>
         </fieldset>
 
@@ -298,7 +292,7 @@ $form = g('Forms', array('paste', $this));
             $privacy_excerpts = array(
                 'public'     => $this->trans('Your paste will be listed in "pastes" section and indexed by search engines.'),
                 'not listed' => $this->trans('Your paste will not be listed in "pastes" section nor indexed by search engines. It will be accessible only by knowing it\'s address.'),
-                'private'    => $this->trans('Only selected users will be able to access your paste.')
+                'private'    => $this->trans('Only selected <span class="nyopaste">n<i>y</i>opaste</span> users will be able to access your paste.')
             );
             ?>
             <?php if (@$static_fields['privacy']) : ?>
@@ -348,7 +342,7 @@ $form = g('Forms', array('paste', $this));
                                     'privacy',
                                     array(
                                         'value' => 'private',
-                                        'label' => 'allow only selected users'
+                                        'label' => 'allow only selected <span class="nyopaste">n<i>y</i>opaste</span> users to view the paste'
                                     )
                                 );
                                 ?>
