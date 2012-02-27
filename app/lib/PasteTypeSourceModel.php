@@ -16,7 +16,7 @@ class PasteTypeSourceModel extends Model
 
         $this->_addField(new FString('syntax'));
         $this->_addField(new FBool('line_numbers', true, true));
-        $this->_addField(new FString('colour_scheme'));
+        $this->_addField(new FString('colour_scheme', true, 'ace-dawn'));
 
         $this->_pk('id');
         $this->whiteListAll();

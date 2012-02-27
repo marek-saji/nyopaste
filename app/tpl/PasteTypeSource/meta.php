@@ -17,7 +17,5 @@
     <?php
     $colour_scheme = (@g()->conf['paste_types']['source']['themes'][$row['colour_scheme']]) or $colour_scheme = $row['colour_scheme'];
     ?>
-    <dt><?=$this->trans('syntax highlight colour scheme')?></dt>
-    <dd><?=$colour_scheme?></dd>
 <?php endif; ?>
 
