@@ -291,7 +291,7 @@ $form = g('Forms', array('paste', $this));
             <?php
             $privacy_excerpts = array(
                 'public'     => $this->trans('Your paste will be listed in "pastes" section and indexed by search engines.'),
-                'not listed' => $this->trans('Your paste will not be listed in "pastes" section nor indexed by search engines. It will be accessible only by knowing it\'s address.'),
+                'not listed' => $this->trans('Your paste will not be listed in "pastes" section nor indexed by search engines. Anyone who know it\'s address will be able to acess it.'),
                 'private'    => $this->trans('Only selected <span class="nyopaste">n<i>y</i>opaste</span> users will be able to access your paste.')
             );
             ?>
@@ -312,57 +312,6 @@ $form = g('Forms', array('paste', $this));
                 )), ENT_QUOTES);
                 ?>
                 <ul class="less-important-options with-excerpt privacy" data-less-important-options='<?=$less_important_options_json?>'>
-                    <li class="privacy field">
-                        <ul>
-                            <li class="public privacy field">
-                                <?php
-                                $form->input(
-                                    'privacy',
-                                    array(
-                                        'value' => 'public',
-                                        'label' => 'public: list in <q>pastes</q>, allow to be searchable'
-                                    )
-                                );
-                                ?>
-                            </li>
-                            <li class="not-listed privacy field">
-                                <?php
-                                $form->input(
-                                    'privacy',
-                                    array(
-                                        'value' => 'not listed',
-                                        'label' => 'not listed: access only for people who know the address'
-                                    )
-                                );
-                                ?>
-                            </li>
-                            <li class="private privacy field">
-                                <?php
-                                $form->input(
-                                    'privacy',
-                                    array(
-                                        'value' => 'private',
-                                        'label' => 'allow only selected <span class="nyopaste">n<i>y</i>opaste</span> users to view the paste'
-                                    )
-                                );
-                                ?>
-                                <fieldset>
-                                    <ul>
-                                        <li class="users privacy field">
-                                            <?php
-                                            $form->input('access_users');
-                                            ?>
-                                            <div class="help">
-                                                <p>
-                                                    <?=$this->trans('Comma-separated logins of users you want to be able to see your paste.')?>
-                                                </p>
-                                            </div>
-                                        </li>
-                                    </ul>
-                                </fieldset>
-                            </li>
-                        </ul>
-                    </li>
                     <?php if (g()->auth->loggedIn()) : ?>
                         <li class="field">
                             <?php
@@ -375,6 +324,60 @@ $form = g('Forms', array('paste', $this));
                             </div>
                         </li>
                     <?php endif; /* g()->auth->loggedIn( */ ?>
+                    <li class="privacy field">
+                        <?=$this->trans('Access level:')?>
+                        <fieldset>
+                            <ul>
+                                <li class="public privacy field">
+                                    <?php
+                                    $form->input(
+                                        'privacy',
+                                        array(
+                                            'value' => 'public',
+                                            'label' => 'public: list in <q>pastes</q>, allow to be searchable'
+                                        )
+                                    );
+                                    ?>
+                                </li>
+                                <li class="not-listed privacy field">
+                                    <?php
+                                    $form->input(
+                                        'privacy',
+                                        array(
+                                            'value' => 'not listed',
+                                            'label' => 'not listed: access only for people who know the address'
+                                        )
+                                    );
+                                    ?>
+                                </li>
+                                <li class="private privacy field">
+                                    <?php
+                                    $form->input(
+                                        'privacy',
+                                        array(
+                                            'value' => 'private',
+                                            'label' => 'allow only selected <span class="nyopaste">n<i>y</i>opaste</span> users to view the paste'
+                                        )
+                                    );
+                                    ?>
+                                    <fieldset>
+                                        <ul>
+                                            <li class="users privacy field">
+                                                <?php
+                                                $form->input('access_users');
+                                                ?>
+                                                <div class="help">
+                                                    <p>
+                                                        <?=$this->trans('Comma-separated logins of users you want to be able to see your paste.')?>
+                                                    </p>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </fieldset>
+                                </li>
+                            </ul>
+                        </fieldset>
+                    </li>
                 </ul>
             <?php endif; /* if static fields privacy */ ?>
         </fieldset>
