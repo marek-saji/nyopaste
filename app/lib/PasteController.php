@@ -769,9 +769,24 @@ class PasteController extends PagesController
 
                     // if we got here, everything's must have gone fine
 
-                    g()->addInfo(null, 'info',
-                                 $this->trans('Paste created') );
                     g()->db->completeTrans();
+
+                    $permalink = g()->req->getBaseUri(true)
+                        . sprintf(
+                            g()->conf['paste']['permalink'],
+                            $paste->getData('url'),
+                            $paste->getData('version')
+                        )
+                    ;
+                    g()->addInfo(
+                        null,
+                        'info',
+                        $this->trans(
+                            'Paste created. Here\'s a link to share: <tt>%s</tt>',
+                            $permalink
+                        )
+                    );
+
                     $this->redirect($this->url2a(
                         '',
                         array(
