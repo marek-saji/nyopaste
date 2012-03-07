@@ -1041,7 +1041,8 @@ class UserController extends PagesController implements IUserController
         {
             $result['DisplayName'] = $result[$conf['display_name_field']];
 
-            $result['AboutMe'] = g('TextParser')->parse('markdown', $result['about_me']);
+            $parser = g('TextParser', 'class', array('parser'=>'markdown'));
+            $result['AboutMe'] = $parser->parse($result['about_me']);
 
             static $user_type_mapping = array(
                 USER_TYPE_ADMIN => 'admin',

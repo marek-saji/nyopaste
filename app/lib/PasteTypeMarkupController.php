@@ -50,7 +50,8 @@ class PasteTypeMarkupController extends PasteTypeController
 
         if ($db_data['content'] && $db_data['parser'])
         {
-            $db_data['ParsedContent'] = g('TextParser')->parse($db_data['parser'], $db_data['content']);
+            $parser = g('TextParser', 'class', array('parser' => $db_data['parser']));
+            $db_data['ParsedContent'] = $parser->parse($db_data['content']);
         }
         else
         {
