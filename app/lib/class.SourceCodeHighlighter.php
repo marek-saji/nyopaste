@@ -6,17 +6,23 @@
  */
 class SourceCodeHighlighter
 {
+    protected $_rules = array();
+
     /**
      * Loads configs files with mode rules
      * @author m.augustynowicz
      *
-     * @param string $mode mode name
+     * @param array $options
+     *        - [syntax] one of supported modes (syntaxes)
      *
      * @return bool success of operation
      */
-    protected function _loadRules($mode, &$rules=array())
+    public function __construct($options)
     {
-        $conf = &g()->conf['source_code_highlighter']['modes'][$mode];
+        $mode =& $options['syntax'];
+
+        $conf =& g()->conf['source_code_highlighter']['modes'][$mode];
+
         if (!isset($conf['rules']))
         {
             g()->readConfigFiles('source_code_highlighter', 'conf.rules.'.$mode);
@@ -40,9 +46,8 @@ class SourceCodeHighlighter
             unset($state_rules);
         }
 
-        $rules = $conf['rules'];
+        $this->_rules =& $conf['rules'];
 
-        return true;
     }
 
 
@@ -52,22 +57,16 @@ class SourceCodeHighlighter
      * @url http://etherpad.mozilla.com:9000/ep/pad/view/oSW4EWUuOX/U5pPuVBBaT
      *
      * @param string $text source code to highlight
-     * @param string $mode one of supported modes (syntaxes)
      * @param string $class_prefix HTML class prefix
      * @param bool $decode_entities decode $text before highlightling
      *
      * @return string highlit source code
      */
-    public function highlight($text, $syntax, $class_prefix='ace_', $decode_entities=true)
+    public function highlight($text, $class_prefix='ace_', $decode_entities=true)
     {
         if ($decode_entities)
         {
             $text = html_entity_decode($text);
-        }
-
-        if (!$this->_loadRules($syntax, $rules))
-        {
-            return htmlspecialchars($text);
         }
 
         $f = g('Functions');
@@ -79,7 +78,7 @@ class SourceCodeHighlighter
         while ($text)
         {
             $len = mb_strlen($text);
-            foreach ($rules[$state] as &$rule)
+            foreach ($this->_rules[$state] as &$rule)
             {
                 if (preg_match($rule['regex'], $text, $match))
                 {
