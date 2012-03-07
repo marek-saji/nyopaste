@@ -1,5 +1,5 @@
 <?php
-g()->load('DataSets', null);
+g()->load('PasteType', 'model');
 
 /**
  * Paste with plain text
@@ -7,7 +7,7 @@ g()->load('DataSets', null);
  * Common attributes for all the types.
  * @author m.augustynowicz
  */
-class PasteTypePlainModel extends Model
+class PasteTypePlainModel extends PasteTypeModel
 {
     public function __construct()
     {

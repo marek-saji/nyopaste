@@ -1,11 +1,11 @@
 <?php
-g()->load('DataSets', null);
+g()->load('PasteType', 'model');
 
 /**
  * Paste with source code
  * @author m.augustynowicz
  */
-class PasteTypeSourceModel extends Model
+class PasteTypeSourceModel extends PasteTypeModel
 {
     public function __construct()
     {
