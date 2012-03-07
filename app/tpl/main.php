@@ -31,60 +31,64 @@ $t->inc('main_common');
         <small><?=$this->trans('a little more social pastebin')?></small>
     </header> <!-- #head -->
 
-    <nav id="menu">
+    <div id="menus">
+
+        <nav id="menu">
+            <?php
+            // global navigation (<nav id="menu" />)
+            $this->getPermaCtrl('menu')->render();
+            ?>
+        </nav> <!-- #menu -->
+
         <?php
-        // global navigation (<nav id="menu" />)
-        $this->getPermaCtrl('menu')->render();
+        // user navigation (<nav class="usernav" />)
+        $this->getPermaCtrl('usernav')->render();
         ?>
-    </nav> <!-- #menu -->
 
-    <?php
-    // user navigation (<nav class="usernav" />)
-    $this->getPermaCtrl('usernav')->render();
-    ?>
-
-    <?php if ($this->getLaunchedAction() !== 'search') : ?>
-        <div class="search">
-            <?php
-            // render without using Form class to save memory
-            ?>
-            <?php
-            echo $f->tag(
-                'form',
-                array(
-                    'action' => $this->url2c('Paste', 'search'),
-                    'method' => 'post'
-                ),
-                null,
-                'open'
-            );
-            ?>
+        <?php if ($this->getLaunchedAction() !== 'search') : ?>
+            <div class="search">
                 <?php
-                echo $f->tag(
-                    'input',
-                    array(
-                        'type' => 'search',
-                        'class' => 'query',
-                        'name' => 'Paste_search[query]',
-                        'placeholder' => $this->trans('search for a paste'),
-                        'autosave' => 'search'
-                    )
-                );
+                // render without using Form class to save memory
                 ?>
                 <?php
                 echo $f->tag(
-                    'input',
+                    'form',
                     array(
-                        'type' => 'submit',
-                        'value' => $this->trans('search')
-                    )
+                        'action' => $this->url2c('Paste', 'search'),
+                        'method' => 'post'
+                    ),
+                    null,
+                    'open'
                 );
                 ?>
-            <?php
-            echo $f->tag('form', array(), null, 'close');
-            ?>
-        </div>
-    <?php endif; /* launched action !== search */ ?>
+                    <?php
+                    echo $f->tag(
+                        'input',
+                        array(
+                            'type' => 'search',
+                            'class' => 'query',
+                            'name' => 'Paste_search[query]',
+                            'placeholder' => $this->trans('search for a paste'),
+                            'autosave' => 'search'
+                        )
+                    );
+                    ?>
+                    <?php
+                    echo $f->tag(
+                        'input',
+                        array(
+                            'type' => 'submit',
+                            'value' => $this->trans('search')
+                        )
+                    );
+                    ?>
+                <?php
+                echo $f->tag('form', array(), null, 'close');
+                ?>
+            </div>
+        <?php endif; /* launched action !== search */ ?>
+
+    </div> <!-- #menus -->
 
 </div> <!-- #top -->
 

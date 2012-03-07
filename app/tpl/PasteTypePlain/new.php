@@ -1,5 +1,7 @@
 <?php
 $form = g('Forms', array('paste', $this));
+
+$v->addJs($this->file('type-new', 'js'));
 ?>
 
 <ul>
@@ -18,8 +20,12 @@ $form = g('Forms', array('paste', $this));
 
     <!-- wrap at -->
     <li class="field">
-        <label> <!-- @todo for="" -->
-            <?=$this->trans('wrap at')?>
+        <?php
+        $form->input('do_wrap_at', array(
+            'label' => $this->trans('wrap at')
+        ));
+        ?>
+        <label>
             <?php
             $form->input('wrap_at');
             ?>
