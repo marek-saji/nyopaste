@@ -143,6 +143,9 @@ class UserController extends PagesController implements IUserController
             return;
         }
 
+        $its_you = ($this->_user['id'] == g()->auth->id());
+        $this->assignByRef('its_you', $its_you);
+
         // determine which action links we should display
 
         $db_data = $this->_user;
@@ -150,7 +153,7 @@ class UserController extends PagesController implements IUserController
         $db_data['Actions'] = array(
             'edit'    => true
         );
-        if ($this->_user['id'] != g()->auth->id())
+        if (false === $its_you)
         {
             $db_data['Actions'] += array(
                 'remove'  => !($this->_user['status'] & STATUS_DELETED)

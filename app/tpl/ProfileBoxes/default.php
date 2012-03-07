@@ -14,11 +14,17 @@ $v->addLess($this->file('default', 'less'));
     <?php if (empty($boxes)) : ?>
 
         <div class="empty boxes">
-            <p><?=$this->trans('You can create lists of pastes here for everyone to see.')?></p>
-            <p><?=$this->trans('These can be your pastes, but don\'t have to.')?></p>
-            <p>
-                <?=$this->l2aInside('add your first list', 'new', array('#' => 'content'), array('class' => 'modal'))?>
-            </p>
+            <?php if ($this->getParent()->getAssigned('its_you')) : ?>
+                <p><?=$this->trans('You can create lists of pastes here for everyone to see.')?></p>
+                <p><?=$this->trans('These can be your pastes, but don\'t have to.')?></p>
+                <p>
+                    <?=$this->l2aInside('add your first list', 'new', array('#' => 'content'), array('class' => 'modal'))?>
+                </p>
+            <?php else : ?>
+                <p>
+                    <?=$this->trans('User did not define any lists yet.')?>
+                </p>
+            <?php endif;?>
         </div>
 
     <?php else /* if empty($boxes) */ : ?>
