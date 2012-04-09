@@ -13,6 +13,28 @@ define('DEV_ENV',   1);
 define('TEST_ENV',  2);
 define('PROD_ENV',  3);
 
+/**
+ * Temporary function, will be unset when done defining stuff.
+ */
+$hg_define = function ($name, $value) {
+    // don't redefine, if already definied
+    if (defined($name))
+    {
+        return true;
+    }
+
+    // try to get from system environment variable
+    $env = getenv('HG_' . $name);
+    if (false !== $env)
+    {
+        return define($name, $env);
+    }
+    else
+    {
+        return define($name, $value);
+    }
+};
+
 $env_const = strtoupper(getenv('HG_ENVIRONMENT')).'_ENV';
 define('ENVIRONMENT', defined($env_const) ? constant($env_const) : PROD_ENV);
 
@@ -28,11 +50,11 @@ else
 #
 
 // this application's location
-define('APP_DIR', realpath(dirname(__FILE__).'/..').'/');
+$hg_define('APP_DIR', dirname(dirname(__FILE__)).'/');
 
 // first directory outside source repository
 // contains upload, temp, local conf and such
-define('LOCAL_DIR', realpath(APP_DIR.'../..').'/');
+$hg_define('LOCAL_DIR', dirname(dirname(APP_DIR)).'/');
 
 // any local initialization? (should not be needed)
 if (is_readable(LOCAL_DIR.'conf/init.php'))
@@ -48,16 +70,14 @@ $DIRS[APP_DIR] = '';
 require_once APP_DIR.'conf/init.php';
 
 // APP_DIR is first of $DIRS, HG_DIR is the last one
-if (!defined('HG_DIR'))
-{
-    end($DIRS);
-    define('HG_DIR', key($DIRS));
-}
+end($DIRS);
+$hg_define('HG_DIR', key($DIRS));
 
 // directories outside repository. they might have been set in local init.php
-if (!defined('UPLOAD_DIR'))
-    define('UPLOAD_DIR', realpath(LOCAL_DIR.'upload').'/');
+$hg_define('UPLOAD_DIR', LOCAL_DIR.'upload/');
 
+
+unset($hg_define);
 
 // FINALLY!
 require_once(HG_DIR.'lib/HologramCore.php');
