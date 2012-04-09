@@ -33,6 +33,11 @@ class UserModel extends Model
         $this->_addField(new FInt('type', 4, false,
                                   (string) USER_TYPE_AUTHORIZED));
 
+        $this->_addField(new FTimestamp('creation'))
+            ->auto(array($this, 'autoValCreated'))
+        ;
+
+
         $this->_addField(new FTimestamp('last_edit'));
 
         // metadata
@@ -48,6 +53,31 @@ class UserModel extends Model
         $this->_pk('id');
         $this->whiteListAll();
     }
+
+
+
+    /**
+     * Auto value for `created` field
+     * @author m.augustynowicz
+     *
+     * @param string $action action type: insert, update
+     * @param IField $field
+     * @param mixed $value current value (will be replaced)
+     *
+     * @return mixed|null new value, if different than null
+     */
+    public function autoValCreated($action, $field, $value)
+    {
+        if ('insert' != $action)
+        {
+            return null;
+        }
+        else
+        {
+            return time();
+        }
+    }
+
 
 
     /**
