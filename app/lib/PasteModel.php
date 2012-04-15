@@ -47,8 +47,6 @@ class PasteModel extends Model
                 ->auto(array($this, 'autoValPasterId'));
         $this->relate('Paster', 'User', 'Nto1');
 
-        $this->_addField(new FInt('status', 2, true, STATUS_ACTIVE));
-
         $this->_addField(new FTimestamp('removed'));
 
         $this->_addField(new FString('author'));
