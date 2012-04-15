@@ -1,11 +1,11 @@
 **nyopaste** is a little more spocial [pastebin]. It's being created as
 a part of my thesis.
 
-It's created with *[Hologram]* framework.
+It's created with [HoloGram] framework.
 
 Licenced under MIT License (see included LICENSE.md file), unless otherwise
 stated in the source code.
 
 [pastebin]: http://en.wikipedia.org/wiki/Pastebin
-[HoloGram]: http://git.holonglobe.com/cgit.cgi/hologram.git/log/?h=nyo
+[HoloGram]: https://github.com/HolonGlobe/HoloGram
 
