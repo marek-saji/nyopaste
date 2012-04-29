@@ -35,6 +35,8 @@ $v->addLess($this->file('profile', 'less'));
                             'img',
                             array(
                                 'src'    => $gravatar_url,
+                                'width'  => $gravatar_size,
+                                'height' => $gravatar_size,
                                 'class'  => 'photo'
                                 // size unspecified to make avatar scalable with css
                             )

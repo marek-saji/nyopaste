@@ -8,7 +8,7 @@
 {
     h2
     {
-        font-size  : 1em;
+        font-size  : 1.5em;
         text-align : center;
     }
 
@@ -53,6 +53,12 @@
         h2
         {
             text-align : left;
+
+            .avatar
+            {
+                width     : @panel-width / 1.5;
+                margin    : 0 @panel-margin / 1.5 0 0;
+            }
         }
 
         .avatar,
@@ -61,9 +67,13 @@
             clear     : left;
             float     : left;
             display   : block;
+            overflow  : hidden;
+        }
+
+        .meta
+        {
             width     : @panel-width;
             margin    : 0 @panel-margin 0 0;
-            overflow  : hidden;
         }
 
         .boxes_wrapper
