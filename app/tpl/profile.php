@@ -1,6 +1,6 @@
 <?php
 /**
- * User's profile
+ * User's or Group's profile
  * @author m.augustynowicz
  *
  * @param array $row one row data
@@ -9,7 +9,7 @@
 $title = $row['DisplayName'];
 $v->setTitle($title);
 
-$v->addLess($this->file('default', 'less'));
+$v->addLess($this->file('profile', 'less'));
 ?>
 
 <section id="content">
@@ -17,41 +17,46 @@ $v->addLess($this->file('default', 'less'));
     <section class="vcard <?=$row['Type']?>">
         <header>
             <h2>
-                <?php
-                $gravatar_size  = 128;
-                $gravatar_url = sprintf(
-                    'http://gravatar.com/avatar/%s?%s',
-                    md5($row['email']),
-                    http_build_query(array(
-                        's' => $gravatar_size,
-                        'd' => 'identicon'
-                    ))
-                );
-                ?>
-                <div class="avatar">
+                <?php if (@$row['email']) : ?>
                     <?php
-                    echo $f->tag(
-                        'img',
-                        array(
-                            'src'    => $gravatar_url,
-                            'class'  => 'photo'
-                            // size unspecified to make avatar scalable with css
-                        )
+                    $gravatar_size  = 128;
+                    $gravatar_url = sprintf(
+                        'http://gravatar.com/avatar/%s?%s',
+                        md5($row['email']),
+                        http_build_query(array(
+                            's' => $gravatar_size,
+                            'd' => 'identicon'
+                        ))
                     );
                     ?>
-                </div>
+                    <div class="avatar">
+                        <?php
+                        echo $f->tag(
+                            'img',
+                            array(
+                                'src'    => $gravatar_url,
+                                'class'  => 'photo'
+                                // size unspecified to make avatar scalable with css
+                            )
+                        );
+                        ?>
+                    </div>
+                <?php endif; /* $row['email'] */ ?>
+
                 <span class="fn">
                     <?=$title?>
                 </span>
+
                 <?php if ($row['Type']) : ?>
                     <small class="user_type">
                         (<?=$this->trans($row['Type'])?>)
                     </small>
                 <?php endif; /* $row['Type' */ ?>
+
             </h2>
         </header>
 
-        <div class="paster-meta">
+        <div class="meta">
 
             <?php
             $t->inc('row_actions', array(
@@ -69,7 +74,7 @@ $v->addLess($this->file('default', 'less'));
                         <?=$row['AboutMe']?>
                     </dd>
                 <?php endif; ?>
-                <?php if (trim($row['website'])) : ?>
+                <?php if (trim(@$row['website'])) : ?>
                     <!-- website -->
                     <dt class="website text url">
                         <?=$t->trans('website')?>

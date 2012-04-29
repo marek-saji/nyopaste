@@ -108,7 +108,7 @@ class UserController extends PagesController implements IUserController
      *
      * @return array|null
      */
-    public function getUser()
+    public function getRow()
     {
         return $this->_user;
     }
@@ -142,6 +142,9 @@ class UserController extends PagesController implements IUserController
             $this->_passRenderingTo($boxes);
             return;
         }
+
+        $this->_setTemplate('profile');
+
 
         $its_you = ($this->_user['id'] == g()->auth->id());
         $this->assignByRef('its_you', $its_you);

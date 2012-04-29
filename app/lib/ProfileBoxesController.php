@@ -41,7 +41,7 @@ class ProfileBoxesController extends Component
 
         if ($parent->getName() === 'User')
         {
-            $user = $parent->getUser();
+            $user = $parent->getRow();
             $boxes = g('Box', 'model')
                 ->orderBy('order')
                 ->orderBy('id', 'DESC') // in case of non-unique order value
@@ -234,12 +234,16 @@ class ProfileBoxesController extends Component
             case 'remove' :
             case 'restore' :
             case 'move' :
-                $user = $this->getParent()->getUser();
-                if (g()->auth->id() === @$user['id'])
+                $parent = $this->getParent();
+                if (method_exists($parent, 'getRow'))
                 {
-                    return true;
+                    $user = $parent->getRow();
+                    if (g()->auth->id() === @$user['id'])
+                    {
+                        return true;
+                    }
+                    // else fall down
                 }
-                // else fall down
 
             default :
                 return parent::hasAccess($action, $params);
@@ -350,7 +354,7 @@ class ProfileBoxesController extends Component
             return $this->redirect(array('HttpErrors', 'error404'));
         }
 
-        $user = $parent->getUser();
+        $user = $parent->getRow();
         $this->assign('user', $user);
         $this->assign('own_profile', $user['Ident'] === g()->auth->ident());
         $this->assign('editing', $editing);
