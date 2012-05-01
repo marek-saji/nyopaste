@@ -57,8 +57,8 @@ $form = g('Forms', array('form', $this));
                 </li>
                 <li class="field">
                     <?php
-                    $form->input('open', array(
-                        'label' => 'new members join without verifying'
+                    $form->input('invite_only', array(
+                        'label' => 'invite-only'
                     ));
                     ?>
                 </li>

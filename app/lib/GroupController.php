@@ -18,7 +18,10 @@ class GroupController extends PagesController
                 'name',
                 'description',
                 'website',
-                'open',
+                'invite_only' => array(
+                    'fields' => false,
+                    '_tpl' => 'Forms/FBool'
+                ),
                 'hidden'
             ),
         ), // form
@@ -325,9 +328,13 @@ class GroupController extends PagesController
         $id = (int) $params[0];
 
 
+        $f = g('Functions');
+
+
         if ($editing)
         {
             $row = g('Group', 'model')->getRow($id);
+            $row['invite_only'] = ! $f->anyToBool($row['open']);
             if (empty($row))
             {
                 return $this->redirect(array('HttpErrors', 'error404'));
@@ -349,6 +356,8 @@ class GroupController extends PagesController
         {
             $model = g('Group', 'model');
             $new_data = $this->data[$form_ident];
+            $new_data['open'] = ! $f->anyToBool($new_data['invite_only']);
+
 
             $backlink =& $this->data[$form_ident]['_backlink'];
             if (empty($backlink))
