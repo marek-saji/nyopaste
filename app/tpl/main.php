@@ -99,7 +99,7 @@ $t->inc('infos');
 
 <div id="whole-content">
     <?= $contents ?>
-</div> <!-- #content -->
+</div> <!-- #whole-content -->
 
 <footer id="foot">
     <section class="copyright">

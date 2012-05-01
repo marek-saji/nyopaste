@@ -48,8 +48,8 @@ $v->addLess($this->file('search', 'less'));
 
                     <div class="help">
                         <ul>
-                            <li><?=$this->trans('Use <code>paster:query</code> and <code>group:query</code> to search for only user/group\'s pastes.')?></li>
-                            <li><?=$this->trans('Use brackets and <code>OR</code> operator to build even more advanced queries.')?></li>
+                            <li><?=$this->trans('Use <code>paster:query</code> and <code>group:query</code> to search for only user/group\'s pastes and <code>tag:query</code> to search within tags.')?></li>
+                            <li><?=$this->trans('Use <code>OR</code> and <code>NOT</code> operators and brackets to build even more advanced queries.')?></li>
                         </ul>
                     </div>
                 </li>
