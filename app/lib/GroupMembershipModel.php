@@ -37,6 +37,36 @@ class GroupMembershipModel extends Model
 
 
     /**
+     * Check whether user is a group member
+     * @author m.augustynowicz
+     *
+     * @param int $group_id
+     * @param int $user_id
+     *
+     * @return bool
+     */
+    static public function isMember($group_id, $user_id)
+    {
+        if ( ! $user_id || ! $group_id )
+        {
+            return false;
+        }
+
+
+        $membership = new self;
+        $count = $membership
+            ->filter(array(
+                'group_id' => $group_id,
+                'user_id'  => $user_id
+            ))
+            ->getCount()
+        ;
+
+        return $count > 0;
+    }
+
+
+    /**
      * Auto value for `creation` field
      * @author m.augustynowicz
      *

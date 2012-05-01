@@ -211,18 +211,30 @@ class GroupController extends PagesController
 
         // assign group actions
 
-        $actions = array();
+        $actions = array(
+            'edit'  => false,
+            'join'  => false,
+            'leave' => false
+        );
 
-        $actionEdit_params = $params;
-        if ($this->hasAccess('edit', $actionEdit_params))
+        foreach ($actions as $action => & $foo)
         {
-            $actions['edit'] = array(
-                true,
-                $this->url2aInside('edit', array($id, '#' => 'content')),
-                'class' => 'modal'
-            );
+            $action_params = $params;
+            if ($this->hasAccess($action, $action_params))
+            {
+                $actions[$action] = array(
+                    true,
+                    $this->url2aInside($action, array($id, '#' => 'content')),
+                    'class' => 'modal'
+                );
+            }
+            else
+            {
+                unset($actions[$action]);
+            }
+            unset($action_params);
         }
-        unset($actionEdit_params);
+        unset($action, $foo);
 
         $row['Actions'] =& $actions;
 
@@ -280,6 +292,195 @@ class GroupController extends PagesController
             ->getCount()
         ;
         return $count > 0;
+    }
+
+
+
+    /**
+     * Join a group
+     * @author m.augustynowicz
+     *
+     * @param array $params request params:
+     *        [0] group id
+     * @return void
+     */
+    public function actionJoin(array $params)
+    {
+        $group_id = (int) @$params[0];
+
+
+        $f = g('Functions');
+        $form_id = 'confirm';
+        $post_data =& $this->data[$form_id];
+
+        $group_model = g('Group', 'model');
+        $group = $group_model->getRow($group_id);
+        $group_model->enchance($group);
+
+        if (@$this->_validated[$form_id])
+        {
+            $new_data = array(
+                'group_id' => $group_id,
+                'user_id'  => g()->auth->id()
+            );
+
+            $result = g('GroupMembership', 'model')->sync($new_data, true, 'insert');
+
+            if (true !== $result)
+            {
+                g()->addInfo('ds fail, joining roup'.$group_id, 'error',
+                    $this->trans('((error:DS:%s))', false) );
+                g()->debug->dump($result);
+            }
+            else
+            {
+                g()->addInfo('joined group'.$group_id, 'info',
+                    $this->trans('You have joined %s.', $group['DisplayName']) );
+
+                $backlink =& $post_data['_backlink'];
+                if (empty($backlink))
+                {
+                    $backlink = $this->url2a('', $params);
+                }
+                $this->redirect($backlink);
+            }
+        }
+
+        $this->assign(array(
+            'question' => $this->trans('Do you want to join %s?',
+                                $group['DisplayName'] ),
+            'yes' => 'join',
+            'no'  => 'don\'t'
+        ));
+        $this->_setTemplate('confirm');
+    }
+
+    /**
+     * Grant access for non-members
+     * @author m.augustynowicz
+     *
+     * @param array $params request params
+     *        [0] group id
+     *
+     * @return bool
+     */
+    protected function hasAccessToJoin(array & $params)
+    {
+        if ( ! g()->auth->loggedIn() )
+        {
+            return false;
+        }
+
+        if ( $this->hasAccessToLeave($params) )
+        {
+            return false;
+        }
+
+
+        $id = (int) @$params[0];
+
+        $group = g('Group', 'model')->getRow($id);
+
+        return g('Functions')->anyToBool($group['open']);
+    }
+
+
+
+    /**
+     * Leave a group
+     * @author m.augustynowicz
+     *
+     * @param array $params request params:
+     *        [0] group id
+     * @return void
+     */
+    public function actionLeave(array $params)
+    {
+        $group_id = (int) @$params[0];
+        $user_id  = g()->auth->id();
+
+
+        $f = g('Functions');
+        $form_id = 'confirm';
+        $post_data =& $this->data[$form_id];
+
+
+        $group_model = g('Group', 'model');
+        $group = $group_model->getRow($group_id);
+        $group_model->enchance($group);
+
+
+        $backlink =& $post_data['_backlink'];
+        if (empty($backlink))
+        {
+            $backlink = $this->url2a('', $params);
+        }
+
+
+        if (@$this->_validated[$form_id])
+        {
+            $old_data = array(
+                'group_id' => $group_id,
+                'user_id'  => g()->auth->id()
+            );
+
+            $result = g('GroupMembership', 'model')
+                ->filter($old_data)
+                ->delete(true)
+            ;
+
+            if (g()->db->lastErrorMsg())
+            {
+                g()->addInfo('ds fail, leaving group'.$group_id, 'error',
+                    $this->trans('((error:DS:%s))', false) );
+                g()->debug->dump($result);
+            }
+            else
+            {
+                g()->addInfo('leaving group'.$group_id, 'info',
+                    $this->trans('You have left %s.', $group['DisplayName']) );
+
+                $this->redirect($backlink);
+            }
+        }
+
+
+        $this->assign(array(
+            'question' => $this->trans('Do you want to leave %s?',
+                                $group['DisplayName'] ),
+            'yes' => 'leave',
+            'no'  => 'don\'t'
+        ));
+        $this->_setTemplate('confirm');
+    }
+
+    /**
+     * Grant access for members
+     * @author m.augustynowicz
+     *
+     * @param array $params request params
+     *        [0] group id
+     *
+     * @return bool
+     */
+    protected function hasAccessToLeave(array & $params)
+    {
+        $group_id = (int) @$params[0];
+        $user_id  = g()->auth->id();
+
+        $membership_class = g()->load('GroupMembership', 'model');
+        if (false === $membership_class::isMember($group_id, $user_id))
+        {
+            return false;
+        }
+
+        $group = g('Group', 'model')->getRow($group_id);
+        if ($group['leader_id'] === $user_id)
+        {
+            return false;
+        }
+
+        return true;
     }
 
 
