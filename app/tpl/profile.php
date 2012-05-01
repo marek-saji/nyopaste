@@ -14,36 +14,70 @@ $v->addLess($this->file('profile', 'less'));
 
 <section id="content">
 
-    <section class="vcard <?=$row['Type']?>">
+<?php
+$class = "vcard {$row['Type']} profile ";
+if (@$row['IsGroup'])
+{
+    $class .= 'group';
+}
+else
+{
+    $class .= 'user';
+}
+?>
+
+<section class="<?=$class?>">
         <header>
             <h2>
-                <?php if (@$row['email']) : ?>
+                <div class="avatar">
                     <?php
-                    $gravatar_size  = 128;
-                    $gravatar_url = sprintf(
-                        'http://gravatar.com/avatar/%s?%s',
-                        md5($row['email']),
-                        http_build_query(array(
-                            's' => $gravatar_size,
-                            'd' => 'identicon'
-                        ))
-                    );
+                    $size = 128;
                     ?>
-                    <div class="avatar">
+                    <?php if (@$row['IsGroup']) : ?>
+                        <?php
+                        echo $f->tag(
+                            'object',
+                            array(
+                                'data'   => $this->file('group.svg', 'gfx'),
+                                'type'   => 'image/svg+xml',
+                                'width'  => $size,
+                                'height' => $size,
+                                'class'  => 'photo'
+                            ),
+                            $f->tag(
+                                'img',
+                                array(
+                                    'src'    => $this->file('group.png', 'gfx'),
+                                    'width'  => $size,
+                                    'height' => $size,
+                                    'class'  => 'photo',
+                                    'alt'    => ''
+                                )
+                            )
+                        );
+                        ?>
+                    <?php else : ?>
+                        <?php
+                        $gravatar_url = sprintf(
+                            'http://gravatar.com/avatar/%s?%s',
+                            md5($row['email']),
+                            http_build_query(array(
+                                's' => $size,
+                                'd' => 'identicon'
+                            ))
+                        );
+                        ?>
                         <?php
                         echo $f->tag(
                             'img',
                             array(
                                 'src'    => $gravatar_url,
-                                'width'  => $gravatar_size,
-                                'height' => $gravatar_size,
                                 'class'  => 'photo'
-                                // size unspecified to make avatar scalable with css
                             )
                         );
                         ?>
-                    </div>
-                <?php endif; /* $row['email'] */ ?>
+                    <?php endif; /* $row['email'] */ ?>
+                </div>
 
                 <span class="fn">
                     <?=$title?>
