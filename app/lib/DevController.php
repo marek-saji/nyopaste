@@ -57,6 +57,8 @@ class DevController extends DeveloperController
         );
 
 
+        $paster = g()->conf['users']['admin']['login'];
+        $tos_content = file_get_contents(APP_DIR.'/conf/default_pastes/TOS.markdown');
         $this->_insertSomething(
             'Paste',
             array(
@@ -64,13 +66,18 @@ class DevController extends DeveloperController
                     'id'                   => -1,
                     'root_id'              => -1,
                     'paster_id'            => -1,
-                    'paster'               => g()->conf['users']['admin']['login'],
+                    'paster'               => $paster,
+                    'paster_tsv'           => $paster,
                     'url'                  => 'TOS',
                     'title'                => 'Terms of Service',
-                    'content'              => file_get_contents(APP_DIR.'/conf/default_pastes/TOS.markdown'),
+                    'title_tsv'            => 'Terms of Service',
+                    'content'              => $tos_content,
+                    'content_tsv'          => $tos_content,
                     'type'                 => 'markup',
                     'privacy'              => 'not listed',
                     'publicly_versionable' => false,
+                    'tags_tsv'             => '',
+                    'groups_tsv'           => ''
                 )
             )
         );
