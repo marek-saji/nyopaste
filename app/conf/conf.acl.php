@@ -23,7 +23,9 @@ $conf['acl'] = array(
 
     '/Ajaj/users'        => true,
 
-    '/User/Boxes/default' => true,
+    // can be accessed, when parent can
+    '/User/Boxes/default'  => true,
+    '/Group/Boxes/default' => true,
 
     '/Paste/new'         => false, // grand with callback
     '/Paste/default'     => true,
@@ -45,6 +47,10 @@ $conf['acl'] = array(
 
     '/User/delete'       => array('superadmin' => true, 'admin' => true),
     '/UserUser/edit'     => array('superadmin' => true, 'admin' => true),
+
+    '/Group/default'     => false, // grant with callback
+    '/Group/new'         => array('authorized' => true),
+    '/Group/edit'        => false,
 
     '/Log'               => array('superadmin' => true, 'admin' => true, 'mod' => true),
 

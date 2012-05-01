@@ -125,6 +125,7 @@ class UserController extends PagesController implements IUserController
         $this->_getUser();
 
         $this->addChild('ProfileBoxes', 'Boxes');
+        $this->addChild('Group', 'Groups');
     }
 
 
@@ -1048,7 +1049,7 @@ class UserController extends PagesController implements IUserController
             $result['DisplayName'] = $result[$conf['display_name_field']];
 
             $parser = g('TextParser', 'class', array('parser'=>'markdown'));
-            $result['AboutMe'] = $parser->parse($result['about_me']);
+            $result['DisplayDescription'] = $parser->parse($result['about_me']);
 
             static $user_type_mapping = array(
                 USER_TYPE_ADMIN => 'admin',
@@ -1056,6 +1057,10 @@ class UserController extends PagesController implements IUserController
             );
 
             $result['Type'] = @$user_type_mapping[ $result['type'] ];
+
+            $result['DisplayCreation'] =
+                g('Functions')->formatDate($result['creation'], DATE_SHOW_DATE)
+            ;
         }
 
         if ($params === null)

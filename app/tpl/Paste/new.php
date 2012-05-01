@@ -10,7 +10,7 @@
  * @param bool $use_captcha
  */
 
-$title = $this->trans('add new paste');
+$title = $this->trans('Add new paste');
 $v->setTitle($title);
 
 $v->addLess($this->file('new', 'less'));

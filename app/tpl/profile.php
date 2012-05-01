@@ -49,12 +49,6 @@ $v->addLess($this->file('profile', 'less'));
                     <?=$title?>
                 </span>
 
-                <?php if ($row['Type']) : ?>
-                    <small class="user_type">
-                        (<?=$this->trans($row['Type'])?>)
-                    </small>
-                <?php endif; /* $row['Type' */ ?>
-
             </h2>
         </header>
 
@@ -67,21 +61,48 @@ $v->addLess($this->file('profile', 'less'));
             ?>
 
             <dl>
-                <?php if (trim($row['AboutMe'])) : ?>
+
+                <?php if (@$row['creation']) : ?>
+                    <dd>
+                        <?php if (@$row['IsGroup']) : ?>
+                            <?=$this->trans('created %s', $row['DisplayCreation'])?>
+                        <?php else : ?>
+                            <?=$this->trans('member since %s', $row['DisplayCreation'])?>
+                        <?php endif; /* $row is group */ ?>
+                    </dd>
+                <?php endif; /* $ow['creation'] */ ?>
+
+                <?php if (@$row['MembersCount']) : ?>
+                    <dd>
+                        <?=$this->trans('%d member(s)', $row['MembersCount'])?>
+                    </dd>
+                <?php endif; /* $ow['MembersCount'] */ ?>
+
+                <?php if ($row['Type']) : ?>
+                    <dt class="assumed">
+                        <?=$this->trans('new members policy')?>
+                    </dt>
+                    <dd>
+                        <?=$this->trans($row['Type'])?>
+                    </dd>
+                <?php endif; /* $row['Type' */ ?>
+
+                <?php if (trim($row['DisplayDescription'])) : ?>
                     <!-- about me -->
-                    <dt class="about_me text">
+                    <dt class="assumed">
                         <?=$t->trans('something about you')?>
                     </dt>
-                    <dd class="about_me text user-content">
-                        <?=$row['AboutMe']?>
+                    <dd>
+                        <?=$row['DisplayDescription']?>
                     </dd>
                 <?php endif; ?>
+
                 <?php if (trim(@$row['website'])) : ?>
                     <!-- website -->
-                    <dt class="website text url">
+                    <dt class="assumed">
                         <?=$t->trans('website')?>
                     </dt>
-                    <dd class="website text url">
+                    <dd>
                         <?php
                         echo $f->tag(
                             'a',
@@ -96,6 +117,18 @@ $v->addLess($this->file('profile', 'less'));
                         ?>
                     </dd>
                 <?php endif; ?>
+
+                <?php if ( ! @$row['IsGroup'] ) : ?>
+                    <dt>
+                        <?=$this->trans('Member of')?>
+                    </dt>
+                    <dd>
+                        <?php
+                        $this->getChild('groups')->render();
+                        ?>
+                    </dd>
+                <?php endif; /*  row is not a group  */ ?>
+
             </dl>
 
         </div>

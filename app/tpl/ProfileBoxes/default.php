@@ -16,13 +16,19 @@ $v->addLess($this->file('default', 'less'));
         <div class="empty boxes">
             <?php if ($this->getParent()->getAssigned('its_you')) : ?>
                 <p><?=$this->trans('You can create lists of pastes here for everyone to see.')?></p>
-                <p><?=$this->trans('These can be your pastes, but don\'t have to.')?></p>
+                <?php if (!@$owner_is_group) : ?>
+                    <p><?=$this->trans('These can be your pastes, but don\'t have to.')?></p>
+                <?php endif;  ?>
                 <p>
                     <?=$this->l2aInside('add your first list', 'new', array('#' => 'content'), array('class' => 'modal'))?>
                 </p>
             <?php else : ?>
                 <p>
-                    <?=$this->trans('User did not define any lists yet.')?>
+                    <?php if (@$owner_is_group) : ?>
+                        <?=$this->trans('Group did not define any lists yet.')?>
+                    <?php else : ?>
+                        <?=$this->trans('User did not define any lists yet.')?>
+                    <?php endif; ?>
                 </p>
             <?php endif;?>
         </div>

@@ -84,3 +84,11 @@ $conf['translations']['paste'] = array(
     'v%s' => '<abbr title="version">v</abbr>%s',
 );
 
+$conf['translations']['group'] = array(
+    '%d member(s)' => array(
+        "0"  => "no members",
+        "1"  => "one member",
+        null => "%d members"
+    )
+);
+

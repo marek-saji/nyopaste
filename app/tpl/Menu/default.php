@@ -23,7 +23,7 @@ $url      = "$ctrl_url/$act";
     $class = ($ctrl_url === 'Group') ? 'active' : '';
     ?>
     <li class="<?=$class?>">
-        <?=$this->l2c('user groups', 'UnderConstruction')?>
+        <?=$this->l2c('user groups', 'Group')?>
     </li>
 
 </ul>
