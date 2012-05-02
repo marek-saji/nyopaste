@@ -49,7 +49,22 @@ if (!is_array($user))
 
 $login = $user[$login_field];
 
-$label = ($text === null) ? $user['DisplayName'] : $text;
+if (null !== $text)
+{
+    $label = $text;
+}
+else if (@$user['DisplayName'])
+{
+    $label = $user['DisplayName'];
+}
+else if (@$user[$login_field])
+{
+    $label = $user[$login_field];
+}
+else
+{
+    $label = $login;
+}
 
 ob_start();
 ?>

@@ -50,8 +50,9 @@ class GroupController extends PagesController
         else
         {
             $this->addChild('ProfileBoxes', 'Boxes')
-                ->assign('owner_is_grou', true)
+                ->assign('owner_is_group', true)
             ;
+            $this->addChild('User', 'Users');
 
         }
     }

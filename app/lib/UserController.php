@@ -122,10 +122,42 @@ class UserController extends PagesController implements IUserController
      */
     protected function _prepareActionDefault(array & $params)
     {
-        $this->_getUser();
+        $user_ident = @$params[0];
 
-        $this->addChild('ProfileBoxes', 'Boxes');
-        $this->addChild('Group', 'Groups');
+        if ($user_ident)
+        {
+            $this->_getUser();
+
+            $this->addChild('ProfileBoxes', 'Boxes');
+            $this->addChild('Group', 'Groups');
+        }
+        else
+        {
+            $this->addChild('Paginator', 'p');
+        }
+    }
+
+
+    /**
+     * Route between user show and listing
+     * @author m.augustynowicz
+     *
+     * @param array $params request params:
+     *        [0] user's ident (login), required for display ctrl
+     * @return void
+     */
+    public function actionDefault(array $params)
+    {
+        $user_ident = @$params[0];
+
+        if ($user_ident)
+        {
+            return $this->_actionShow($params);
+        }
+        else
+        {
+            return $this->_actionList($params);
+        }
     }
 
 
@@ -135,7 +167,7 @@ class UserController extends PagesController implements IUserController
      * @param array URL params
      *        [0] user's ident (login), required
      */
-    public function actionDefault(array $params)
+    protected function _actionShow(array $params)
     {
         $boxes = $this->getChild('Boxes');
         if ($boxes->getLaunchedAction() !== '')
@@ -176,6 +208,56 @@ class UserController extends PagesController implements IUserController
 
         $this->assignByRef('row', $db_data);
     }
+
+
+    /**
+     * List users
+     * @author m.augustynowicz
+     *
+     * @param array $params request params:
+     *        - [0] group id, show only group's members
+     * @return void
+     */
+    protected function _actionList(array $params)
+    {
+        $group_id = $this->getParentParam('Group');
+
+
+        $this->_setTemplate('list');
+
+        $user = g('User', 'model');
+        $filter = array(
+            'status' => STATUS_ACTIVE
+        );
+        if ( ! $group_id )
+        {
+            $model =& $user;
+            $model->orderBy($user['login']);
+        }
+        else
+        {
+            $membership = g('GroupMembership', 'model');
+            $model = new Join(
+                $membership,
+                $user,
+                new FoBinary($membership['user_id'], '=', $user['id'])
+            );
+            $white_list = $user->getFields();
+            $model->whiteList($white_list);
+
+            $model->orderBy($membership['creation']);
+            $filter['group_id'] = $group_id;
+        }
+
+        $model->filter($filter);
+
+        $this->getChild('p')->setMargins($model);
+        $rows = $model->exec();
+
+        $this->assignByRef('rows', $rows);
+    }
+
+
 
     /**
      * Log in

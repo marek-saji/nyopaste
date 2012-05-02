@@ -26,6 +26,7 @@ $conf['acl'] = array(
     // can be accessed, when parent can
     '/User/Boxes/default'  => true,
     '/Group/Boxes/default' => true,
+    '/Group/Users'         => true,
 
     '/Paste/new'         => false, // grand with callback
     '/Paste/default'     => true,

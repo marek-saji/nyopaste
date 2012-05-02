@@ -106,12 +106,6 @@ else
                     </dd>
                 <?php endif; /* $ow['creation'] */ ?>
 
-                <?php if (@$row['MembersCount']) : ?>
-                    <dd>
-                        <?=$this->trans('%d member(s)', $row['MembersCount'])?>
-                    </dd>
-                <?php endif; /* $ow['MembersCount'] */ ?>
-
                 <?php if ($row['Type']) : ?>
                     <dt class="assumed">
                         <?=$this->trans('new members policy')?>
@@ -159,6 +153,19 @@ else
                     <dd>
                         <?php
                         $this->getChild('groups')->render();
+                        ?>
+                    </dd>
+                <?php else : ?>
+                    <dt>
+                        <?=$this->trans('Members')?>
+                        <?php if (@$row['MembersCount']) : ?>
+                            (<?=$row['MembersCount']?>)
+                        <?php endif; /* $ow['MembersCount'] */ ?>
+
+                    </dt>
+                    <dd>
+                        <?php
+                        $this->getChild('Users')->render();
                         ?>
                     </dd>
                 <?php endif; /*  row is not a group  */ ?>
