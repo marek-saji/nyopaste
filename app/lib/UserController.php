@@ -1,5 +1,6 @@
 <?php
 g()->load('Pages', 'controller');
+g()->load('IProfile', 'controller');
 
 /**
  * Handling users
@@ -12,7 +13,7 @@ g()->load('Pages', 'controller');
  * displaying, listing, signing ip/up/out/left/right/etc
  * @author m.augustynowicz
  */
-class UserController extends PagesController implements IUserController
+class UserController extends PagesController implements IUserController, IProfileController
 {
 
     public $forms = array(
@@ -176,11 +177,12 @@ class UserController extends PagesController implements IUserController
             return;
         }
 
+
         $this->_setTemplate('profile');
 
 
-        $its_you = ($this->_user['id'] == g()->auth->id());
-        $this->assignByRef('its_you', $its_you);
+        $profile_owner = ($this->_user['id'] == g()->auth->id());
+        $this->assignByRef('profile_owner', $profile_owner);
 
         // determine which action links we should display
 
@@ -189,7 +191,7 @@ class UserController extends PagesController implements IUserController
         $db_data['Actions'] = array(
             'edit'    => true
         );
-        if (false === $its_you)
+        if (false === $profile_owner)
         {
             $db_data['Actions'] += array(
                 'remove'  => !($this->_user['status'] & STATUS_DELETED)
@@ -1138,6 +1140,7 @@ class UserController extends PagesController implements IUserController
                 USER_TYPE_MOD   => 'moderator'
             );
 
+            $result['ProfileType'] = 'user';
             $result['Type'] = @$user_type_mapping[ $result['type'] ];
 
             $result['DisplayCreation'] =

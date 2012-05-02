@@ -447,6 +447,8 @@ class PasteModel extends Model
                 '/\bNOT\b/' => '!',
                 '/\s+-(?=[^\s])/' => ' !',
                 '/"/' => "'",
+                // change spaces to underscores in quoted strings
+                "/'([^']*)'/e" => 'str_replace(" ", "_", "$1")',
                 // insert AND operator between words
                 '/(?<=[^!|()&])\s+(?=[^|()&])/' => ' & ',
                 // map human readable weights

@@ -19,6 +19,11 @@ $conf['enum'] = array(
         'private',
     ),
 
+    'profile_type' => array(
+        'user',
+        'group'
+    ),
+
 );
 
 

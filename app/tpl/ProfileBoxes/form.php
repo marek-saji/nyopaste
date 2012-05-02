@@ -1,14 +1,14 @@
 <?php
 /**
- * Create new user profile box
+ * Create new profile box
  * @author m.augustynowicz
  *
- * @param array $user user's data including [Ident]
- * @param bool $own_profile is this logged-in user's profile
+ * @param array $profile profile data
+ * @param bool $own_profile is this logged-in user's profile or is he a group leader
  */
 
 $param_defaults = array(
-    'user'        => null,
+    'profile'     => null,
     'own_profile' => false,
     'editing'     => false
 );
@@ -35,15 +35,15 @@ if ($own_profile)
         $title = $this->trans('Create new list on your profile');
     }
 }
-else if ($user)
+else if ($profile)
 {
     if ($editing)
     {
-        $title = $this->trans('Edit pastes list on %s\'s profile');
+        $title = $this->trans('Edit pastes list on a profile of %s', $profile['DisplayName']);
     }
     else
     {
-        $title = $this->trans('Create new list on %s\'s profile', $user['Ident']);
+        $title = $this->trans('Create new list on a profile of %s', $profile['DisplayName']);
     }
 }
 else
@@ -91,17 +91,17 @@ $v->setTitle($title);
                     <?php
                     $form->input('query');
                     ?>
-                    <?php if ($user) : ?>
+                    <?php if ($profile) : ?>
                         <div class="help">
                             <?php if ($own_profile) : ?>
                                 <p><?=$this->trans('Pastes matching this search query will automagically show up on your profile.')?></p>
-                                <p><?=$this->trans('To restrict to only your pastes, use <code>paster:%s</code>.', $user['Ident'])?></p>
+                                <p><?=$this->trans('To restrict to only your pastes, use <code>paster:%s</code>.', g()->auth->ident())?></p>
                             <?php else : ?>
-                                <p><?=$this->trans('Pastes matching this search query will automagically show up on %s\'s profile.', $user['DisplayName'])?></p>
-                                <?=$this->trans('To restrict to only this user\'s pastes, use <code>paster:%s</code>.', $user['Ident'])?>
+                                <p><?=$this->trans('Pastes matching this search query will automagically show up on this profile.')?></p>
+                                <p><?=$this->trans('To restrict to only this user\'s pastes, use <code>paster:%s</code>.', g()->auth->ident())?></p>
                             <?php endif; /* $own */ ?>
                         </div>
-                    <?php endif; /* $user */ ?>
+                    <?php endif; /* $profile */ ?>
                 </li>
                 <li class="field">
                     <label>

@@ -14,7 +14,7 @@ $v->addLess($this->file('default', 'less'));
     <?php if (empty($boxes)) : ?>
 
         <div class="empty boxes">
-            <?php if ($this->getParent()->getAssigned('its_you')) : ?>
+            <?php if ($this->getParent()->getAssigned('profile_owner')) : ?>
                 <p><?=$this->trans('You can create lists of pastes here for everyone to see.')?></p>
                 <?php if (!@$owner_is_group) : ?>
                     <p><?=$this->trans('These can be your pastes, but don\'t have to.')?></p>

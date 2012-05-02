@@ -1,12 +1,19 @@
 <?php
 g()->load('Pages', 'controller');
+g()->load('IProfile', 'controller');
 
 /**
  * User groups: searching, viewing, joining, creating...
  * @author m.augustynowicz
  */
-class GroupController extends PagesController
+class GroupController extends PagesController implements IProfileController
 {
+    /**
+     * @var array cache for `_getGroup()`, idexed by id
+     */
+    protected $_row_cache = array();
+
+
     /**
      * @var array form definictions
      * @see Forms
@@ -185,30 +192,19 @@ class GroupController extends PagesController
      */
     protected function _actionShow(array $params)
     {
-        $id = (int) $params[0];
-
-
-        $f = g('Functions');
+        $boxes = $this->getChild('Boxes');
+        if ($boxes->getLaunchedAction() !== '')
+        {
+            $this->_passRenderingTo($boxes);
+            return;
+        }
 
 
         $this->_setTemplate('profile');
 
 
         // assign row data
-
-        $group = g('Group', 'model')
-            ->orderBy('creation', 'DESC')
-        ;
-        $filter = $group->getAccessibleFilter()
-            ->also(new FoBinary($group['id'], '=', $id))
-        ;
-        $row = $group->filter($filter)->getRow();
-
-        $row['IsGroup'] = true;
-
-        // meta-data (common names with User)
-        $group->enchance($row);
-
+        $row = $this->_getGroup(); // handles 404
 
         // assign group actions
 
@@ -225,7 +221,7 @@ class GroupController extends PagesController
             {
                 $actions[$action] = array(
                     true,
-                    $this->url2aInside($action, array($id, '#' => 'content')),
+                    $this->url2aInside($action, array($row['id'], '#' => 'content')),
                     'class' => 'modal'
                 );
             }
@@ -241,6 +237,7 @@ class GroupController extends PagesController
 
 
         $this->assignByRef('row', $row);
+        $this->assign('profile_owner', g()->auth->id() == $row['leader_id']);
     }
 
 
@@ -307,16 +304,12 @@ class GroupController extends PagesController
      */
     public function actionJoin(array $params)
     {
-        $group_id = (int) @$params[0];
+        $group = $this->_getGroup();
+        $group_id = $group['id'];
 
 
-        $f = g('Functions');
         $form_id = 'confirm';
         $post_data =& $this->data[$form_id];
-
-        $group_model = g('Group', 'model');
-        $group = $group_model->getRow($group_id);
-        $group_model->enchance($group);
 
         if (@$this->_validated[$form_id])
         {
@@ -378,9 +371,7 @@ class GroupController extends PagesController
         }
 
 
-        $id = (int) @$params[0];
-
-        $group = g('Group', 'model')->getRow($id);
+        $group = $this->_getGroup(@$params[0], false);
 
         return g('Functions')->anyToBool($group['open']);
     }
@@ -397,18 +388,13 @@ class GroupController extends PagesController
      */
     public function actionLeave(array $params)
     {
-        $group_id = (int) @$params[0];
+        $group = $this->_getGroup();
+        $group_id = $group['id'];;
         $user_id  = g()->auth->id();
 
 
-        $f = g('Functions');
         $form_id = 'confirm';
         $post_data =& $this->data[$form_id];
-
-
-        $group_model = g('Group', 'model');
-        $group = $group_model->getRow($group_id);
-        $group_model->enchance($group);
 
 
         $backlink =& $post_data['_backlink'];
@@ -475,7 +461,7 @@ class GroupController extends PagesController
             return false;
         }
 
-        $group = g('Group', 'model')->getRow($group_id);
+        $group = $this->_getGroup($group_id, false);
         if ($group['leader_id'] === $user_id)
         {
             return false;
@@ -527,16 +513,12 @@ class GroupController extends PagesController
      */
     protected function _addOrEdit(array $params, $editing = false)
     {
-        $id = (int) $params[0];
-
-
         $f = g('Functions');
 
 
         if ($editing)
         {
-            $row = g('Group', 'model')->getRow($id);
-            $row['invite_only'] = ! $f->anyToBool($row['open']);
+            $row = $this->_getGroup();
             if (empty($row))
             {
                 return $this->redirect(array('HttpErrors', 'error404'));
@@ -570,7 +552,7 @@ class GroupController extends PagesController
             if ($editing)
             {
                 $db_action = 'update';
-                $new_data['id'] = $id;
+                $new_data['id'] = $row['id'];
                 $success_msg = 'Group updated';
             }
             else
@@ -626,6 +608,71 @@ class GroupController extends PagesController
         $this->assignByRef('row', $row);
         $this->assignByRef('editing', $editing);
 
+    }
+
+
+    /**
+     * Get group that's id is in request params
+     * @author m.augustynowicz
+     *
+     * @return array
+     */
+    public function getRow()
+    {
+        return $this->_getGroup(null, false);
+    }
+
+
+    /**
+     * Fetch group data
+     * @author m.augustynowicz
+     *
+     * @param int|null $id group id. null gets id from request params
+     * @param bool $redirect redirect to 404, when group not found
+     *
+     * @return array
+     */
+    protected function _getGroup ($id = null, $redirect = true)
+    {
+        if (null === $id)
+        {
+            $id = $this->getParam(0);
+        }
+
+        if (isset($this->_row_cache[$id]))
+        {
+            return $this->_row_cache[$id];
+        }
+
+        $model = g('Group', 'model');
+
+        $filter = $model->getAccessibleFilter()
+            ->also(new FoBinary($model['id'], '=', $id))
+        ;
+        $row = $model->filter($filter)->getRow();
+
+        if ( ! $row )
+        {
+            if ($redirect)
+            {
+                return $this->redirect(array('HttpErrors', '', array(404)));
+            }
+            else
+            {
+                return array();
+            }
+        }
+
+        $row['invite_only'] = ! g('Functions')->anyToBool($row['open']);
+
+        $row['ProfileType'] = 'group';
+        $row['IsGroup'] = true;
+
+        $model->enchance($row);
+
+        $this->_row_cache[$id] =& $row;
+
+        return $row;
     }
 
 }

@@ -39,15 +39,16 @@ class ProfileBoxesController extends Component
     {
         $parent = $this->getParent();
 
-        if ($parent->getName() === 'User')
+        if ( is_a($parent, 'IProfileController'))
         {
-            $user = $parent->getRow();
+            $profile = $parent->getRow();
             $boxes = g('Box', 'model')
                 ->orderBy('order')
                 ->orderBy('id', 'DESC') // in case of non-unique order value
                 ->filter(array(
-                    'user_id' => $user['id'],
-                    'removed' => null
+                    'profile_type' => $profile['ProfileType'],
+                    'profile_id'   => $profile['id'],
+                    'removed'      => null
                 ))
                 ->exec()
             ;
@@ -234,13 +235,24 @@ class ProfileBoxesController extends Component
             case 'remove' :
             case 'restore' :
             case 'move' :
+                $user_id = g()->auth->id();
                 $parent = $this->getParent();
-                if (method_exists($parent, 'getRow'))
+                if (is_a($parent, 'IProfileController'))
                 {
-                    $user = $parent->getRow();
-                    if (g()->auth->id() === @$user['id'])
+                    $profile = $parent->getRow();
+                    if (is_a($parent, 'UserController'))
                     {
-                        return true;
+                        if ($user_id === @$profile['id'])
+                        {
+                            return true;
+                        }
+                    }
+                    else if (is_a($parent, 'GroupController'))
+                    {
+                        if ($user_id === @$profile['leader_id'])
+                        {
+                            return true;
+                        }
                     }
                     // else fall down
                 }
@@ -349,14 +361,23 @@ class ProfileBoxesController extends Component
     {
         $parent = $this->getParent();
 
-        if ($parent->getName() !== 'User')
+        if ( ! is_a($parent, 'IProfileController'))
         {
             return $this->redirect(array('HttpErrors', 'error404'));
         }
 
-        $user = $parent->getRow();
-        $this->assign('user', $user);
-        $this->assign('own_profile', $user['Ident'] === g()->auth->ident());
+        $profile = $parent->getRow();
+        $this->assign('profile', $profile);
+        $user_id = g()->auth->ident();
+        if (@$profile['IsGroup'])
+        {
+            $own_profile = ($user_id == $profile['leader_id']);
+        }
+        else
+        {
+            $own_profile = ($user_id == $profile['Ident']);
+        }
+        $this->assign('own_profile', $own_profile);
         $this->assign('editing', $editing);
 
 
@@ -364,8 +385,9 @@ class ProfileBoxesController extends Component
         {
             $box = g('Box', 'model')
                 ->filter(array(
-                    'id'      => $params[0],
-                    'user_id' => $user['id']
+                    'id'           => $params[0],
+                    'profile_type' => $profile['ProfileType'],
+                    'profile_id'   => $profile['id']
                 ))
                 ->getRow()
             ;
@@ -386,11 +408,20 @@ class ProfileBoxesController extends Component
             {
                 $this->data[$form_ident] = $box;
             }
-            else
+            else if (@$profile['IsGroup'])
+            {
+                $this->data[$form_ident] = array(
+                    'title'       => $this->trans('%s\'s pastes', g()->auth->displayName()),
+                    'query'       => "paster:" . g()->auth->ident(),
+                    'limit'       => self::DEFAULT_LIMIT,
+                    'list_paster' => true
+                );
+            }
+            else // is user
             {
                 $this->data[$form_ident] = array(
                     'title'       => $this->trans('My pastes'),
-                    'query'       => "paster:{$user['Ident']}",
+                    'query'       => "paster:{$profile['Ident']}",
                     'limit'       => self::DEFAULT_LIMIT,
                     'list_paster' => true
                 );
@@ -401,9 +432,10 @@ class ProfileBoxesController extends Component
             if ($editing)
             {
                 $update_data = array(
-                    'id'      => $box['id'],
-                    'user_id' => $box['user_id'],
-                    'order'   => $box['order']
+                    'id'           => $box['id'],
+                    'profile_type' => $box['profile_type'],
+                    'profile_id'   => $box['profile_id'],
+                    'order'        => $box['order']
                 ) + $this->data[$form_ident];
                 $result = g('Box', 'model')->sync($update_data, true, 'update');
             }
@@ -419,8 +451,9 @@ class ProfileBoxesController extends Component
                 ;
 
                 $insert_data = array(
-                    'user_id' => $user['id'],
-                    'order'   => 1 + $current_max_order
+                    'profile_type' => $profile['ProfileType'],
+                    'profile_id'   => $profile['id'],
+                    'order'        => 1 + $current_max_order
                 ) + $this->data[$form_ident];
 
                 $result = g('Box', 'model')->sync($insert_data, true, 'insert');
@@ -432,7 +465,7 @@ class ProfileBoxesController extends Component
             {
                 g()->debug->dump($result);
                 g()->addInfo(
-                    'ds fail, new box for user ' . $user['Ident'],
+                    'ds fail, new box for profile ' . $profile['id'],
                     'error',
                     $this->trans('((error:DS:%s))', false)
                 );
@@ -440,7 +473,7 @@ class ProfileBoxesController extends Component
             else
             {
                 g()->addInfo(
-                    'new box for user ' . $user['Ident'],
+                    'new box for profile ' . $profile['id'],
                     'info',
                     $this->trans('New box added') );
                 //g()->db->completeTrans();

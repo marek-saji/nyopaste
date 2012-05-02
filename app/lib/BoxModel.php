@@ -20,7 +20,8 @@ class BoxModel extends Model
         // fields
 
         $this->_addField(new FId('id'));
-        $this->_addField(new FForeignId('user_id', true, 'User'));
+        $this->_addField(new FEnum('profile_type', 'profile_type', true));
+        $this->_addField(new FForeignId('profile_id', true, 'User'));
         $this->_addField(new FInt('order'));
         $this->_addField(new FString('title', false, '', 0, 256));
         $this->_addField(new FMultilineString('query'));
