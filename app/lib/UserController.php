@@ -247,6 +247,11 @@ class UserController extends PagesController implements IUserController, IProfil
             $white_list = $user->getFields();
             $model->whiteList($white_list);
 
+            $leader_id = $this->getAssigned('leader_id');
+            if ($leader_id)
+            {
+                $model->orderBy(new FConst("id={$leader_id}",'FBool'), 'DESC');
+            }
             $model->orderBy($membership['creation']);
             $filter['group_id'] = $group_id;
         }

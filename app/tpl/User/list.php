@@ -3,6 +3,7 @@
  * List users
  * @author m.augustynowicz
  *
+ * @param int $leader_id (optional)
  * @param array $rows from UserModel
  */
 
@@ -19,9 +20,13 @@ $paginator = $this->getChild('p');
             <?php foreach ($rows as & $row) : ?>
                 <li>
                     <?php
-                    //echo $this->l2c($row['login'], 'User', '', array($row['login']));
                     echo $this->inc('user_link', array('user'=>$row));
                     ?>
+                    <?php if ($row['id'] == $leader_id) : ?>
+                        <small>
+                            (<?=$this->trans('leader')?>)
+                        </small>
+                    <?php endif; ?>
                 </li>
             <?php endforeach; ?>
         <?php endif; ?>

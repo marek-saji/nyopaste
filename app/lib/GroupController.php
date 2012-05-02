@@ -56,10 +56,14 @@ class GroupController extends PagesController implements IProfileController
         }
         else
         {
+            $group = $this->_getGroup();
+
             $this->addChild('ProfileBoxes', 'Boxes')
                 ->assign('owner_is_group', true)
             ;
-            $this->addChild('User', 'Users');
+            $this->addChild('User', 'Users')
+                ->assign('leader_id', $group['leader_id'])
+            ;
 
         }
     }
