@@ -4,7 +4,7 @@
 @panel-margin: 1em;
 
 
-#whole-content
+.profile
 {
     h2
     {
@@ -12,13 +12,30 @@
         text-align : center;
     }
 
+    &.group
+    {
+        .fn
+        {
+            color : #888;
+
+            em
+            {
+                font-style : normal;
+                color : black;
+            }
+        }
+    }
+
     .avatar
     {
         text-align : center;
 
+        object,
         img
         {
             max-width : 100%;
+            display   : block;
+            margin    : 0 auto;
         }
     }
 
