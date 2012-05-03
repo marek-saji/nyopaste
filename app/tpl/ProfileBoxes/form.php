@@ -132,7 +132,7 @@ $v->setTitle($title);
             'Forms/buttons',
             array(
                 'form'   => $form,
-                'submit' => $editing ? 'edit' : 'add'
+                'submit' => $editing ? 'save' : 'add'
             )
         );
         ?>

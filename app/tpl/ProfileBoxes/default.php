@@ -44,7 +44,9 @@ $v->addLess($this->file('default', 'less'));
                         <?php endif; /* $box['title'] */ ?>
 
                         <?php if (empty($box['Pastes'])) : ?>
-                            <?=$this->trans('no items')?>
+                            <p class="empty pastes">
+                                <?=$this->trans('no pastes')?>
+                            </p>
                         <?php else /* if empty($box['Pastes']) */ : ?>
                             <ol class="pastes">
                                 <?php foreach ($box['Pastes'] as & $paste) : ?>
