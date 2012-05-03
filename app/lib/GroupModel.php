@@ -57,25 +57,39 @@ class GroupModel extends Model
      * Get filter for filtering groups accessible by a user
      * @author m.augustynowicz
      *
+     * @param bool $include_removed
+     *
      * @return FoBinaryChain set to AND
      */
-    public function getAccessibleFilter()
+    public function getAccessibleFilter($include_removed = false)
     {
         $user_id = g()->auth->id();
 
 
+        $f_not_hidden  = new FoBinary($this['hidden'], '=', 'false');
         if ($user_id)
         {
             $f_is_leader = new FoBinary($this['leader_id'], '=', $user_id);
+            $f_visible   = new FoBinaryChain(
+                new FoBinaryChain($f_not_hidden, 'OR', $f_is_leader),
+                'AND',
+                'true'
+            );
         }
         else
         {
-            $f_is_leader = 'false';
+            $f_visible = $f_not_hidden;
         }
-        $f_not_removed = new FoBinary($this['removed'], 'IS NULL');
-        $f_not_hidden  = new FoBinary($this['hidden'], '=', 'false');
-        $f_visible     = new FoBinaryChain($f_not_hidden, 'OR', $f_is_leader);
-        $filter = new FoBinaryChain($f_not_removed, 'AND', $f_visible);
+
+        if ($include_removed)
+        {
+            $filter = $f_visible;
+        }
+        else
+        {
+            $f_not_removed = new FoBinary($this['removed'], 'IS NULL');
+            $filter = new FoBinaryChain($f_not_removed, 'AND', $f_visible);
+        }
 
         return $filter;
     }

@@ -213,9 +213,10 @@ class GroupController extends PagesController implements IProfileController
         // assign group actions
 
         $actions = array(
-            'edit'  => false,
-            'join'  => false,
-            'leave' => false
+            'edit'   => false,
+            'remove' => false,
+            'join'   => false,
+            'leave'  => false
         );
 
         foreach ($actions as $action => & $foo)
@@ -223,11 +224,18 @@ class GroupController extends PagesController implements IProfileController
             $action_params = $params;
             if ($this->hasAccess($action, $action_params))
             {
+                if ('remove' !== $action)
+                {
+                    $action_params['#'] = 'content';;
+                }
                 $actions[$action] = array(
                     true,
-                    $this->url2aInside($action, array($row['id'], '#' => 'content')),
-                    'class' => 'modal'
+                    $this->url2aInside($action, $action_params)
                 );
+                if ('remove' !== $action)
+                {
+                    $actions[$action]['class'] = 'modal';
+                }
             }
             else
             {
@@ -369,13 +377,20 @@ class GroupController extends PagesController implements IProfileController
             return false;
         }
 
-        if ( $this->hasAccessToLeave($params) )
+        $group = $this->_getGroup(@$params[0], false);
+        $group_id = $group['id'];
+        $user_id  = g()->auth->id();
+
+        if ($group['leader_id'] == $user_id)
         {
             return false;
         }
 
-
-        $group = $this->_getGroup(@$params[0], false);
+        $membership_class = g()->load('GroupMembership', 'model');
+        if (true === $membership_class::isMember($group_id, $user_id))
+        {
+            return false;
+        }
 
         return g('Functions')->anyToBool($group['open']);
     }
@@ -615,6 +630,119 @@ class GroupController extends PagesController implements IProfileController
     }
 
 
+
+    /**
+     * Remove a group
+     * @author m.augustynowicz
+     *
+     * @param array $params URL params
+     *        [0] group id
+     */
+    public function actionRemove(array $params)
+    {
+        $db_data = $this->_getGroup();
+
+        $data_update = array(
+            'id'      => $db_data['id'],
+            'removed' => time()
+        );
+
+        $result = g('Group', 'model')->sync($data_update, true, 'update');
+
+        if (true !== $result)
+        {
+            g()->addInfo('ds fail, deleting group'.$db_data['id'], 'error',
+                $this->trans('((error:DS:%s))', false) );
+            g()->debug->dump($result);
+        }
+        else
+        {
+            $restore_params = $params;
+            $undo_link = $this->l2a(
+                $this->trans('Undo'),
+                'restore',
+                $restore_params
+            );
+            g()->addInfo(
+                'removed group'.$db_data['id'],
+                'info',
+                $this->trans(
+                    'You have removed %s. (%s)',
+                    $db_data['DisplayName'],
+                    $undo_link
+                )
+            );
+        }
+
+        $backlink = $this->url2c('Group', '');
+        $this->redirect($backlink);
+    }
+
+    /**
+     * Grant access for group leader
+     * @author m.augustynowicz
+     *
+     * @param array $params request params
+     *        [0] group id
+     *
+     * @return bool
+     */
+    protected function hasAccessToRemove(array & $params)
+    {
+        return $this->hasAccess('edit', $params);
+    }
+
+
+    /**
+     * Restore removed group
+     * @author m.augustynowicz
+     *
+     * @param array $params request params
+     *        [0] group id
+     */
+    public function actionRestore(array $params)
+    {
+        $row = $this->_getGroup(null, false, true);
+
+        $row['removed'] = null;
+
+        $result = g('Group', 'model')->sync($row, true, 'update');
+
+        if (true !== $result)
+        {
+            g()->addInfo('ds fail, undeleting group'.$row['id'], 'error',
+                $this->trans('((error:DS:%s))', false) );
+            g()->debug->dump($result);
+
+            $this->redirect($this->url2c('Group', ''));
+        }
+        else
+        {
+            g()->addInfo(
+                'undeleted group'.$row['id'],
+                'info',
+                $this->trans('Group restored')
+            );
+            $this->redirect($this->url2c('Group', '', $params));
+        }
+    }
+
+    /**
+     * Grant access for group leader
+     * @author m.augustynowicz
+     *
+     * @param array $params request params
+     *        [0] group id
+     *
+     * @return bool
+     */
+    protected function hasAccessToRestore(array & $params)
+    {
+        $row = $this->_getGroup(null, false, true);
+        return (g()->auth->id() == $row['leader_id']);
+    }
+
+
     /**
      * Get group that's id is in request params
      * @author m.augustynowicz
@@ -633,24 +761,25 @@ class GroupController extends PagesController implements IProfileController
      *
      * @param int|null $id group id. null gets id from request params
      * @param bool $redirect redirect to 404, when group not found
+     * @param bool $include_removed
      *
      * @return array
      */
-    protected function _getGroup ($id = null, $redirect = true)
+    protected function _getGroup ($id = null, $redirect = true, $include_removed = false)
     {
         if (null === $id)
         {
             $id = $this->getParam(0);
         }
 
-        if (isset($this->_row_cache[$id]))
+        if (isset($this->_row_cache[$include_removed][$id]))
         {
-            return $this->_row_cache[$id];
+            return $this->_row_cache[$include_removed][$id];
         }
 
         $model = g('Group', 'model');
 
-        $filter = $model->getAccessibleFilter()
+        $filter = $model->getAccessibleFilter($include_removed)
             ->also(new FoBinary($model['id'], '=', $id))
         ;
         $row = $model->filter($filter)->getRow();
@@ -674,7 +803,7 @@ class GroupController extends PagesController implements IProfileController
 
         $model->enchance($row);
 
-        $this->_row_cache[$id] =& $row;
+        $this->_row_cache[$include_removed][$id] =& $row;
 
         return $row;
     }
