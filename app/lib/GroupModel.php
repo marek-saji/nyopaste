@@ -122,7 +122,7 @@ class GroupModel extends Model
         }
         else
         {
-            $row['Type'] = 'open';
+            $row['Type'] = 'invitation-only';
         }
 
         if ( ! self::$_parser )
