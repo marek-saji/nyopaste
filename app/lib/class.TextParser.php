@@ -36,12 +36,12 @@ class TextParser
             {
                 case 'class' :
                     $parser['object'] = new $parser['class'];
-                    $parser['parse'] = function ($text) use ($parser) {
+                    $parser['parse'] = function ($parser, $text) {
                         return $parser['object']->{$parser['method']}($text);
                     };
                     break;
                 case 'function' :
-                    $parser['parse'] = function ($text) use ($parser) {
+                    $parser['parse'] = function ($parser, $text) {
                         return $parser['function']($text);
                     };
                     break;
@@ -66,7 +66,7 @@ class TextParser
      */
     public function parse($string)
     {
-        return $this->_parser['parse']($string);
+        return $this->_parser['parse']($this->_parser, $string);
     }
 
 }
