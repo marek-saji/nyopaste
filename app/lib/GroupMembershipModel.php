@@ -67,6 +67,30 @@ class GroupMembershipModel extends Model
 
 
     /**
+     * Invite a user to become member of closed group
+     * @author m.augustynowicz
+     *
+     * @param int $user_id
+     * @param int $group_id
+     *
+     * @return bool success of a operation
+     */
+    static public function invite($user_id, $group_id)
+    {
+        $new_data = array(
+            'user_id'  => $user_id,
+            'group_id' => $group_id
+        );
+
+        $membership = new self();
+
+        $result = $membership->sync($new_data, true, 'insert');
+
+        return (true === $result);
+    }
+
+
+    /**
      * Auto value for `creation` field
      * @author m.augustynowicz
      *

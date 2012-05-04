@@ -33,6 +33,13 @@ class GroupController extends PagesController implements IProfileController
             ),
         ), // form
 
+        'invite' => array(
+            'model' => 'Group',
+            'inputs' => array(
+                'members'
+            )
+        ),
+
         'confirm' => array(
             'model' => '',
             'inputs' => array(),
@@ -213,18 +220,24 @@ class GroupController extends PagesController implements IProfileController
         // assign group actions
 
         $actions = array(
-            'edit'   => false,
-            'remove' => false,
-            'join'   => false,
-            'leave'  => false
+            'edit'   => true,
+            'remove' => true,
+            'invite' => true,
+            'join'   => true,
+            'leave'  => true
         );
 
-        foreach ($actions as $action => & $foo)
+        foreach ($actions as $action => & $access)
         {
+            if ( ! $access )
+            {
+                continue;
+            }
+
             $action_params = $params;
             if ($this->hasAccess($action, $action_params))
             {
-                if ('remove' !== $action)
+                if ('remove' !== $action && 'invite' !== $action)
                 {
                     $action_params['#'] = 'content';;
                 }
@@ -232,7 +245,7 @@ class GroupController extends PagesController implements IProfileController
                     true,
                     $this->url2aInside($action, $action_params)
                 );
-                if ('remove' !== $action)
+                if ('remove' !== $action && 'invite' !== $action)
                 {
                     $actions[$action]['class'] = 'modal';
                 }
@@ -243,7 +256,7 @@ class GroupController extends PagesController implements IProfileController
             }
             unset($action_params);
         }
-        unset($action, $foo);
+        unset($action, $access);
 
         $row['Actions'] =& $actions;
 
@@ -393,6 +406,96 @@ class GroupController extends PagesController implements IProfileController
         }
 
         return g('Functions')->anyToBool($group['open']);
+    }
+
+
+
+    /**
+     * Invite users to a group
+     * @author m.augustynowicz
+     *
+     * @param array $params request params:
+     *        [0] group id
+     * @return void
+     */
+    public function actionInvite (array $params)
+    {
+        $group = $this->_getGroup();
+        $group_id = $group['id'];
+        $form_id = 'invite';
+
+        if ($this->_validated[$form_id])
+        {
+            $members_field = g('Users', 'field', array('dummy'));
+            $errors = $members_field->invalid($this->data[$form_id]['members']);
+            if (false === $errors)
+            {
+                $membership_class = g()->load('GroupMembership', 'model');
+                $user_model = g('User', 'model');
+                $mailer = g('Mail', array($this));
+                $mail_vars = array(
+                    'group' => & $group
+                );
+
+                $new_members_count = 0;
+                $logins = $members_field->getLogins();
+                foreach ($logins as $user_id => $login)
+                {
+                    $result = $membership_class::invite($user_id, $group_id);
+                    $new_members_count += (int) $result;
+
+                    if ($result)
+                    {
+                        // notify user
+
+                        $user = $user_model->getRow($user_id);
+                        if ($user['email'])
+                        {
+                            $mail_vars['user'] =& $user;
+                            $result = $mailer->send($user['email'], 'invitation', $mail_vars);
+
+                            if (true !== $result)
+                            {
+                                g()->addInfo(
+                                    'mail error',
+                                    'error',
+                                    $this->trans(
+                                        'Failed to send invitation mail to <em>%s</em>, we are sorry.',
+                                        $login
+                                    )
+                                );
+                            }
+                        }
+                    }
+                }
+
+                g()->addInfo(
+                    "new members in {$group_id}",
+                    'info',
+                    $this->trans(
+                        'Added %d new member(s) to %s',
+                        $new_members_count,
+                        $group['DisplayName']
+                    )
+                );
+                $this->redirect($this->url2c('Group', '', $params));
+            }
+        }
+
+        $this->assign('row', $group);
+    }
+
+    /**
+     * Grant access to group leader
+     * @author m.augustynowicz
+     *
+     * @param array $params request params:
+     *        [0] group id
+     * @return bool
+     */
+    public function hasAccessToInvite(array & $params)
+    {
+        return $this->hasAccessToEdit($params);
     }
 
 

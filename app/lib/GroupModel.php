@@ -45,6 +45,10 @@ class GroupModel extends Model
         ;
 
 
+        // dummy fields
+        $this->_addField(g('Users', 'field', array('members')));
+
+
 
         $this->_pk('id');
 
