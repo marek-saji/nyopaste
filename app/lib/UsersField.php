@@ -17,10 +17,13 @@ class UsersField extends FMultilineString
 
         if (trim($value) !== '')
         {
-            $users_logins = preg_split('/[\s,]+/m', $value);
+            $users_logins = preg_split('/\s*[\n\r,]+\s*/m', $value);
 
             $rows = g('User', 'model')
-                ->filter(array('login' => $users_logins))
+                ->filter(array(
+                    'status' => STATUS_ACTIVE,
+                    'login'  => $users_logins
+                ))
                 ->whiteList(array('id', 'login'))
                 ->exec('login')
             ;
@@ -32,6 +35,10 @@ class UsersField extends FMultilineString
             $not_users = array();
             foreach ($users_logins as $login)
             {
+                if ('' === $login)
+                {
+                    continue;
+                }
                 if (array_key_exists($login, $rows))
                 {
                     $row =& $rows[$login];
