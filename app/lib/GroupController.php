@@ -306,15 +306,9 @@ class GroupController extends PagesController implements IProfileController
      */
     protected function hasAccessToEdit(array & $params)
     {
-        $count = g('Group', 'model')
-            ->filter(array(
-                'id'        => $params[0],
-                'leader_id' => g()->auth->id(),
-                'removed'   => null
-            ))
-            ->getCount()
-        ;
-        return $count > 0;
+        $group = $this->_getGroup(@$params[0], false);
+
+        return (g()->auth->id() == $group['leader_id']);
     }
 
 
@@ -495,7 +489,16 @@ class GroupController extends PagesController implements IProfileController
      */
     public function hasAccessToInvite(array & $params)
     {
-        return $this->hasAccessToEdit($params);
+        $can_edit = $this->hasAccessToEdit($params);
+
+        if (false === $can_edit)
+        {
+            return false;
+        }
+
+        $group = $this->_getGroup(@$params[0], false);
+
+        return ! g('Functions')->anyToBool($group['open']);
     }
 
 
@@ -611,14 +614,8 @@ class GroupController extends PagesController implements IProfileController
             return true;
         }
 
-        $group = g('Group', 'model');
-        $filter = $group->getAccessibleFilter()
-            ->also(new FoBinary($group['id'], '=', $id))
-        ;
-
-        $count = $group->filter($filter)->getCount();
-
-        return $count > 0;
+        $group = $this->_getGroup($id, false);
+        return ! empty($group);
     }
 
 
