@@ -41,13 +41,19 @@ setup
             cp src/app/conf/conf.keys.php conf/
             edit conf/conf.keys.php
 
-1. configure apache virtual host
+1. configure apache
 
-   - create vhost pointing to `src/app/htdocs/`
-   - create alias `hg/` pointing to `src/hg/htdocs/`
-   - allow [.htaccess][] magic tricks (`Overwrite All`)
-   - make sure [mod_rewrite][] is on
-   - set `HG_ENVIRONMENT` to one of `LOCAL`, `DEV`, `TEST` or `PROD`
+   1. set up virtual host
+      - create vhost pointing to `src/app/htdocs/`
+      - create alias `hg/` pointing to `src/hg/htdocs/`
+      - allow [.htaccess][] magic tricks (`Overwrite All`)
+      - make sure [mod_rewrite][] is on
+      - set `HG_ENVIRONMENT` to one of `LOCAL`, `DEV`, `TEST` or `PROD`
+
+   1. make sure gzipped svg files are served correctly
+
+            AddType image/svg+xml svg svgz
+            AddEncoding gzip svgz
 
 1. open your site in the browser, enable favourite debugs
 

@@ -38,7 +38,7 @@ else
                         echo $f->tag(
                             'object',
                             array(
-                                'data'   => $this->file('group.svg', 'gfx'),
+                                'data'   => $this->file('group.svgz', 'gfx'),
                                 'type'   => 'image/svg+xml',
                                 'width'  => $size,
                                 'height' => $size,
