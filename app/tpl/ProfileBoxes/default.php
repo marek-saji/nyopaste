@@ -62,13 +62,13 @@ $v->addLess($this->file('default', 'less'));
                                     </li>
                                 <?php endforeach; /* $box['Pastes'] */ ?>
                             </ol>
-                            <?php
-                            $this->inc('row_actions', array(
-                                'actions'     => $box['Actions'],
-                                'inside_link' => true
-                            ));
-                            ?>
                         <?php endif; /* if empty($box['Pastes']) else */ ?>
+                        <?php
+                        $this->inc('row_actions', array(
+                            'actions'     => $box['Actions'],
+                            'inside_link' => true
+                        ));
+                        ?>
                     </fieldset>
                 </li>
             <?php endforeach; /* $boxes */ ?>
