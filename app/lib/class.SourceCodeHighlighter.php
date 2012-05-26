@@ -98,7 +98,7 @@ class SourceCodeHighlighter
                     }
 
                     $open_tag  = $f->tag('span', $attrs, null, 'open');
-                    $close_tag = $f->tag('span', $attrs, null, 'close');
+                    $close_tag = $f->tag('span', null, 'close');
                     $line = htmlspecialchars($match[0]);
                     $line = preg_replace("/\n/", "{$close_tag}\n{$open_tag}", $line);
                     $tokenized_text .= $open_tag . $line . $close_tag;
