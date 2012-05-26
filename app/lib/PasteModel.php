@@ -81,7 +81,15 @@ class PasteModel extends Model
         $this->_addField(new FTimestamp('last_edit'));
 
         $this->_pk('id');
-        $this->whiteListAll();
+
+        $this->whitelist(
+            array_keys(array_filter(
+                $this->getFields(true),
+                function ($field) {
+                    return ! $field instanceof FTextSearchVectorPSQL;
+                }
+            ))
+        );
     }
 
 
