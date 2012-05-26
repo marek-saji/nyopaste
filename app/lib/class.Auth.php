@@ -193,7 +193,7 @@ class Auth extends HgBase implements IAuth
             return false;
         }
 		
-		$passwd_match = ($md5_passwd!==null) ? $user['passwd'] == $pass : $user['passwd'] == md5($pass);
+		$passwd_match = ($md5_passwd!==null) ? $user['passwd'] == $pass : $user['passwd'] == FPassword::hash($pass);
 		
         if($check_password && !$passwd_match)
         {
@@ -253,6 +253,7 @@ class Auth extends HgBase implements IAuth
     public function logout()
     {
         $this->_session['user'] = array();
+        unset($_SESSION['PastePasswords']);
 		
 		if(isset($_COOKIE['remember_me']))
 		{

@@ -27,6 +27,16 @@ class PasteController extends PagesController
                 )
             )
         ),
+        'enc_passwd' => array(
+            'model' => 'Paste',
+            'upload' => false,
+            'inputs' => array(
+                'enc_passwd' => array(
+                    'fields' => null,
+                    '_tpl' => 'Forms/FPassword_single'
+                ),
+            )
+        ),
         'paste' => array(
             'model' => 'Paste',
             'upload' => true,
@@ -64,8 +74,14 @@ class PasteController extends PagesController
 
                 // privacy
                 'privacy',
-                'encode' => array('fields' => null),
-                'enc_passwd',
+                'do_enc_passwd' => array(
+                    'fields' => null,
+                    '_tpl' => 'Forms/FBool'
+                ),
+                'enc_passwd' => array(
+                    'fields' => null,
+                    '_tpl' => 'Forms/FPassword_single'
+                ),
                 //'acl' =>
 
                 'type' => array(
@@ -159,6 +175,37 @@ class PasteController extends PagesController
         if ($result === false)
         {
             return false;
+        }
+
+        if ($this->_validated['enc_passwd'])
+        {
+            $post_data =& $this->data['enc_passwd'];
+            $paste_model_class = g()->load('Paste', 'model');
+            if (FPassword::hash($post_data['enc_passwd'])
+                === $db_data['enc_passwd'])
+            {
+                $paste_model_class::rememberPassword(
+                    $db_data['id'],
+                    $post_data['enc_passwd']
+                );
+                g()->addInfo(
+                    'paste password remembered' . $db_data['id'],
+                    'info',
+                    'Password remembered temporarly'
+                );
+                $this->redirect($this->url2a(
+                    $this->getLaunchedAction(),
+                    $this->getParams()
+                ));
+            }
+            else
+            {
+                g()->addInfo(
+                    'paste password incorrect' . $db_data['id'],
+                    'error',
+                    'Incorrect password'
+                );
+            }
         }
 
         if (empty($db_data['Tree'][$db_data['root_id']]['Children']))
@@ -444,6 +491,8 @@ class PasteController extends PagesController
             unset($setting_value['']['title']);
             unset($setting_value['']['content_text']);
             unset($setting_value['']['content_file']);
+            unset($setting_value['']['do_enc_passwd']);
+            unset($setting_value['']['enc_passwd']);
 
             // paste types data
             foreach ($this->_types as $type_name => $type)
@@ -523,6 +572,10 @@ class PasteController extends PagesController
                 'encode'               => &$db_data['encode'],
                 'enc_passwd'           => &$db_data['enc_passwd']
             );
+            if ( ! empty($static_fields['enc_passwd']) )
+            {
+                $static_fields['do_enc_passwd'] = true;
+            }
 
             // limit to one type
 
@@ -621,10 +674,17 @@ class PasteController extends PagesController
 
             if (@$this->_validated[$form_id])
             {
+                if ($this->data[$form_id]['enc_passwd'])
+                {
+                    $this->data[$form_id]['enc_passwd'] =
+                        FPassword::hash($this->data[$form_id]['enc_passwd'])
+                    ;
+                }
                 $insert_data = $static_fields + $this->data[$form_id];
                 g()->db->startTrans();
                 do // just so we can break on errors
                 {
+                    $encrypt = $f->anyToBool($insert_data['do_enc_passwd']);
                     /*
                     $db_data['last_edit'] = strtotime($db_data['last_edit']);
                     if ($post_data['_timestamp'] > $db_data['last_edit'])
@@ -669,6 +729,18 @@ class PasteController extends PagesController
                         $paster_nick = 'anonymous';
                     }
 
+                    if ($encrypt)
+                    {
+                        $insert_data['content'] = PasteModel::encrypt(
+                            $insert_data['content'],
+                            $insert_data['enc_passwd']
+                        );
+                    }
+                    else
+                    {
+                        $insert_data['enc_passwd'] = null;
+                    }
+
                     if (true !== $err = $paste->sync($insert_data, true, 'insert'))
                     {
                         g()->addInfo('ds fail, inserting paste', 'error',
@@ -686,7 +758,7 @@ class PasteController extends PagesController
                         'id'          => $paste_id,
                         'title_tsv'   => $paste_update->getField('title'),
                         'paster_tsv'  => $paster_nick,
-                        'content_tsv' => $paste_update->getField('content'),
+                        'content_tsv' => $encrypt ? '' : $paste_update->getField('content'),
                         'tags_tsv'    => join(', ', $tags),
                         'groups_tsv'  => '' // TODO
                     );

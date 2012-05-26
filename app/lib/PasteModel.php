@@ -280,6 +280,29 @@ class PasteModel extends Model
             return false;
         }
 
+        // handle password protected
+        if (null !== $result['enc_passwd'])
+        {
+            if ($result['root_id'])
+            {
+                $root_id = $result['root_id'];
+            }
+            else
+            {
+                $root_id = $result['id'];
+            }
+            if (self::hasPassword($result['id']))
+            {
+                $result['content'] = self::decrypt(
+                    $result['content'],
+                    self::_getPassword($result['id'])
+                );
+            }
+            else
+            {
+                $result['content'] = null;
+            }
+        }
 
         // handle private pastes
         if ($result['privacy'] === 'private')
@@ -545,6 +568,9 @@ SQL_SELECT_HIGHLIGHTS
                     -- not removed
                     removed IS NULL
                     AND
+                    -- not passworded
+                    enc_passwd IS NULL
+                    AND
                     -- visible
                     (
                         {$model['privacy']} = {$sql_val_public}
@@ -614,5 +640,73 @@ QUERY_SQL
         return $rows;
     }
 
+
+    /**
+     * Get remembered password for a paste
+     */
+    static protected function _getPassword($id)
+    {
+        return @ $_SESSION['PastePasswords'][$id];
+    }
+
+    /**
+     * Check whether we have remembered password for a paste
+     */
+    static public function hasPassword($id)
+    {
+        return null !== self::_getPassword($id);
+    }
+
+    /**
+     * Store a password for a paste
+     */
+    static public function rememberPassword($id, $pass)
+    {
+        $_SESSION['PastePasswords'][$id] = $pass;
+    }
+
+
+    /**
+     * Encrypt paste contents
+     */
+    static public function encrypt($content, $secret)
+    {
+        $plain_text = $content;
+        $key = $secret;
+
+        $td = mcrypt_module_open('des', '', 'ecb', '');
+        $key = substr($key, 0, mcrypt_enc_get_key_size($td));
+        $iv_size = mcrypt_enc_get_iv_size($td);
+        $iv = mcrypt_create_iv($iv_size, MCRYPT_RAND);
+        mcrypt_generic_init($td, $key, $iv);
+
+        $c_t = mcrypt_generic($td, $plain_text);
+
+        mcrypt_generic_deinit($td);
+
+        return base64_encode($c_t);
+    }
+
+    /**
+     * Decrypt paste contents
+     */
+    static public function decrypt($content, $secret)
+    {
+        $plain_text = base64_decode($content);
+        $key = $secret;
+
+        $td = mcrypt_module_open('des', '', 'ecb', '');
+        $key = substr($secret, 0, mcrypt_enc_get_key_size($td));
+        $iv_size = mcrypt_enc_get_iv_size($td);
+        $iv = mcrypt_create_iv($iv_size, MCRYPT_RAND);
+        mcrypt_generic_init($td, $key, $iv);
+
+        $p_t = mdecrypt_generic($td, $plain_text);
+
+        mcrypt_generic_deinit($td);
+
+
+        return rtrim($p_t, '\0');
+    }
 }
 

@@ -92,11 +92,51 @@ $meta_data_toggler = json_encode(array(
         </div> <!-- .actions.wrapper -->
     </header>
 
-    <article id="content" class="entry-content <?=$type->getType()?>">
+    <?php if ($row['enc_passwd'] && null === $row['content']) : ?>
         <?php
-        $type->render();
+        $form = g('Forms', array('enc_passwd', $this));
         ?>
-    </article>
+        <article class="holoform" id="content">
+
+            <?php
+            $form->create();
+            ?>
+
+            <fieldset>
+                <ul>
+                    <li class="field">
+                        <?php
+                        $form->label('enc_passwd', 'Password');
+                        ?>
+                        <?php
+                        $form->input('enc_passwd');
+                        ?>
+                    </li>
+                </ul>
+            </fieldset>
+
+            <?php
+            $this->inc(
+                'Forms/buttons',
+                array(
+                    'form'   => $form,
+                    'submit' => 'show the paste'
+                )
+            );
+            ?>
+
+            <?php
+            $form->end();
+            ?>
+
+        </article>
+    <?php else : ?>
+        <article id="content" class="entry-content <?=$type->getType()?>">
+            <?php
+            $type->render();
+            ?>
+        </article>
+    <?php endif; /* $enc_passwd_form */ ?>
 
     <div id="share" class="modaled">
         <div class="share-inside">

@@ -349,6 +349,22 @@ $form = g('Forms', array('paste', $this));
                                         )
                                     );
                                     ?>
+                                    <fieldset>
+                                        <ul>
+                                            <li class="field">
+                                                <?php
+                                                $form->input('do_enc_passwd', array(
+                                                    'label' => 'protect with password'
+                                                ));
+                                                ?>
+                                                <label>
+                                                    <?php
+                                                    $form->input('enc_passwd');
+                                                    ?>
+                                                </label>
+                                            </li>
+                                        </ul>
+                                    </fieldset>
                                 </li>
                                 <li class="private privacy field">
                                     <?php
