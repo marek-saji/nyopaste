@@ -154,9 +154,8 @@ class PasteController extends PagesController
                     'url' => $url
                 ))
             ;
-
             // paste does not exist
-            if ($newest === false)
+            if (empty($newest))
             {
                 return $this->delegateAction('error404', $params);
             }
