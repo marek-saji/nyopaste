@@ -452,15 +452,16 @@ class PasteModel extends Model
                 '/\bAND\b/' => '&',
                 '/\bNOT\b/' => '!',
                 '/\s+-(?=[^\s])/' => ' !',
-                '/"/' => "'",
+                '/&quot;/' => "'",
+                '/"/'      => "'",
                 // change spaces to underscores in quoted strings
                 "/'([^']*)'/e" => 'str_replace(" ", "_", "$1")',
                 // insert AND operator between words
                 '/(?<=[^!|()&])\s+(?=[^|()&])/' => ' & ',
                 // map human readable weights
                 '/\buser:([^!|()&\s]+)\b/'  => '$1:B',
-                '/\btag:([^!|()&\s]+)\b/'     => '$1:A',
-                '/\bgroup:([^!|()&\s]+)\b/'   => '$1:D',
+                '/\btag:([^!|()&\s]+)\b/'   => '$1:A',
+                '/\bgroup:([^!|()&\s]+)\b/' => '$1:D',
             );
             $query = preg_replace(
                 array_keys($replacements),
