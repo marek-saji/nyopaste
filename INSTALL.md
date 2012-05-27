@@ -1,6 +1,7 @@
 requirements
 ------------
 
+1. Apache 2.2+
 1. Postgres SQL 8.3+ with Text Search
 1. PHP 5.3+ with Postgres SQL module
 1. `mail()` working in PHP
@@ -16,30 +17,29 @@ setup
 
 1. checkout submodules:
 
-        git submodule init
-        git submodule update
+        git submodule update --init --recursive
 
 1. prepare upload directory:
 
         mkdir -m 0700 upload/
-        chown www-data:www-data upload/
 
 1. local configuration
-
-    - prepare local conf directory
+   - prepare local conf directory
 
             mkdir conf/
             chown www-data:www-data conf/
-
-    - database credentials
+   - database credentials
 
             cp src/app/conf/conf.db.php conf/
             edit conf/conf.db.php
-
-    - API keys
+   - API keys
 
             cp src/app/conf/conf.keys.php conf/
             edit conf/conf.keys.php
+            
+1. make sure apache's user has proper permissions
+
+        chown -R www-data:www-data .
 
 1. configure apache
 
@@ -57,11 +57,10 @@ setup
 
 1. open your site in the browser, enable favourite debugs
 
-1. head to `/DataSet/list` and create all models
+1. head to `your.virtual.host/DataSet/list` and create all models
 
-1. head to `/Dev` and launch these actions:
-
-   - addDefaults (updated 2010-06-17)
+1. head to `your.virtual.host/Dev` and launch these actions:
+   - addDefaults (updated 2012-05-01)
 
 
 
