@@ -16,8 +16,7 @@ setup
 
 1. checkout submodules:
 
-        git submodule init
-        git submodule update
+        git submodule update --init --recursive
 
 1. prepare upload directory:
 
@@ -25,18 +24,15 @@ setup
         chown www-data:www-data upload/
 
 1. local configuration
-
-    - prepare local conf directory
+   - prepare local conf directory
 
             mkdir conf/
             chown www-data:www-data conf/
-
-    - database credentials
+   - database credentials
 
             cp src/app/conf/conf.db.php conf/
             edit conf/conf.db.php
-
-    - API keys
+   - API keys
 
             cp src/app/conf/conf.keys.php conf/
             edit conf/conf.keys.php
@@ -60,7 +56,6 @@ setup
 1. head to `/DataSet/list` and create all models
 
 1. head to `/Dev` and launch these actions:
-
    - addDefaults (updated 2010-06-17)
 
 
