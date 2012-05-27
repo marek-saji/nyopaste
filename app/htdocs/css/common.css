@@ -30,7 +30,7 @@ div#nyroModalFull{font-size:1em;}div#nyroModalFull div#nyroModalWrapper{padding:
 .modal-wannabe{width:50em;max-width:100%;margin:0 auto;box-sizing:border-box;padding:0.5em 1em;border:#ccc solid thin;border-width:0 thin;box-shadow:0.3em 0 0.3em #cccccc,-0.3em 0 0.3em #cccccc;-ms-box-shadow:0.3em 0 0.3em #cccccc,-0.3em 0 0.3em #cccccc;-mox-box-shadow:0.3em 0 0.3em #cccccc,-0.3em 0 0.3em #cccccc;-webkit-box-shadow:0.3em 0 0.3em #cccccc,-0.3em 0 0.3em #cccccc;}
 .nyopaste{color:#555;}.nyopaste i{opacity:0.4;}
 .avoid-br{display:inline-block;page-break-inside:avoid;}
-a:active:not(.nyroModalClose){position:relative;top:.1rem;left:.1rem;}
+a:active{opacity:0.5;}
 button{white-space:normal;}
 script.yesscript{display:inline;}
 div.error{background-color:#ffbbbb;}
