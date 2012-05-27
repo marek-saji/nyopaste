@@ -95,10 +95,10 @@ $v->setTitle($title);
                         <div class="help">
                             <?php if ($own_profile) : ?>
                                 <p><?=$this->trans('Pastes matching this search query will automagically show up on your profile.')?></p>
-                                <p><?=$this->trans('To restrict to only your pastes, use <code>paster:%s</code>.', g()->auth->ident())?></p>
+                                <p><?=$this->trans('To restrict to only your pastes, use <code>user:%s</code>.', g()->auth->ident())?></p>
                             <?php else : ?>
                                 <p><?=$this->trans('Pastes matching this search query will automagically show up on this profile.')?></p>
-                                <p><?=$this->trans('To restrict to only this user\'s pastes, use <code>paster:%s</code>.', g()->auth->ident())?></p>
+                                <p><?=$this->trans('To restrict to only this user\'s pastes, use <code>user:%s</code>.', g()->auth->ident())?></p>
                             <?php endif; /* $own */ ?>
                         </div>
                     <?php endif; /* $profile */ ?>

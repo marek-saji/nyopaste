@@ -458,7 +458,7 @@ class PasteModel extends Model
                 // insert AND operator between words
                 '/(?<=[^!|()&])\s+(?=[^|()&])/' => ' & ',
                 // map human readable weights
-                '/\bpaster:([^!|()&\s]+)\b/'  => '$1:B',
+                '/\buser:([^!|()&\s]+)\b/'  => '$1:B',
                 '/\btag:([^!|()&\s]+)\b/'     => '$1:A',
                 '/\bgroup:([^!|()&\s]+)\b/'   => '$1:D',
             );

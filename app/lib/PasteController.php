@@ -717,19 +717,6 @@ class PasteController extends PagesController
 
                     $tags = preg_split('/[\n\r,]+/', trim($insert_data['tags']));
 
-                    if (g()->auth->loggedIn())
-                    {
-                        $paster_nick = g()->auth->displayName();
-                    }
-                    else if ($insert_data['paster'])
-                    {
-                        $paster_nick = $insert_data['paster'];
-                    }
-                    else
-                    {
-                        $paster_nick = 'anonymous';
-                    }
-
                     if ($encrypt)
                     {
                         $insert_data['content'] = PasteModel::encrypt(
@@ -758,7 +745,7 @@ class PasteController extends PagesController
                     $update_data = array(
                         'id'          => $paste_id,
                         'title_tsv'   => (string) $paste_update->getField('title'),
-                        'paster_tsv'  => $paster_nick,
+                        'paster_tsv'  => g()->auth->displayName(),
                         'content_tsv' => $encrypt ? '' : (string) $paste_update->getField('content'),
                         'tags_tsv'    => join(', ', $tags),
                         'groups_tsv'  => '' // TODO

@@ -182,7 +182,7 @@ class ProfileBoxesController extends Component
                     array($box['id'])
                 );
                 return $that->trans(
-                    'Box <em>%s</em> removed (%s).',
+                    'Search list <em>%s</em> removed (%s).',
                     $box['title'],
                     $undo_link
                 );
@@ -208,7 +208,7 @@ class ProfileBoxesController extends Component
             // success msg getter
             function ($that, $box) {
                 return $that->trans(
-                    'Box <em>%s</em> restored.',
+                    'Search list <em>%s</em> restored.',
                     $box['title']
                 );
             }
@@ -412,7 +412,7 @@ class ProfileBoxesController extends Component
             {
                 $this->data[$form_ident] = array(
                     'title'       => $this->trans('%s\'s pastes', g()->auth->displayName()),
-                    'query'       => "paster:" . g()->auth->ident(),
+                    'query'       => "user:" . g()->auth->ident(),
                     'limit'       => self::DEFAULT_LIMIT,
                     'list_paster' => true
                 );
@@ -421,7 +421,7 @@ class ProfileBoxesController extends Component
             {
                 $this->data[$form_ident] = array(
                     'title'       => $this->trans('My pastes'),
-                    'query'       => "paster:{$profile['Ident']}",
+                    'query'       => "user:{$profile['Ident']}",
                     'limit'       => self::DEFAULT_LIMIT,
                     'list_paster' => true
                 );
@@ -475,7 +475,7 @@ class ProfileBoxesController extends Component
                 g()->addInfo(
                     'new box for profile ' . $profile['id'],
                     'info',
-                    $this->trans('New box added') );
+                    $this->trans('New search list added') );
                 //g()->db->completeTrans();
                 if (empty($post_data['_backlink']))
                     $this->redirect($parent->url2a('', $parent->getParams()));
@@ -524,7 +524,7 @@ class ProfileBoxesController extends Component
             g()->addInfo(
                 $msg_id . '404',
                 'error',
-                $this->trans('Box does not exist.')
+                $this->trans('Search list does not exist.')
             );
             $this->redirect($backlink);
         }
