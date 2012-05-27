@@ -61,7 +61,7 @@ $conf['translations']['user'] = array(
 $conf['translations']['boxes'] = array(
     // actions that can be performed on boxes object:
     '((action:%s:%s))' => array(
-        'new' => 'add new list',
+        'new' => 'add new search list',
         'all' => 'view all',
     ),
 );

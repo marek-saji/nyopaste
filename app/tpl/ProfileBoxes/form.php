@@ -28,11 +28,11 @@ if ($own_profile)
 {
     if ($editing)
     {
-        $title = $this->trans('Edit pastes list');
+        $title = $this->trans('Edit search list');
     }
     else
     {
-        $title = $this->trans('Create new list on your profile');
+        $title = $this->trans('Create new search list on your profile');
     }
 }
 else if ($profile)

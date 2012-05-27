@@ -20,7 +20,7 @@ $v->addLess($this->file('default', 'less'));
                     <p><?=$this->trans('These can be your pastes, but don\'t have to.')?></p>
                 <?php endif;  ?>
                 <p>
-                    <?=$this->l2aInside('add your first list', 'new', array('#' => 'content'), array('class' => 'modal'))?>
+                    <?=$this->l2aInside('add your first search list', 'new', array('#' => 'content'), array('class' => 'modal'))?>
                 </p>
             <?php else : ?>
                 <p>
