@@ -1,6 +1,7 @@
 requirements
 ------------
 
+1. Apache 2.2+
 1. Postgres SQL 8.3+ with Text Search
 1. PHP 5.3+ with Postgres SQL module
 1. `mail()` working in PHP
