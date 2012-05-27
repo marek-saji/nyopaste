@@ -489,16 +489,7 @@ class GroupController extends PagesController implements IProfileController
      */
     public function hasAccessToInvite(array & $params)
     {
-        $can_edit = $this->hasAccessToEdit($params);
-
-        if (false === $can_edit)
-        {
-            return false;
-        }
-
-        $group = $this->_getGroup(@$params[0], false);
-
-        return ! g('Functions')->anyToBool($group['open']);
+        return $this->hasAccessToEdit($params);
     }
 
 
