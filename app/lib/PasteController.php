@@ -492,6 +492,8 @@ class PasteController extends PagesController
             unset($setting_value['']['content_file']);
             unset($setting_value['']['do_enc_passwd']);
             unset($setting_value['']['enc_passwd']);
+            unset($setting_value['']['root_id']);
+            unset($setting_value['']['parent_id']);
 
             // paste types data
             foreach ($this->_types as $type_name => $type)
@@ -761,7 +763,7 @@ class PasteController extends PagesController
                         'tags_tsv'    => join(', ', $tags),
                         'groups_tsv'  => '' // TODO
                     );
-                    if (!$post_data['root_id'])
+                    if (!$insert_data['root_id'])
                     {
                         $update_data['root_id'] = $paste_id;
                     }
