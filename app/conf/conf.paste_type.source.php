@@ -62,7 +62,7 @@ $conf['paste_types']['source'] = array(
 
     'defaults' => array(
         'syntax'        => 'c_cpp',
-        'colour_scheme' => 'ace-dawn',
+        'colour_scheme' => 'ace-clouds',
         'line_numbers'  => 1,
     ),
 
