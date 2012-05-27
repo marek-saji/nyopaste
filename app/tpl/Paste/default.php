@@ -47,6 +47,14 @@ $meta_data_toggler = json_encode(array(
                 </time>
             </dd>
 
+            <dt><?=$this->trans('privacy')?></dt>
+            <dd>
+            <?=$this->trans($row['privacy'])?><?php
+            if ($row['enc_passwd']) :
+                    ?>, <?=$this->trans('password protected')?>
+                <?php endif; ?>
+            </dd>
+
             <?php if ($row['source_url']) : ?>
                 <dt><?=$t->trans('source URL')?></dt>
                 <dd><a href="<?=$row['source_url']?>"><?=$row['source_url']?></a></dd>
