@@ -51,7 +51,7 @@ $v->addLess($this->file('default', 'less'));
                             <ol class="pastes">
                                 <?php foreach ($box['Pastes'] as & $paste) : ?>
                                     <li>
-                                        <?=$this->l2c($this->trans('%s v%s', $paste['title'], $paste['version']), 'Paste', '', array($paste['url'], 'v'=>$paste['version']))?>
+                                        <?=$this->l2c($paste['title'], 'Paste', '', array($paste['url'], 'v'=>$paste['version']))?>
                                         <?php if ($box['list_paster']) : ?>
                                             <?=$this->trans('by')?>
                                             <?=$this->inc('paster', array('row' => $paste))?>

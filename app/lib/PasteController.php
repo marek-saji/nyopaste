@@ -757,9 +757,9 @@ class PasteController extends PagesController
                     $paste_update = g('Paste', 'model');
                     $update_data = array(
                         'id'          => $paste_id,
-                        'title_tsv'   => $paste_update->getField('title'),
+                        'title_tsv'   => (string) $paste_update->getField('title'),
                         'paster_tsv'  => $paster_nick,
-                        'content_tsv' => $encrypt ? '' : $paste_update->getField('content'),
+                        'content_tsv' => $encrypt ? '' : (string) $paste_update->getField('content'),
                         'tags_tsv'    => join(', ', $tags),
                         'groups_tsv'  => '' // TODO
                     );

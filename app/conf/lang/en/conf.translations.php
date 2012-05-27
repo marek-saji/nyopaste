@@ -81,7 +81,7 @@ $conf['translations']['paste'] = array(
         null     => '%s'
     ),
 
-    'v%s' => '<abbr title="version">v</abbr>%s',
+    'v%s' => '<abbr title="version %1$s">%1$s</abbr>',
 );
 
 $conf['translations']['group'] = array(

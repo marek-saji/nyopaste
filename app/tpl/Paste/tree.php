@@ -19,7 +19,7 @@
                     <strong>
                 <?php endif; ?>
 
-                <?=$this->l2a($this->trans('v%s', $paste['version']), '', array($paste['url'], 'v'=>$paste['version']))?>
+                <span class="version"><?=$this->l2a($this->trans('v%s', $paste['version']), '', array($paste['url'], 'v'=>$paste['version']))?></span>
                 <?=$this->trans('by')?>
                 <?=$this->inc('paster', array('row' => $paste))?>
                 <time class="published" datetime="<?=$paste['creation']?>">

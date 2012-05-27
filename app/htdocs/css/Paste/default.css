@@ -1,3 +1,4 @@
+.paste.hentry .version{font-family:Courier New, Courier, monospace;}
 .paste.hentry hgroup h2,.paste.hentry hgroup h3{display:inline;margin:0;padding:0;}
 .paste.hentry hgroup h2.entry-title{font-size:2em;}.paste.hentry hgroup h2.entry-title .version{font-size:.7em;}
 .paste.hentry hgroup h3{font-size:1.2em;}

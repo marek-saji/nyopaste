@@ -80,11 +80,7 @@ $v->addLess($this->file('search', 'less'));
             <li class="hentry">
                 <h4>
                     <?=$t->l2a(
-                        sprintf(
-                            '%s %s',
-                            $row['title'],
-                            $f->tag('span', array('class'=>'version'), $this->trans('v%s', $row['version']))
-                        ),
+                        $row['title'],
                         '',
                         array($row['url'], 'v'=>$row['version']),
                         array('class' => 'entry-title')

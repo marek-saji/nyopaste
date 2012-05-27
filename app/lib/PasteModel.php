@@ -18,7 +18,7 @@ class PasteModel extends Model
      * Used in version field
      */
     const VER_SEPARATOR = '.';
-    const VER_ONE = '1'; // '1', '0', 'a' and 'A' make sense
+    const VER_ONE = '83dcefb7'; // crc32 of '1'
 
     /**
      * Delay after which restoring is impossible.
@@ -143,47 +143,22 @@ class PasteModel extends Model
             'root_id'   => @$base['root_id']
         );
 
-        if (!$base)
-        {
-            return array('parent_id' => null) + $data;
-        }
-
         $model = new self;
 
-        $model->order('id', 'ASC');
-        $children = $model
-            ->whiteList(array(
-                'version'
-            ))
-            ->filter(array(
-                'parent_id' => $base['id']
-            ))
-            ->exec();
-        $children_count = sizeof($children);
-
-        if ($children_count === 0)
-        {
-            $data['version'] =
-                    $this->_incrementVersion($base['version']);
-        }
-        else
-        {
-            $last_child = end($children);
-            $data['version'] = $last_child['version']
-                . self::VER_SEPARATOR . self::VER_ONE
-            ;
-        }
+        $data['version'] =
+                $this->_incrementVersion($base);
 
         return $data;
     }
 
 
-    protected function _incrementVersion($version)
+    protected function _incrementVersion($parent_paste)
     {
-        $version = explode(self::VER_SEPARATOR, $version);
-        end($version);
-        $version[key($version)] += 1;
-        return implode(self::VER_SEPARATOR, $version);
+        $count = g('Paste', 'model')
+            ->filter(array('root_id' => $parent_paste['root_id']))
+            ->getCount()
+        ;
+        return sprintf("%x", crc32($parent_paste['version'] . $count));
     }
 
 
