@@ -432,6 +432,7 @@ class GroupController extends PagesController implements IProfileController
                 );
 
                 $new_members_count = 0;
+                $mails_sent_to = array();
                 $logins = $members_field->getLogins();
                 foreach ($logins as $user_id => $login)
                 {
@@ -459,6 +460,10 @@ class GroupController extends PagesController implements IProfileController
                                     )
                                 );
                             }
+                            else
+                            {
+                                $mails_sent_to[] = $user['DisplayName'];
+                            }
                         }
                     }
                 }
@@ -472,6 +477,17 @@ class GroupController extends PagesController implements IProfileController
                         $group['DisplayName']
                     )
                 );
+                if ( ! empty($mails_sent_to) )
+                {
+                    g()->addInfo(
+                        "mails sent to new members in {$group_id}",
+                        'info',
+                        $this->trans(
+                            'Mail(s) sent to: %s',
+                            join(', ', $mails_sent_to)
+                        )
+                    );
+                }
                 $this->redirect($this->url2c('Group', '', $params));
             }
         }
