@@ -22,7 +22,6 @@ setup
 1. prepare upload directory:
 
         mkdir -m 0700 upload/
-        chown www-data:www-data upload/
 
 1. local configuration
    - prepare local conf directory
@@ -37,6 +36,10 @@ setup
 
             cp src/app/conf/conf.keys.php conf/
             edit conf/conf.keys.php
+            
+1. make sure apache's user has proper permissions
+
+        chown -R www-data:www-data .
 
 1. configure apache
 
@@ -54,10 +57,10 @@ setup
 
 1. open your site in the browser, enable favourite debugs
 
-1. head to `/DataSet/list` and create all models
+1. head to `your.virtual.host/DataSet/list` and create all models
 
-1. head to `/Dev` and launch these actions:
-   - addDefaults (updated 2010-06-17)
+1. head to `your.virtual.host/Dev` and launch these actions:
+   - addDefaults (updated 2012-05-01)
 
 
 
