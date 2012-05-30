@@ -594,18 +594,18 @@ class PasteController extends PagesController
             }
             $post_data['parent_id'] = $db_data['id'];
             $post_data['root_id']   = $db_data['root_id'];
+        }
 
-            // fill up types form data too
-            foreach ($this->_types as $type_name => $type)
-            {
-                $type->data[$form_id] =
-                    (array) $post_data
-                    +
-                    (array) (@$type->data[$form_id])
-                    +
-                    (array) g()->conf['paste_types'][$type_name]['defaults']
-                ;
-            }
+        // fill up types form data too
+        foreach ($this->_types as $type_name => $type)
+        {
+            $type->data[$form_id] =
+                (array) $post_data
+                +
+                (array) (@$type->data[$form_id])
+                +
+                (array) g()->conf['paste_types'][$type_name]['defaults']
+            ;
         }
 
 
