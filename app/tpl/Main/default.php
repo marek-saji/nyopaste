@@ -41,7 +41,7 @@ $v->addLess($this->file('style','less'));
                 <?=$this->trans('<i><abbr title="noun">n.</abbr></i> a little more social pastebin. Perfect for brainstorming and collectively collecting pastes.')?>
             </p>
             <p>
-                <?=$this->trans('Comes with versioning system, source code hightlight and more.')?>
+                <?=$this->trans('Comes with versioning system, user groups, search lists more.')?>
             </p>
         </dd>
     </dl>
