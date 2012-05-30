@@ -1,6 +1,10 @@
 <?php
 $form = g('Forms', array('paste', $this));
 
+$post_data =& $this->data['paste'];
+
+$post_data['do_wrap_at'] = (bool) $post_data['wrap_at'];
+
 $v->addJs($this->file('type-new', 'js'));
 ?>
 
