@@ -9,7 +9,7 @@
 $paginator = $this->getChild('p');
 
 ?>
-<section>
+<section class="groups">
     <ol start="<?=$paginator->getFirstItemIndex()?>">
         <?php if (empty($rows)) : ?>
             <li class="empty">

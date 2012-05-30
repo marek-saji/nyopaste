@@ -9,6 +9,7 @@
 $title = $this->trans('Latest groups');
 $v->setTitle($title);
 
+$v->addLess($this->file('latest', 'less'));
 ?>
 <section id="content">
     <h2><?=$title?></h2>
