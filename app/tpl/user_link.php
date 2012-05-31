@@ -97,7 +97,7 @@ ob_start();
     }
     ?>
 
-    <?=$t->l2c($label, 'User', '', array($login), array('class'=>'fn n url'))?>
+    <?=$t->l2c($label, 'User', '', array($login), array('class'=>'fn n url avoid-br'))?>
 </span>
 <?php
 return ob_get_clean();
