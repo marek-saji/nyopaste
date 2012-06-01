@@ -292,7 +292,7 @@ $form = g('Forms', array('paste', $this));
             $privacy_excerpts = array(
                 'public'     => $this->trans('Your paste will be listed in "pastes" section and indexed by search engines.'),
                 'not listed' => $this->trans('Your paste will not be listed in "pastes" section nor indexed by search engines. Anyone who know it\'s address will be able to acess it.'),
-                'private'    => $this->trans('Only selected <span class="nyopaste">n<i>y</i>opaste</span> users will be able to access your paste.')
+                'private'    => $this->trans('Only selected %s users will be able to access your paste.', g()->conf['site_name'])
             );
             ?>
             <?php if (@$static_fields['privacy']) : ?>

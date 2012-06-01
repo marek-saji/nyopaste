@@ -4,7 +4,7 @@
  */
 
 // site name.
-$conf['site_name'] = '<span class="nyopaste">n<i>y</i>opaste</span>';
+$conf['site_name'] = '<span class="nyopaste">n<span class="y">y</span>opaste</span>';
 
 if(defined('ENVIRONMENT'))
 {

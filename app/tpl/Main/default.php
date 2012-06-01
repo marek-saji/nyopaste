@@ -31,7 +31,7 @@ $v->addLess($this->file('style','less'));
         </dd>
         <dt>
             <span class="avoid-br">
-                <dfn class="nyopaste">n<i class="kern_ny">y</i>opaste</dfn>
+                <dfn class="nyopaste">n<span class="kern_ny y">y</span>opaste</dfn>
                 /<i class="ipa">njopeɪst</i>/
             </span>
             &#8212;&nbsp;
