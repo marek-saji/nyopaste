@@ -72,7 +72,8 @@ else
                             'img',
                             array(
                                 'src'    => $gravatar_url,
-                                'class'  => 'photo'
+                                'class'  => 'photo',
+                                'alt'    => ''
                             )
                         );
                         ?>

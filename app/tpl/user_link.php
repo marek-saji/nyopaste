@@ -86,6 +86,7 @@ ob_start();
             $f->tag(
                 'img',
                 array(
+                    'alt'    => $label ? '' : $user['DisplayName'],
                     'class'  => 'photo',
                     'src'    => $gravatar,
                     'width'  => $avatar,
