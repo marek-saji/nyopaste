@@ -741,14 +741,25 @@ class PasteController extends PagesController
 
                     // update text search vectors and root_id
 
+                    $paster_id = $paste->getData('paster_id');
+                    if (empty($paster_id))
+                    {
+                        $groups = array();
+                    }
+                    else
+                    {
+                        $membership_class = g()->load('GroupMembership', 'model');
+                        $groups = $membership_class::getUserGroups($paster_id);
+                    }
+
                     $paste_update = g('Paste', 'model');
                     $update_data = array(
                         'id'          => $paste_id,
                         'title_tsv'   => (string) $paste_update->getField('title'),
                         'paster_tsv'  => g()->auth->displayName(),
                         'content_tsv' => $encrypt ? '' : (string) $paste_update->getField('content'),
-                        'tags_tsv'    => join(', ', $tags),
-                        'groups_tsv'  => '' // TODO
+                        'tags_tsv'    => join(' ', $tags),
+                        'groups_tsv'  => join(' ', $groups)
                     );
                     if (!$insert_data['root_id'])
                     {

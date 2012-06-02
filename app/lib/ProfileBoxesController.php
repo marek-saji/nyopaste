@@ -412,7 +412,7 @@ class ProfileBoxesController extends Component
             {
                 $this->data[$form_ident] = array(
                     'title'       => $this->trans('%s\'s pastes', g()->auth->displayName()),
-                    'query'       => "user:" . g()->auth->ident(),
+                    'query'       => 'group:"' . $profile['name'] . '"',
                     'limit'       => self::DEFAULT_LIMIT,
                     'list_paster' => true
                 );

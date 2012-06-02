@@ -65,9 +65,38 @@ class GroupMembershipModel extends Model
         return $count > 0;
     }
 
+    /**
+     * Get list of groups that user is member of
+     * @author m.augustynowicz
+     *
+     * @param id $user_id
+     *
+     * @return array e.g. `array(group_id => group name, ...)`
+     */
+    static public function getUserGroups($user_id)
+    {
+        $ds = g('GroupMembership', 'model')->rel('Group');
+        $ds->whiteList(array(
+            'group_id',
+            'name'
+        ));
+        $ds->orderBy('Group.creation');
+        $ds->filter(array('user_id' => $user_id));
+
+        $rows = $ds->exec();
+        $flat = array();
+        foreach ($rows as & $row)
+        {
+            $flat[$row['group_id']] = $row['name'];
+        }
+        unset($row);
+
+        return $flat;
+    }
+
 
     /**
-     * Invite a user to become member of closed group
+     * Add user to a group
      * @author m.augustynowicz
      *
      * @param int $user_id
@@ -75,18 +104,84 @@ class GroupMembershipModel extends Model
      *
      * @return bool success of a operation
      */
-    static public function invite($user_id, $group_id)
+    static public function addUser($user_id, $group_id)
     {
-        $new_data = array(
-            'user_id'  => $user_id,
-            'group_id' => $group_id
-        );
+        g()->db->startTrans();
+        do
+        {
+            $new_data = array(
+                'user_id'  => $user_id,
+                'group_id' => $group_id
+            );
 
-        $membership = new self();
+            $membership = new self();
+            $result = $membership->sync($new_data, true, 'insert');
+            if (true !== $result)
+            {
+                break;
+            }
 
-        $result = $membership->sync($new_data, true, 'insert');
+            $paste_class = g()->load('Paste', 'model');
+            $result = $paste_class::updateGroupsTsv($new_data['user_id']);
+            if (true !== $result)
+            {
+                break;
+            }
 
-        return (true === $result);
+            g()->db->completeTrans();
+
+            return true;
+        }
+        while (false);
+        g()->db->failTrans();
+        g()->db->completeTrans();
+
+        return false;
+    }
+
+
+    /**
+     * Remove user from a group
+     * @author m.augustynowicz
+     *
+     * @param int $user_id
+     * @param int $group_id
+     *
+     * @return bool success of a operation
+     */
+    static public function removeUser($user_id, $group_id)
+    {
+        g()->db->startTrans();
+        do
+        {
+            $old_data = array(
+                'user_id'  => $user_id,
+                'group_id' => $group_id
+            );
+
+            $membership = new self();
+            $membership->filter($old_data)->delete(true);
+            if (g()->db->lastErrorMsg())
+            {
+                break;
+            }
+
+            $paste_class = g()->load('Paste', 'model');
+            $result = $paste_class::updateGroupsTsv($old_data['user_id']);
+            if (true !== $result)
+            {
+                break;
+            }
+
+            g()->db->completeTrans();
+
+            return true;
+        }
+        while (false);
+        g()->db->failTrans();
+        g()->db->completeTrans();
+
+        return false;
     }
 
 

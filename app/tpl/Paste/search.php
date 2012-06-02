@@ -48,7 +48,7 @@ $v->addLess($this->file('search', 'less'));
 
                     <div class="help">
                         <ul>
-                            <li><?=$this->trans('Use <code>user:username</code> to search for only user\'s pastes and <code>tag:"a tag"</code> to search within tags.')?></li>
+                            <li><?=$this->trans('Use <code>user:username</code> or <code>group:groupname</code> to search for only user\'s or group\'s pastes and <code>tag:"a tag"</code> to search within tags.')?></li>
                             <li><?=$this->trans('Use <code>OR</code> and <code>NOT</code> operators and brackets to build even more advanced queries.')?></li>
                         </ul>
                     </div>

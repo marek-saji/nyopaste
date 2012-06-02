@@ -618,6 +618,27 @@ QUERY_SQL
 
 
     /**
+     * Update groups_tsv in all user's pastes
+     *
+     * @param int $user_id
+     *
+     * @return bool success of a operation
+     */
+    static public function updateGroupsTsv($user_id)
+    {
+        $membership_class = g()->load('GroupMembership', 'model');
+        $groups = $membership_class::getUserGroups($user_id);
+        $update_data = array(
+            'groups_tsv' => join(' ', $groups)
+        );
+
+        $model = new self;
+        $model->filter(array('paster_id' => $user_id));
+        return $model->update($update_data, true);
+    }
+
+
+    /**
      * Get remembered password for a paste
      */
     static protected function _getPassword($id)

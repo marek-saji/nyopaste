@@ -93,7 +93,10 @@ $v->setTitle($title);
                     ?>
                     <?php if ($profile) : ?>
                         <div class="help">
-                            <?php if ($own_profile) : ?>
+                            <?php if ($profile['IsGroup']) : ?>
+                                <p><?=$this->trans('Pastes matching this search query will automagically show up on this profile.')?></p>
+                                <p><?=$this->trans('To restrict to only this group\'s pastes, use <code>group:"%s"</code>.', $profile['name'])?></p>
+                            <?php elseif ($own_profile) : ?>
                                 <p><?=$this->trans('Pastes matching this search query will automagically show up on your profile.')?></p>
                                 <p><?=$this->trans('To restrict to only your pastes, use <code>user:%s</code>.', g()->auth->ident())?></p>
                             <?php else : ?>

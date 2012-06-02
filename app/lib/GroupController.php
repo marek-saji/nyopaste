@@ -332,20 +332,9 @@ class GroupController extends PagesController implements IProfileController
 
         if (@$this->_validated[$form_id])
         {
-            $new_data = array(
-                'group_id' => $group_id,
-                'user_id'  => g()->auth->id()
-            );
-
-            $result = g('GroupMembership', 'model')->sync($new_data, true, 'insert');
-
-            if (true !== $result)
-            {
-                g()->addInfo('ds fail, joining roup'.$group_id, 'error',
-                    $this->trans('((error:DS:%s))', false) );
-                g()->debug->dump($result);
-            }
-            else
+            $membership_class = g('GroupMembership', 'model');
+            $result = $membership_class::addUser(g()->auth->id(), $group_id);
+            if ($result)
             {
                 g()->addInfo('joined group'.$group_id, 'info',
                     $this->trans('You have joined %s.', $group['DisplayName']) );
@@ -356,6 +345,11 @@ class GroupController extends PagesController implements IProfileController
                     $backlink = $this->url2a('', $params);
                 }
                 $this->redirect($backlink);
+            }
+            else
+            {
+                g()->addInfo('ds fail, joining roup'.$group_id, 'error',
+                    $this->trans('((error:DS:%s))', false) );
             }
         }
 
@@ -436,7 +430,7 @@ class GroupController extends PagesController implements IProfileController
                 $logins = $members_field->getLogins();
                 foreach ($logins as $user_id => $login)
                 {
-                    $result = $membership_class::invite($user_id, $group_id);
+                    $result = $membership_class::addUser($user_id, $group_id);
                     $new_members_count += (int) $result;
 
                     if ($result)
@@ -538,28 +532,19 @@ class GroupController extends PagesController implements IProfileController
 
         if (@$this->_validated[$form_id])
         {
-            $old_data = array(
-                'group_id' => $group_id,
-                'user_id'  => g()->auth->id()
-            );
-
-            $result = g('GroupMembership', 'model')
-                ->filter($old_data)
-                ->delete(true)
-            ;
-
-            if (g()->db->lastErrorMsg())
-            {
-                g()->addInfo('ds fail, leaving group'.$group_id, 'error',
-                    $this->trans('((error:DS:%s))', false) );
-                g()->debug->dump($result);
-            }
-            else
+            $membership_class = g()->load('GroupMembership', 'model');
+            $result = $membership_class::removeUser($user_id, $group_id);
+            if ($result)
             {
                 g()->addInfo('leaving group'.$group_id, 'info',
                     $this->trans('You have left %s.', $group['DisplayName']) );
 
                 $this->redirect($backlink);
+            }
+            else
+            {
+                g()->addInfo('ds fail, leaving group'.$group_id, 'error',
+                    $this->trans('((error:DS:%s))', false) );
             }
         }
 
