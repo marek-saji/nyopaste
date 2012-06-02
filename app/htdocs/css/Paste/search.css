@@ -2,6 +2,7 @@ body.Paste__search #whole-content .search.holoform form{width:70%;margin:0 auto;
 body.Paste__search #whole-content .search.holoform form label{display:none;}
 body.Paste__search #whole-content .search.holoform form input.text{font-size:1.1em;width:100%;}
 body.Paste__search #whole-content .search.holoform form .help{font-size:.9em;width:70%;margin:0 auto;}
+body.Paste__search .pastes.empty{list-style:none;text-align:center;color:#aaa;font-size:1.5em;}
 body.Paste__search .pastes.hfeed .hentry h4{font-weight:normal;}
 body.Paste__search .pastes.hfeed .hentry .entry-content{overflow:auto;}
 body.Paste__search .pastes.hfeed .hentry .query-keyword{background-color:yellow;}

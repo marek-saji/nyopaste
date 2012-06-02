@@ -35,23 +35,34 @@ body.Paste__search
         }
     }
 
-    .pastes.hfeed
+    .pastes
     {
-        .hentry
+        &.empty
         {
-            h4
-            {
-                font-weight: normal;
-            }
+            list-style : none;
+            text-align : center;
+            color      : #aaa;
+            font-size  : 1.5em;
+        }
 
-            .entry-content
+        &.hfeed
+        {
+            .hentry
             {
-                overflow : auto;
-            }
+                h4
+                {
+                    font-weight: normal;
+                }
 
-            .query-keyword
-            {
-                background-color: yellow;
+                .entry-content
+                {
+                    overflow : auto;
+                }
+
+                .query-keyword
+                {
+                    background-color: yellow;
+                }
             }
         }
     }

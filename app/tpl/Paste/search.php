@@ -73,34 +73,41 @@ $v->addLess($this->file('search', 'less'));
 
     </div> <!-- .holoform -->
 
-    <ol id="content" class="pastes hfeed" start="<?=$this->getChild('p')->getFirstItemIndex()?>">
-        <?php
-        foreach ($rows as & $row) :
-        ?>
-            <li class="hentry">
-                <h4>
-                    <?=$t->l2a(
-                        $row['title'],
-                        '',
-                        array($row['url'], 'v'=>$row['version']),
-                        array('class' => 'entry-title')
-                    )?>
-                    by <?=$this->inc('paster', $row)?>
-                </h4>
-                <div class="entry-content">
-                    <pre><?=$row['content_excerpt']?></pre>
-                </div>
-                <?php
-                $this->inc('tags', array('tags'=>&$row['Tags']));
-                //var_dump($row);
-                ?>
+    <?php if (empty($rows)) : ?>
+        <ol id="content" class="empty pastes">
+            <li>
+                <p><strong><?=$this->trans('No results. Try modyfying your search query.')?></strong></p>
             </li>
+        </ol>
+    <?php else : ?>
+        <ol id="content" class="pastes hfeed" start="<?=$this->getChild('p')->getFirstItemIndex()?>">
+            <?php
+            foreach ($rows as & $row) :
+            ?>
+                <li class="hentry">
+                    <h4>
+                        <?=$t->l2a(
+                            $row['title'],
+                            '',
+                            array($row['url'], 'v'=>$row['version']),
+                            array('class' => 'entry-title')
+                        )?>
+                        by <?=$this->inc('paster', $row)?>
+                    </h4>
+                    <div class="entry-content">
+                        <pre><?=$row['content_excerpt']?></pre>
+                    </div>
+                    <?php
+                    $this->inc('tags', array('tags'=>&$row['Tags']));
+                    ?>
+                </li>
+            <?php
+            endforeach;
+            ?>
+        </ol>
         <?php
-        endforeach;
+        $this->getChild('p')->render();
         ?>
-    </ol>
-    <?php
-    $this->getChild('p')->render();
-    ?>
+    <?php endif; /* else empty rows */ ?>
 </section>
 
